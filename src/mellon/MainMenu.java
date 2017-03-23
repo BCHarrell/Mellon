@@ -11,9 +11,9 @@ import javafx.scene.layout.BorderPane;
  * @author Brent H.
  */
 public class MainMenu extends BorderPane{
-    MellonGUI parent;
+    MellonFramework parent;
     
-    public MainMenu(MellonGUI p){
+    public MainMenu(MellonFramework p){
         parent = p;
         addItems();
     };

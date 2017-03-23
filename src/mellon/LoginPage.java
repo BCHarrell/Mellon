@@ -20,16 +20,16 @@ public class LoginPage extends VBox {
     ImageView logo = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/templogo.png")));
 
-    public LoginPage(MellonGUI p) {
+    public LoginPage(MellonFramework p) {
         parent = p;
         addItems();
     }
-    
+
     private void addItems() {
         this.setMaxSize(350, 450);
         this.setAlignment(CENTER);
         this.setSpacing(45);
-        
+
         VBox vb = new VBox();
         vb.setAlignment(CENTER);
         vb.setSpacing(15);
@@ -39,13 +39,13 @@ public class LoginPage extends VBox {
         PasswordField password = new PasswordField();
         password.setMaxWidth(300);
         password.setPromptText("Password");
-        
+
         HBox hb = new HBox();
         hb.setAlignment(CENTER);
         hb.setSpacing(15);
         Button login = new Button("Log In");
         Button signUp = new Button("Sign Up");
-        
+
         hb.getChildren().addAll(login, signUp);
         vb.getChildren().addAll(username, password, hb);
         this.getChildren().addAll(logo, vb);
@@ -54,7 +54,7 @@ public class LoginPage extends VBox {
         in case I'm missing something.  GUI should run without this*/
         //vb.managedProperty().bind(login.visibleProperty());
         //vb.setVisible(true);
-        
+
         //Event Listeners
         // Doing this just to test...
         login.setOnAction(e -> {
@@ -72,7 +72,7 @@ public class LoginPage extends VBox {
         signUp.setOnAction(e -> {
             parent.getScene().setRoot(new SignUpPage(parent, this));
         });
-        
+
 // Testing DBConnect and creating MellonUser object " uncomment to perform test"
 //    login.setOnAction(e -> {
 //      // Testing DB connect 
@@ -92,4 +92,5 @@ public class LoginPage extends VBox {
 //    }
 
 
-            }
+    }
+}
