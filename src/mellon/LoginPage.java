@@ -6,6 +6,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
 
+import java.security.NoSuchAlgorithmException;
+
 /**
  *
  * @author Brent H.
@@ -44,5 +46,18 @@ public class LoginPage extends BorderPane{
         
         vb.getChildren().addAll(logo, username, password, hb);
         this.setCenter(vb);
+
+        // Doing this just to test...
+        login.setOnAction(e -> {
+            try {
+                UserAuth user = new UserAuth(username.getText(), password.getText());
+                System.out.println(user.getUsernameEncrypted());
+                System.out.println(user.getPasswordEncrypted());
+            } catch (NoSuchAlgorithmException e1) {
+                e1.printStackTrace();
+
+            }
+
+        });
     }    
 }
