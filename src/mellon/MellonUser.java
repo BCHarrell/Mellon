@@ -9,6 +9,7 @@ public class MellonUser {
     private String password;
     private int id;
     private boolean accountFound;
+    private UserAuth auth;
 
     public boolean isAccountFound() {
         return accountFound;

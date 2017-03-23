@@ -6,6 +6,7 @@ package mellon;
 
 import static java.lang.System.out;
 import java.sql.*;
+import java.util.Properties;
 
 public class DBConnect {
 
@@ -19,9 +20,13 @@ public class DBConnect {
         String driver = "oracle.jdbc.OracleDriver";
         String userName = "Mellon";
         String password = "CMSC4952017";
+        Properties props = new Properties();
+        props.setProperty("ssl", "true");
+        props.setProperty("user", userName);
+        props.setProperty("password", password);
         try {
             Class.forName(driver);
-            conn = DriverManager.getConnection(url, userName, password);
+            conn = DriverManager.getConnection(url, props);
         } catch (Exception e) {
             e.printStackTrace();
         }

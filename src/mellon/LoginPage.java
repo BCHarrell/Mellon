@@ -56,22 +56,32 @@ public class LoginPage extends VBox {
         //vb.setVisible(true);
 
         //Event Listeners
-        // Doing this just to test...
+        // BUTTON - login
         login.setOnAction(e -> {
-            try {
-                UserAuth user = new UserAuth(username.getText(), password.getText());
-                System.out.println(user.getUsernameEncrypted());
-                System.out.println(user.getPasswordEncrypted());
-            } catch (NoSuchAlgorithmException e1) {
-                e1.printStackTrace();
+            // If either field is empty
+            if (username.getText().isEmpty() || password.getText().isEmpty()) {
+                // Pop-up a message displaying to the user
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Invalid Username or Password");
+                alert.setContentText("Please ensure the Username and Password fields are filled in.");
+                alert.showAndWait();
+            } else {
+                try {
+                    UserAuth user = new UserAuth(username.getText(), password.getText());
+                    // Don't forget to get rid of these some day...
+                    System.out.println(user.getUsernameEncrypted());
+                    System.out.println(user.getPasswordEncrypted());
+                } catch (NoSuchAlgorithmException e1) {
+                    e1.printStackTrace();
 
+                }
             }
 
         });
-        //Goes to sign up page
-        signUp.setOnAction(e -> {
-            parent.getScene().setRoot(new SignUpPage(parent, this));
-        });
+
+        // BUTTON - Goes to sign up page
+        signUp.setOnAction(e -> parent.getScene().setRoot(new SignUpPage(parent, this)));
 
 // Testing DBConnect and creating MellonUser object " uncomment to perform test"
 //    login.setOnAction(e -> {
