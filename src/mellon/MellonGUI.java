@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -26,6 +27,7 @@ public class MellonGUI extends Application {
         scene = new Scene(new LoginPage(this), 525, 650);
         
         stage = primaryStage;
+        primaryStage.setTitle("Mellon Password Storage");
         stage.setScene(scene);
         stage.show();
     }

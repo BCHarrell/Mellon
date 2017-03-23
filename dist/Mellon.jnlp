@@ -8,7 +8,8 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Mellon.jar" size="5906" download="eager" />
+    <jar href="Mellon.jar" size="13541" download="eager" />
+    <jar href="lib\ojdbc7.jar" size="3397734" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="Mellon" >
     <param name="requiredFXVersion" value="8.0+"/>
