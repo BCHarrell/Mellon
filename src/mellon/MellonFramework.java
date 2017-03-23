@@ -9,14 +9,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
  *
  * @author Bobcat
  */
-public class MellonGUI extends Application {
+public class MellonFramework extends Application {
     
     private Stage stage;
     private Scene scene;
@@ -27,11 +26,13 @@ public class MellonGUI extends Application {
         scene = new Scene(new LoginPage(this), 525, 650);
         
         stage = primaryStage;
-        primaryStage.setTitle("Mellon Password Storage");
         stage.setScene(scene);
         stage.show();
     }
-
+    
+    public Scene getScene(){
+        return scene;
+    }
     /**
      * @param args the command line arguments
      */
