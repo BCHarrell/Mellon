@@ -39,6 +39,7 @@ public class UserAuth {
             statement1.setString(1, username);
             resultSet1 = statement1.executeQuery();
             while (resultSet1.next()) {
+                System.out.println("UserID: " + userID);
                 userID = resultSet1.getInt(1);
                 if (userID != 0) {
                     System.out.println("Account found");
