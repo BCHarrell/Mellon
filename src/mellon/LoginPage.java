@@ -45,9 +45,13 @@ public class LoginPage extends VBox {
         hb.setSpacing(15);
         Button login = new Button("Log In");
         Button signUp = new Button("Sign Up");
-
+        
+        //TESTING PURPOSES ONLY, BYPASSING TO MAIN MENU
+        Button main = new Button("To Main (TAKE ME OUT!)");
+        main.setOnAction(e -> parent.getScene().setRoot(new MainMenu(parent)));
+        
         hb.getChildren().addAll(login, signUp);
-        vb.getChildren().addAll(username, password, hb);
+        vb.getChildren().addAll(username, password, hb, /*Take me out*/ main);
         this.getChildren().addAll(logo, vb);
         
         /*I don't think these two lines are necessary but I left them
