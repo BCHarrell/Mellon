@@ -4,11 +4,19 @@
 package mellon;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 public class MellonUser {
 
+<<<<<<< HEAD
     private String username; // This will be deleted once encryption is completed (userAuth will be used instead)
     private String password; // This will be deleted once encryption is completed (userAuth will be used instead)
+=======
+    private String username;
+    private String password;
+    private String encodedUsername;
+    private String encodedPassword;
+>>>>>>> 27cc0df9cb0578380d3d2bbb93d0b669416879d5
     private int id;
     private boolean accountFound = false;
     private UserAuth auth;
@@ -30,11 +38,12 @@ public class MellonUser {
         this.id = id;
     }
 
-    public MellonUser(int ID, String username, String password, boolean accountFound) {
+    public MellonUser(int ID, String encodedUsername, String encodedPassword, boolean accountFound) {
         this.id = ID;
-        this.username = username;
-        this.password = password;
-
+        this.encodedUsername = encodedUsername;
+        this.encodedPassword = encodedPassword;
+        this.username = decode(encodedUsername);
+        this.password = decode(encodedPassword);
     }
     
     public MellonUser(String username, String password) {
@@ -50,6 +59,16 @@ public class MellonUser {
 
     public UserAuth getAuth() {
         return auth;
+    }
+
+    public String decode(String input) {
+        byte[] encodedBytes = Base64.getEncoder().encode(input.getBytes());
+        return new String(encodedBytes);
+    }
+
+    public String encode(String input) {
+        byte[] decodedBytes = Base64.getDecoder().decode(input.getBytes());
+        return new String(decodedBytes);
     }
     
     public String getUsername() {
