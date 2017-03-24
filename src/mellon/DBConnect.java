@@ -7,6 +7,7 @@ package mellon;
 import static java.lang.System.out;
 import java.sql.*;
 import java.util.Properties;
+import static mellon.DBConnect.getConnect;
 
 public class DBConnect {
 
@@ -38,43 +39,96 @@ public class DBConnect {
 
         return conn;
     }
+// Method to get user's creds from the login page and create a MellonUser object to be used by other methods
 
     public static MellonUser getCredintials(String username) {
-        PreparedStatement stmt1 = null;
-        ResultSet rset1 = null;
-        PreparedStatement stmt2 = null;
-        ResultSet rset2 = null;
+        PreparedStatement stmt = null;
+        ResultSet rset = null;
         MellonUser user = null;
         Connection conn = getConnect();
 
         try {
-            stmt1 = conn.prepareStatement("SELECT USER_ID FROM ACCOUNT_MASTER WHERE USERNAME = ?");
-            stmt1.setString(1, username);
-            rset1 = stmt1.executeQuery();
-            while (rset1.next()) {
-                userID = rset1.getInt(1);
+            ACCOUNT_FOUND = checkUser(username);
+            if (ACCOUNT_FOUND) {
+                stmt = conn.prepareStatement("SELECT MASTER_KEY FROM ACCOUNT_INFO WHERE USER_ID = ?");
+                stmt.setInt(1, userID);
+                rset = stmt.executeQuery();
+                while (rset.next()) {
+                    String password = rset.getString(1);
+                    user = new MellonUser(userID, username, password, ACCOUNT_FOUND);
+                }
+                rset.close();
+                stmt.close();
+                conn.close();
+            } else {
+                // will be handled in the interface for now. 
+            }
+        } catch (SQLException se) {
+            // We may need to add another class for exceptions only
+        }
+
+        return user;
+    }
+// Method to check if an account exist
+
+    public static boolean checkUser(String username) {
+        PreparedStatement stmt = null;
+        ResultSet rset = null;
+        Connection conn = getConnect();
+        try {
+            stmt = conn.prepareStatement("SELECT USER_ID FROM ACCOUNT_MASTER WHERE USERNAME = ?");
+            stmt.setString(1, username);
+            rset = stmt.executeQuery();
+            while (rset.next()) {
+                userID = rset.getInt(1);
                 if (userID != 0) {
                     ACCOUNT_FOUND = true;
                 } else {
                     ACCOUNT_FOUND = false;
                 }
-
-                stmt2 = conn.prepareStatement("SELECT MASTER_KEY FROM ACCOUNT_INFO WHERE USER_ID = ?");
-                stmt2.setInt(1, userID);
-                rset2 = stmt2.executeQuery();
-                while (rset2.next()) {
-                    String password = rset2.getString(1);
-                    rset2.close();
-                    stmt2.close();
-                    conn.close();
-                    user = new MellonUser(userID, username, password, ACCOUNT_FOUND);
-                }
-                rset1.close();
-                stmt1.close();
             }
+            rset.close();
+            stmt.close();
+            conn.close();
+
         } catch (SQLException se) {
             // We may need to add another class for exceptions only
         }
-        return user;
+        return ACCOUNT_FOUND;
     }
-}
+
+    public static boolean registerUser(String newUsername, String newPassword) {
+
+        PreparedStatement stmt1 = null;
+        PreparedStatement stmt2 = null;
+        PreparedStatement stmt3 = null;
+        ResultSet rset = null;
+        Connection conn = getConnect();
+        try {
+            stmt1 = conn.prepareStatement("INSERT INTO ACCOUNT_MASTER (username) values (?)");
+            stmt1.setString(1, newUsername);
+            stmt1.executeQuery();
+            stmt2 = conn.prepareStatement("SELECT USER_ID FROM ACCOUNT_MASTER WHERE username = ?");
+            stmt2.setString(1, newUsername);
+            rset = stmt2.executeQuery();
+             while (rset.next()) {
+                userID = rset.getInt(1);
+             }
+             stmt3 = conn.prepareStatement("INSERT INTO ACCOUNT_INFO (USER_ID,MASTER_KEY) values (?,?)");
+             stmt3.setInt(1, userID);
+             stmt3.setString(2, newPassword);
+             stmt3.executeQuery();
+                rset.close();
+                stmt1.close();
+                stmt2.close();
+                stmt3.close();
+                conn.close();
+                ACCOUNT_FOUND = true;
+
+            }catch (SQLException se) {
+            // We may need to add another class for exceptions only
+        }
+            return ACCOUNT_FOUND;
+        }
+
+    }

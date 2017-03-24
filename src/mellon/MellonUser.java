@@ -7,8 +7,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class MellonUser {
 
-    private String username;
-    private String password;
+    private String username; // This will be deleted once encryption is completed (userAuth will be used instead)
+    private String password; // This will be deleted once encryption is completed (userAuth will be used instead)
     private int id;
     private boolean accountFound = false;
     private UserAuth auth;

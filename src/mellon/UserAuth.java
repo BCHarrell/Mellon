@@ -26,14 +26,14 @@ public class UserAuth {
         this.passwordEncrypted = encryptString(password);
 
         this.userAccounts = new ArrayList<>();
-        this.connection = getConnect();
-
+        this.connection = DBConnect.getConnect();
+        
         PreparedStatement statement1;
         ResultSet resultSet1;
         PreparedStatement statement2;
         ResultSet resultSet2;
 
-
+// I don't understand the purpose of this block. We can discuss it further.
         try {
             statement1 = connection.prepareStatement("SELECT USER_ID FROM ACCOUNT_MASTER WHERE USERNAME = ?");
             statement1.setString(1, username);
@@ -90,26 +90,26 @@ public class UserAuth {
             return null;
         }
     }
-
-    public static Connection getConnect() {
-        Connection conn = null;
-        String url = "jdbc:oracle:thin:@mellon.cg2xm5fvbkm2.us-east-1.rds.amazonaws.com:1521:mellon";
-        String driver = "oracle.jdbc.OracleDriver";
-        String userName = "Mellon";
-        String password = "CMSC4952017";
-        Properties props = new Properties();
-        props.setProperty("ssl", "true");
-        props.setProperty("user", userName);
-        props.setProperty("password", password);
-        try {
-            Class.forName(driver);
-            conn = DriverManager.getConnection(url, props);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return conn;
-    }
+// No need for this, instead I used the same DBConnect.getConnet() method to open database connection. Check line 29
+//    public static Connection getConnect() {
+//        Connection conn = null;
+//        String url = "jdbc:oracle:thin:@mellon.cg2xm5fvbkm2.us-east-1.rds.amazonaws.com:1521:mellon";
+//        String driver = "oracle.jdbc.OracleDriver";
+//        String userName = "Mellon";
+//        String password = "CMSC4952017";
+//        Properties props = new Properties();
+//        props.setProperty("ssl", "true");
+//        props.setProperty("user", userName);
+//        props.setProperty("password", password);
+//        try {
+//            Class.forName(driver);
+//            conn = DriverManager.getConnection(url, props);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return conn;
+//    }
 
     // Getters only for the encrypted username and password strings
     public String getUsernameEncrypted() { return usernameEncrypted; }
