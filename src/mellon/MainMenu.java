@@ -4,7 +4,6 @@ package mellon;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
@@ -40,10 +39,7 @@ public class MainMenu extends BorderPane {
         settingsBar.setAlignment(Pos.BOTTOM_RIGHT);
         settingsBar.setSpacing(15);
         settingsBar.getChildren().addAll(settings, help);
-        
-        AnchorPane anch = new AnchorPane();
-        anch.setBottomAnchor(settingsBar, 8.0);
-        anch.setRightAnchor(settingsBar, 5.0);
+
         this.setBottom(settingsBar);
     }
 }
