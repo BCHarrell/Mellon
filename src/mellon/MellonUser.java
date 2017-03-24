@@ -3,12 +3,14 @@
 // Just add the varibale and setters and getters. Modify constructors as needed to implement new variables
 package mellon;
 
+import java.security.NoSuchAlgorithmException;
+
 public class MellonUser {
 
     private String username;
     private String password;
     private int id;
-    private boolean accountFound;
+    private boolean accountFound = false;
     private UserAuth auth;
 
     public boolean isAccountFound() {
@@ -32,12 +34,22 @@ public class MellonUser {
         this.id = ID;
         this.username = username;
         this.password = password;
-        this.accountFound = accountFound;
+
     }
     
     public MellonUser(String username, String password) {
         this.username = username;
         this.password = password;
+
+        try {
+            this.auth = new UserAuth(username, password);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public UserAuth getAuth() {
+        return auth;
     }
     
     public String getUsername() {

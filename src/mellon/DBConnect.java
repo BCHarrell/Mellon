@@ -12,7 +12,12 @@ public class DBConnect {
 
     private static boolean ACCOUNT_FOUND;
     private static int userID;
-// This method initiates the connection to Mellon database 
+    private Connection connection;
+// This method initiates the connection to Mellon database
+
+    public DBConnect() {
+        this.connection = getConnect();
+    }
 
     public static Connection getConnect() {
         Connection conn = null;
