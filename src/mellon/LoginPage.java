@@ -6,9 +6,6 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 
 import java.security.NoSuchAlgorithmException;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.text.Text;
 
 /**
  *
@@ -74,8 +71,8 @@ public class LoginPage extends VBox {
                 try {
                     UserAuth user = new UserAuth(username.getText(), password.getText());
                     // Don't forget to get rid of these some day...
-                    System.out.println(user.getUsernameEncrypted());
-                    System.out.println(user.getPasswordEncrypted());
+                    System.out.println(user.getUsernameHash());
+                    System.out.println(user.getPasswordHash());
                 } catch (NoSuchAlgorithmException e1) {
                     e1.printStackTrace();
 
@@ -92,7 +89,7 @@ public class LoginPage extends VBox {
 //      // Testing DB connect 
 //       vb.setVisible(false);
 //       MellonUser currentUser = new MellonUser(username.getText(), password.getText());
-//       MellonUser returnedUser = DBConnect.getCredintials(currentUser.getUsername());
+//       MellonUser returnedUser = DBConnect.getCredentials(currentUser.getUsername());
 //       VBox vb2 = new VBox();
 //       vb2.setMaxSize(150, 150);
 //       vb2.setAlignment(CENTER);

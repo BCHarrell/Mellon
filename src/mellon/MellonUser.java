@@ -1,6 +1,14 @@
-// Let's use this class to construct a user. 
-// You can define all variables that the user may use within the application. 
-// Just add the varibale and setters and getters. Modify constructors as needed to implement new variables
+/**
+ *
+ Let's use this class to construct a user.
+ You can define all variables that the user may use within the application.
+ Just add the varibale and setters and getters. Modify constructors as needed to implement new variables
+
+
+
+ */
+
+
 package mellon;
 
 import java.security.NoSuchAlgorithmException;
@@ -8,26 +16,25 @@ import java.util.Base64;
 
 public class MellonUser {
 
-<<<<<<< HEAD
-    private String username; // This will be deleted once encryption is completed (userAuth will be used instead)
-    private String password; // This will be deleted once encryption is completed (userAuth will be used instead)
-=======
-    private String username;
+    //private String username; // This will be deleted once encryption is completed (userAuth will be used instead)
+   // private String password; // This will be deleted once encryption is completed (userAuth will be used instead)
+    private String username; // These are the plaintext strings that will be displayed on the front-end
     private String password;
     private String encodedUsername;
     private String encodedPassword;
->>>>>>> 27cc0df9cb0578380d3d2bbb93d0b669416879d5
+    private String accountName;
     private int id;
-    private boolean accountFound = false;
-    private UserAuth auth;
+    private int webID;
+//    private boolean accountFound = false;
+//    private UserAuth auth;
 
-    public boolean isAccountFound() {
-        return accountFound;
-    }
+//    public boolean isAccountFound() {
+//        return accountFound;
+//    }
 
-    public void setAccountFound(boolean accountFound) {
-        this.accountFound = accountFound;
-    }
+//    public void setAccountFound(boolean accountFound) {
+//        this.accountFound = accountFound;
+//    }
 
 
     public int getID() {
@@ -38,28 +45,30 @@ public class MellonUser {
         this.id = id;
     }
 
-    public MellonUser(int ID, String encodedUsername, String encodedPassword, boolean accountFound) {
+    // Use this constructor when creating instances of MellonUser from the database
+    public MellonUser(int ID, String encodedUsername, String encodedPassword, int webID, String accountName) {
         this.id = ID;
         this.encodedUsername = encodedUsername;
         this.encodedPassword = encodedPassword;
+        this.webID = webID;
+        this.accountName = accountName;
+
+        // Decode the username and passwords
         this.username = decode(encodedUsername);
         this.password = decode(encodedPassword);
     }
-    
-    public MellonUser(String username, String password) {
+
+    // Use this constructor when creating instances of MellonUser from user input
+    public MellonUser(String username, String password, String accountName) {
         this.username = username;
         this.password = password;
+        this.accountName = accountName;
 
-        try {
-            this.auth = new UserAuth(username, password);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+        // Encode the username and password
+        this.encodedUsername = encode(username);
+        this.encodedPassword = encode(password);
     }
 
-    public UserAuth getAuth() {
-        return auth;
-    }
 
     public String decode(String input) {
         byte[] encodedBytes = Base64.getEncoder().encode(input.getBytes());

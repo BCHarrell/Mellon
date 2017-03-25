@@ -5,69 +5,37 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Properties;
 
 /**
  * Created by Thomas Hodges on 3/22/2017.
  * UserAuth.java
+ *
+ * This class is going to hold the Master account info. All sub-accounts (associated to web
+ * sites, etc.) will be in the ArrayList<MellonUser> variable.
+ *
+ * Something to keep in mind, a hash is one-way, meaning it can't be un-hashed.
+ * We're going to be checking and storing hashes based on user input only.
  */
 public class UserAuth {
 
-    private String usernameEncrypted;
-    private String passwordEncrypted;
-    private static boolean ACCOUNT_FOUND;
-    private static int userID;
+    private String usernameHash;
+    private String passwordHash;
+//    private static boolean ACCOUNT_FOUND;
+//    private static int userID;
     private Connection connection;
     private ArrayList<MellonUser> userAccounts;
 
 
     public UserAuth(String username, String password) throws NoSuchAlgorithmException {
-        this.usernameEncrypted = encryptString(username);
-        this.passwordEncrypted = encryptString(password);
+        this.usernameHash = hashString(username);
+        this.passwordHash = hashString(password);
 
         this.userAccounts = new ArrayList<>();
         this.connection = DBConnect.getConnect();
-        
-        PreparedStatement statement1;
-        ResultSet resultSet1;
-        PreparedStatement statement2;
-        ResultSet resultSet2;
-
-// I don't understand the purpose of this block. We can discuss it further.
-        try {
-            statement1 = connection.prepareStatement("SELECT USER_ID FROM ACCOUNT_MASTER WHERE USERNAME = ?");
-            statement1.setString(1, username);
-            resultSet1 = statement1.executeQuery();
-            while (resultSet1.next()) {
-                System.out.println("UserID: " + userID);
-                userID = resultSet1.getInt(1);
-                if (userID != 0) {
-                    System.out.println("Account found");
-                    ACCOUNT_FOUND = true;
-                } else {
-                    System.out.println("Account NOT found");
-                    ACCOUNT_FOUND = false;
-                }
-
-                statement2 = connection.prepareStatement("SELECT MASTER_KEY FROM ACCOUNT_INFO WHERE USER_ID = ?");
-                statement2.setInt(1, userID);
-                resultSet2 = statement2.executeQuery();
-                while (resultSet2.next()) {
-                    String passwordResult = resultSet2.getString(1);
-                    resultSet2.close();
-                    statement2.close();
-                    connection.close();
-                    userAccounts.add(new MellonUser(userID, username, passwordResult, ACCOUNT_FOUND));
-                }
-                resultSet1.close();
-                statement1.close();
-            }
-        } catch (SQLException se) {
-            // We may need to add another class for exceptions only
-        }
+        this.userAccounts = DBConnect.getCredentials(this.usernameHash, this.passwordHash);
     }
 
-    private String encryptString(String input) {
+    private String hashString(String input) {
 
         try {
 
@@ -91,28 +59,12 @@ public class UserAuth {
             return null;
         }
     }
-// No need for this, instead I used the same DBConnect.getConnet() method to open database connection. Check line 29
-//    public static Connection getConnect() {
-//        Connection conn = null;
-//        String url = "jdbc:oracle:thin:@mellon.cg2xm5fvbkm2.us-east-1.rds.amazonaws.com:1521:mellon";
-//        String driver = "oracle.jdbc.OracleDriver";
-//        String userName = "Mellon";
-//        String password = "CMSC4952017";
-//        Properties props = new Properties();
-//        props.setProperty("ssl", "true");
-//        props.setProperty("user", userName);
-//        props.setProperty("password", password);
-//        try {
-//            Class.forName(driver);
-//            conn = DriverManager.getConnection(url, props);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return conn;
-//    }
+
+    public ArrayList<MellonUser> getUserAccounts() {
+        return this.userAccounts;
+    }
 
     // Getters only for the encrypted username and password strings
-    public String getUsernameEncrypted() { return usernameEncrypted; }
-    public String getPasswordEncrypted() { return passwordEncrypted; }
+    public String getUsernameHash() { return usernameHash; }
+    public String getPasswordHash() { return passwordHash; }
 }

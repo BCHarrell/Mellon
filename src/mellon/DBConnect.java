@@ -1,13 +1,16 @@
-/*
+/**
 The following class will be used to connect to Oracle database and retrieve information 
 from the various tables. Multiple SQLs will be used to get and verify different type of info
+
+ WEB_ACCOUNTS will also need a password column as well, since I'm going to send encoded strings
+ up to it.
+
  */
 package mellon;
 
-import static java.lang.System.out;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Properties;
-import static mellon.DBConnect.getConnect;
 
 public class DBConnect {
 
@@ -39,23 +42,29 @@ public class DBConnect {
 
         return conn;
     }
+
 // Method to get user's creds from the login page and create a MellonUser object to be used by other methods
 
-    public static MellonUser getCredintials(String username) {
+    public static ArrayList<MellonUser> getCredentials(String username, String password) {
+        ArrayList<MellonUser> users = new ArrayList<>();
         PreparedStatement stmt = null;
         ResultSet rset = null;
-        MellonUser user = null;
         Connection conn = getConnect();
 
         try {
-            ACCOUNT_FOUND = checkUser(username);
+            // Validates that the username and password is correct
+            ACCOUNT_FOUND = checkUser(username, password);
             if (ACCOUNT_FOUND) {
-                stmt = conn.prepareStatement("SELECT MASTER_KEY FROM ACCOUNT_INFO WHERE USER_ID = ?");
+                // If master account is correct, need to populate web accounts
+                stmt = conn.prepareStatement("SELECT WEB_USERNAME, KEY, WEB_ID, ACCOUNT_NAME FROM WEB_ACCOUNTS WHERE USER_ID = ?");
                 stmt.setInt(1, userID);
                 rset = stmt.executeQuery();
                 while (rset.next()) {
-                    String password = rset.getString(1);
-                    user = new MellonUser(userID, username, password, ACCOUNT_FOUND);
+                    String webUsername = rset.getString(1);
+                    String key = rset.getString(2);
+                    int webID = rset.getInt(3);
+                    String accountName = rset.getString(4);
+                    users.add(new MellonUser(userID, webUsername, key, webID, accountName));
                 }
                 rset.close();
                 stmt.close();
@@ -67,17 +76,20 @@ public class DBConnect {
             // We may need to add another class for exceptions only
         }
 
-        return user;
+        return users;
     }
-// Method to check if an account exist
 
-    public static boolean checkUser(String username) {
+    // Method to check if an account exist
+    // Added expected PASSWORD column and now checking both for the correct username and password
+    // Inputs are expected to be hashed
+    public static boolean checkUser(String username, String password) {
         PreparedStatement stmt = null;
         ResultSet rset = null;
         Connection conn = getConnect();
         try {
-            stmt = conn.prepareStatement("SELECT USER_ID FROM ACCOUNT_MASTER WHERE USERNAME = ?");
+            stmt = conn.prepareStatement("SELECT AM.USER FROM ACCOUNT_MASTER AM INNER JOIN ACCOUNT_INFO AI ON AM.USER_ID = AI.USER_ID WHERE AM.USERNAME = ? AND AI.MASTER_KEY = ?");
             stmt.setString(1, username);
+            stmt.setString(2, password);
             rset = stmt.executeQuery();
             while (rset.next()) {
                 userID = rset.getInt(1);
@@ -97,6 +109,7 @@ public class DBConnect {
         return ACCOUNT_FOUND;
     }
 
+    // Inputs are expected to be hashed, returns true if new master user created
     public static boolean registerUser(String newUsername, String newPassword) {
 
         PreparedStatement stmt1 = null;
@@ -105,7 +118,7 @@ public class DBConnect {
         ResultSet rset = null;
         Connection conn = getConnect();
         try {
-            stmt1 = conn.prepareStatement("INSERT INTO ACCOUNT_MASTER (username) values (?)");
+            stmt1 = conn.prepareStatement("INSERT INTO ACCOUNT_MASTER (USERNAME) values (?)");
             stmt1.setString(1, newUsername);
             stmt1.executeQuery();
             stmt2 = conn.prepareStatement("SELECT USER_ID FROM ACCOUNT_MASTER WHERE username = ?");

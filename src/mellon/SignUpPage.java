@@ -117,16 +117,16 @@ public class SignUpPage extends VBox {
     }
 
     private void getUserInput(String username, String pass) {
-        String newUsername;
-        String newPassword;
+        String usernameHash;
+        String passwordHash;
         boolean exists = false;
         boolean registered = false;
         try {
             // Check if user with the same username already exist in the database
             UserAuth user = new UserAuth(username, pass);
-            newUsername = user.getUsernameEncrypted();
-            newPassword = user.getPasswordEncrypted();
-            exists = DBConnect.checkUser(username);
+            usernameHash = user.getUsernameHash();
+            passwordHash = user.getPasswordHash();
+            exists = DBConnect.checkUser(usernameHash, passwordHash);
             // if the user exists, display error message
             if (exists) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -135,7 +135,7 @@ public class SignUpPage extends VBox {
                 alert.setContentText("username is already taken, please try a different username or use your credintials to login.");
                 alert.showAndWait();
             } else {
-                registered = DBConnect.registerUser(newUsername, newPassword);
+                registered = DBConnect.registerUser(usernameHash, passwordHash);
                 if (registered) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Success");
