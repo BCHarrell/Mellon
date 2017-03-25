@@ -64,7 +64,7 @@ public class DBConnect {
                     String key = rset.getString(2);
                     int webID = rset.getInt(3);
                     String accountName = rset.getString(4);
-                    users.add(new WebAccount(userID, webUsername, key, webID, accountName));
+                    users.add(new WebAccount(userID, webUsername, key, webID, accountName, password));
                 }
                 rset.close();
                 stmt.close();
