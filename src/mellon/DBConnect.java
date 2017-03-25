@@ -43,10 +43,10 @@ public class DBConnect {
         return conn;
     }
 
-// Method to get user's creds from the login page and create a MellonUser object to be used by other methods
+// Method to get user's creds from the login page and create a WebAccount object to be used by other methods
 
-    public static ArrayList<MellonUser> getCredentials(String username, String password) {
-        ArrayList<MellonUser> users = new ArrayList<>();
+    public static ArrayList<WebAccount> getCredentials(String username, String password) {
+        ArrayList<WebAccount> users = new ArrayList<>();
         PreparedStatement stmt = null;
         ResultSet rset = null;
         Connection conn = getConnect();
@@ -64,7 +64,7 @@ public class DBConnect {
                     String key = rset.getString(2);
                     int webID = rset.getInt(3);
                     String accountName = rset.getString(4);
-                    users.add(new MellonUser(userID, webUsername, key, webID, accountName));
+                    users.add(new WebAccount(userID, webUsername, key, webID, accountName));
                 }
                 rset.close();
                 stmt.close();

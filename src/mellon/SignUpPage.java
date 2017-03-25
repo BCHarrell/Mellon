@@ -123,7 +123,7 @@ public class SignUpPage extends VBox {
         boolean registered = false;
         try {
             // Check if user with the same username already exist in the database
-            UserAuth user = new UserAuth(username, pass);
+            MasterAccount user = new MasterAccount(username, pass);
             usernameHash = user.getUsernameHash();
             passwordHash = user.getPasswordHash();
             exists = DBConnect.checkUser(usernameHash, passwordHash);

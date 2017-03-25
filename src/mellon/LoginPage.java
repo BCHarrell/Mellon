@@ -69,7 +69,7 @@ public class LoginPage extends VBox {
                 alert.showAndWait();
             } else {
                 try {
-                    UserAuth user = new UserAuth(username.getText(), password.getText());
+                    MasterAccount user = new MasterAccount(username.getText(), password.getText());
                     // Don't forget to get rid of these some day...
                     System.out.println(user.getUsernameHash());
                     System.out.println(user.getPasswordHash());

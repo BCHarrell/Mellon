@@ -8,23 +8,23 @@ import java.util.ArrayList;
 
 /**
  * Created by Thomas Hodges on 3/22/2017.
- * UserAuth.java
+ * MasterAccount.java
  *
  * This class is going to hold the Master account info. All sub-accounts (associated to web
- * sites, etc.) will be in the ArrayList<MellonUser> variable.
+ * sites, etc.) will be in the ArrayList<WebAccount> variable.
  *
  * Something to keep in mind, a hash is one-way, meaning it can't be un-hashed.
  * We're going to be checking and storing hashes based on user input only.
  */
-public class UserAuth {
+public class MasterAccount {
 
     private String usernameHash;
     private String passwordHash;
     private Connection connection;
-    private ArrayList<MellonUser> userAccounts;
+    private ArrayList<WebAccount> userAccounts;
 
 
-    public UserAuth(String username, String password) throws NoSuchAlgorithmException {
+    public MasterAccount(String username, String password) throws NoSuchAlgorithmException {
         this.usernameHash = hashString(username);
         this.passwordHash = hashString(password);
 
@@ -58,7 +58,7 @@ public class UserAuth {
         }
     }
 
-    public ArrayList<MellonUser> getUserAccounts() {
+    public ArrayList<WebAccount> getUserAccounts() {
         return this.userAccounts;
     }
 

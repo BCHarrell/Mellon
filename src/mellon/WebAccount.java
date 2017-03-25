@@ -13,7 +13,7 @@ package mellon;
 
 import java.util.Base64;
 
-public class MellonUser {
+public class WebAccount {
 
     private String username; // These are the plaintext strings that will be displayed on the front-end
     private String password;
@@ -31,8 +31,8 @@ public class MellonUser {
         this.id = id;
     }
 
-    // Use this constructor when creating instances of MellonUser from the database
-    public MellonUser(int ID, String encodedUsername, String encodedPassword, int webID, String accountName) {
+    // Use this constructor when creating instances of WebAccount from the database
+    public WebAccount(int ID, String encodedUsername, String encodedPassword, int webID, String accountName) {
         this.id = ID;
         this.encodedUsername = encodedUsername;
         this.encodedPassword = encodedPassword;
@@ -44,8 +44,8 @@ public class MellonUser {
         this.password = decode(encodedPassword);
     }
 
-    // Use this constructor when creating instances of MellonUser from user input
-    public MellonUser(String username, String password, String accountName) {
+    // Use this constructor when creating instances of WebAccount from user input
+    public WebAccount(String username, String password, String accountName) {
         this.username = username;
         this.password = password;
         this.accountName = accountName;
