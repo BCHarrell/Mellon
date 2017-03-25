@@ -1,10 +1,9 @@
 /**
-The following class will be used to connect to Oracle database and retrieve information 
-from the various tables. Multiple SQLs will be used to get and verify different type of info
-
- WEB_ACCOUNTS will also need a password column as well, since I'm going to send encoded strings
- up to it.
-
+ * The following class will be used to connect to Oracle database and retrieve information
+ * from the various tables. Multiple SQLs will be used to get and verify different type of info
+ * <p>
+ * WEB_ACCOUNTS will also need a password column as well, since I'm going to send encoded strings
+ * up to it.
  */
 package mellon;
 
@@ -17,11 +16,13 @@ public class DBConnect {
     private static boolean ACCOUNT_FOUND;
     private static int userID;
     private Connection connection;
-// This method initiates the connection to Mellon database
 
+    // This method initiates the connection to Mellon database
     public DBConnect() {
         this.connection = getConnect();
     }
+
+    public boolean getAccountFound() { return this.ACCOUNT_FOUND; }
 
     public static Connection getConnect() {
         Connection conn = null;
@@ -87,7 +88,7 @@ public class DBConnect {
         ResultSet rset = null;
         Connection conn = getConnect();
         try {
-            stmt = conn.prepareStatement("SELECT AM.USER FROM ACCOUNT_MASTER AM INNER JOIN ACCOUNT_INFO AI ON AM.USER_ID = AI.USER_ID WHERE AM.USERNAME = ? AND AI.MASTER_KEY = ?");
+            stmt = conn.prepareStatement("SELECT AM.USER_ID FROM ACCOUNT_MASTER AM INNER JOIN ACCOUNT_INFO AI ON AM.USER_ID = AI.USER_ID WHERE AM.USERNAME = ? AND AI.MASTER_KEY = ?");
             stmt.setString(1, username);
             stmt.setString(2, password);
             rset = stmt.executeQuery();
@@ -124,24 +125,23 @@ public class DBConnect {
             stmt2 = conn.prepareStatement("SELECT USER_ID FROM ACCOUNT_MASTER WHERE username = ?");
             stmt2.setString(1, newUsername);
             rset = stmt2.executeQuery();
-             while (rset.next()) {
+            while (rset.next()) {
                 userID = rset.getInt(1);
-             }
-             stmt3 = conn.prepareStatement("INSERT INTO ACCOUNT_INFO (USER_ID,MASTER_KEY) values (?,?)");
-             stmt3.setInt(1, userID);
-             stmt3.setString(2, newPassword);
-             stmt3.executeQuery();
-                rset.close();
-                stmt1.close();
-                stmt2.close();
-                stmt3.close();
-                conn.close();
-                ACCOUNT_FOUND = true;
+            }
+            stmt3 = conn.prepareStatement("INSERT INTO ACCOUNT_INFO (USER_ID,MASTER_KEY) values (?,?)");
+            stmt3.setInt(1, userID);
+            stmt3.setString(2, newPassword);
+            stmt3.executeQuery();
+            rset.close();
+            stmt1.close();
+            stmt2.close();
+            stmt3.close();
+            conn.close();
+            ACCOUNT_FOUND = true;
 
-            }catch (SQLException se) {
+        } catch (SQLException se) {
             // We may need to add another class for exceptions only
         }
-            return ACCOUNT_FOUND;
-        }
-
+        return ACCOUNT_FOUND;
     }
+}

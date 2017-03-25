@@ -22,6 +22,7 @@ public class MasterAccount {
     private String passwordHash;
     private Connection connection;
     private ArrayList<WebAccount> userAccounts;
+    private boolean authenticated;
 
 
     public MasterAccount(String username, String password) throws NoSuchAlgorithmException {
@@ -30,6 +31,7 @@ public class MasterAccount {
 
         this.userAccounts = new ArrayList<>();
         this.connection = DBConnect.getConnect();
+        this.authenticated = DBConnect.checkUser(this.usernameHash, this.passwordHash);
         this.userAccounts = DBConnect.getCredentials(this.usernameHash, this.passwordHash);
     }
 
@@ -61,6 +63,8 @@ public class MasterAccount {
     public ArrayList<WebAccount> getUserAccounts() {
         return this.userAccounts;
     }
+
+    public boolean getAuthenticated() { return this.authenticated; }
 
     // Getters only for the encrypted username and password strings
     public String getUsernameHash() { return usernameHash; }

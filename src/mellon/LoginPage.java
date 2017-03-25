@@ -43,18 +43,9 @@ public class LoginPage extends VBox {
         Button login = new Button("Log In");
         Button signUp = new Button("Sign Up");
         
-        //TESTING PURPOSES ONLY, BYPASSING TO MAIN MENU
-        Button main = new Button("To Main (TAKE ME OUT!)");
-        main.setOnAction(e -> parent.getScene().setRoot(new MainMenu(parent)));
-        
         hb.getChildren().addAll(login, signUp);
-        vb.getChildren().addAll(username, password, hb, /*Take me out*/ main);
+        vb.getChildren().addAll(username, password, hb);
         this.getChildren().addAll(logo, vb);
-        
-        /*I don't think these two lines are necessary but I left them
-        in case I'm missing something.  GUI should run without this*/
-        //vb.managedProperty().bind(login.visibleProperty());
-        //vb.setVisible(true);
 
         //Event Listeners
         // BUTTON - login
@@ -70,9 +61,24 @@ public class LoginPage extends VBox {
             } else {
                 try {
                     MasterAccount user = new MasterAccount(username.getText(), password.getText());
+
                     // Don't forget to get rid of these some day...
+                    System.out.println(user.getUserAccounts());
+                    System.out.println(user.getAuthenticated());
                     System.out.println(user.getUsernameHash());
                     System.out.println(user.getPasswordHash());
+
+                    if (user.getAuthenticated()) {
+                        // Go to the Main Menu page
+                        parent.getScene().setRoot(new MainMenu(parent));
+                    } else {
+                        // Pop-up a message displaying to the user
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Invalid Username or Password");
+                        alert.setContentText("Incorrect Username or Password. Please try again.");
+                        alert.showAndWait();
+                    }
                 } catch (NoSuchAlgorithmException e1) {
                     e1.printStackTrace();
 
