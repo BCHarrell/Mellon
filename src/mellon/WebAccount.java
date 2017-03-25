@@ -66,9 +66,9 @@ public class WebAccount {
     }
 
 
-    public String decode(final String ivAndEncryptedMessageBase64,
-                         final String symKeyHex) {
-        final byte[] symKeyData = DatatypeConverter.parseHexBinary(symKeyHex);
+    public static String decode(final String ivAndEncryptedMessageBase64,
+                                final String masterPassword) {
+        final byte[] symKeyData = masterPassword.getBytes();
 
         final byte[] ivAndEncryptedMessage = DatatypeConverter
                 .parseBase64Binary(ivAndEncryptedMessageBase64);
@@ -109,33 +109,11 @@ public class WebAccount {
             throw new IllegalStateException(
                     "Unexpected exception during decryption", e);
         }
-
-//        Key aesKey = new SecretKeySpec(masterKey.getBytes(), "AES");
-//        try {
-//            Cipher cipher = Cipher.getInstance("AES");
-//            cipher.init(Cipher.DECRYPT_MODE, aesKey);
-//            byte[] encodedBytes = cipher.doFinal(input.getBytes());
-//            String decrypted = new String(cipher.doFinal(encodedBytes));
-//            return decrypted;
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchPaddingException e) {
-//            e.printStackTrace();
-//        } catch (InvalidKeyException e) {
-//            e.printStackTrace();
-//        } catch (BadPaddingException e) {
-//            e.printStackTrace();
-//        } catch (IllegalBlockSizeException e) {
-//            e.printStackTrace();
-//        }
-//        return "";
-//        byte[] encodedBytes = Base64.getEncoder().encode(input.getBytes());
-//        return new String(encodedBytes);
     }
 
-    public String encode(final String plainMessage,
-                         final String symKeyHex) {
-        final byte[] symKeyData = DatatypeConverter.parseHexBinary(symKeyHex);
+    public static String encode(final String plainMessage,
+                                final String masterPassword) {
+        final byte[] symKeyData = masterPassword.getBytes();
 
         final byte[] encodedMessage = plainMessage.getBytes(Charset
                 .forName("UTF-8"));
@@ -175,27 +153,6 @@ public class WebAccount {
             throw new IllegalStateException(
                     "Unexpected exception during encryption", e);
         }
-
-//        Key aesKey = new SecretKeySpec(masterKey.getBytes(), "AES");
-//        try {
-//            Cipher cipher = Cipher.getInstance("AES");
-//            cipher.init(Cipher.ENCRYPT_MODE, aesKey);
-//            byte[] encodedBytes = cipher.doFinal(input.getBytes());
-//            return new String(encodedBytes);
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchPaddingException e) {
-//            e.printStackTrace();
-//        } catch (InvalidKeyException e) {
-//            e.printStackTrace();
-//        } catch (BadPaddingException e) {
-//            e.printStackTrace();
-//        } catch (IllegalBlockSizeException e) {
-//            e.printStackTrace();
-//        }
-//        return "";
-//        byte[] decodedBytes = Base64.getDecoder().decode(input.getBytes());
-//        return new String(decodedBytes);
     }
     
     public String getUsername() {

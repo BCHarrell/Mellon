@@ -1,6 +1,7 @@
 package mellon;
 
 import static javafx.geometry.Pos.*;
+
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
@@ -8,7 +9,6 @@ import javafx.scene.layout.*;
 import java.security.NoSuchAlgorithmException;
 
 /**
- *
  * @author Brent H.
  */
 public class LoginPage extends VBox {
@@ -42,7 +42,7 @@ public class LoginPage extends VBox {
         hb.setSpacing(15);
         Button login = new Button("Log In");
         Button signUp = new Button("Sign Up");
-        
+
         hb.getChildren().addAll(login, signUp);
         vb.getChildren().addAll(username, password, hb);
         this.getChildren().addAll(logo, vb);
@@ -63,10 +63,10 @@ public class LoginPage extends VBox {
                     MasterAccount user = new MasterAccount(username.getText(), password.getText());
 
                     // Don't forget to get rid of these some day...
-                    System.out.println(user.getUserAccounts());
-                    System.out.println(user.getAuthenticated());
-                    System.out.println(user.getUsernameHash());
-                    System.out.println(user.getPasswordHash());
+//                    System.out.println(user.getUserAccounts());
+//                    System.out.println(user.getAuthenticated());
+//                    System.out.println(user.getUsernameHash());
+//                    System.out.println(user.getPasswordHash());
 
                     if (user.getAuthenticated()) {
                         // Go to the Main Menu page
