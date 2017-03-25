@@ -81,7 +81,7 @@ public class SignUpPage extends VBox {
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
-                alert.setHeaderText("Regiteration Error");
+                alert.setHeaderText("Registration Error");
                 alert.setContentText("Please ensure the Username and Password fields are filled in and passwords match.");
                 alert.showAndWait();
             }

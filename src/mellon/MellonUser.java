@@ -11,13 +11,10 @@
 
 package mellon;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class MellonUser {
 
-    //private String username; // This will be deleted once encryption is completed (userAuth will be used instead)
-   // private String password; // This will be deleted once encryption is completed (userAuth will be used instead)
     private String username; // These are the plaintext strings that will be displayed on the front-end
     private String password;
     private String encodedUsername;
@@ -25,17 +22,6 @@ public class MellonUser {
     private String accountName;
     private int id;
     private int webID;
-//    private boolean accountFound = false;
-//    private UserAuth auth;
-
-//    public boolean isAccountFound() {
-//        return accountFound;
-//    }
-
-//    public void setAccountFound(boolean accountFound) {
-//        this.accountFound = accountFound;
-//    }
-
 
     public int getID() {
         return id;

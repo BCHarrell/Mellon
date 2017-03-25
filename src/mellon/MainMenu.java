@@ -17,7 +17,7 @@ public class MainMenu extends BorderPane {
     public MainMenu(MellonFramework p) {
         parent = p;
         addItems();
-    };
+    }
     
     private void addItems() {
         Button create = new Button("Create a Password");

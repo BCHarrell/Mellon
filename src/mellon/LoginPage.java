@@ -84,24 +84,5 @@ public class LoginPage extends VBox {
         // BUTTON - Goes to sign up page
         signUp.setOnAction(e -> parent.getScene().setRoot(new SignUpPage(parent, this)));
 
-// Testing DBConnect and creating MellonUser object " uncomment to perform test"
-//    login.setOnAction(e -> {
-//      // Testing DB connect 
-//       vb.setVisible(false);
-//       MellonUser currentUser = new MellonUser(username.getText(), password.getText());
-//       MellonUser returnedUser = DBConnect.getCredentials(currentUser.getUsername());
-//       VBox vb2 = new VBox();
-//       vb2.setMaxSize(150, 150);
-//       vb2.setAlignment(CENTER);
-//       vb2.setSpacing(10);
-//       Text scenetitle2 = new Text("WELCOME: "  + returnedUser.getUsername());
-//       vb2.getChildren().addAll(scenetitle2);
-//       this.setCenter(vb2); 
-//       vb2.managedProperty();
-//       vb2.setVisible(true);
-//        });
-//    }
-
-
     }
 }

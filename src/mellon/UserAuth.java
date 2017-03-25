@@ -20,8 +20,6 @@ public class UserAuth {
 
     private String usernameHash;
     private String passwordHash;
-//    private static boolean ACCOUNT_FOUND;
-//    private static int userID;
     private Connection connection;
     private ArrayList<MellonUser> userAccounts;
 
