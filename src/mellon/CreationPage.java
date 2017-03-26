@@ -116,7 +116,8 @@ public class CreationPage extends VBox {
         TextField output = new TextField();
         output.setMaxWidth(500);
         Button toMain = new Button("Back to Main (will be anchored bottom)");
-        generateVB.getChildren().addAll(generate, output, toMain);
+        Button save = new Button("Save Account");
+        generateVB.getChildren().addAll(generate, output, toMain, save);
         
         this.getChildren().addAll(topHB, generateVB);
         
