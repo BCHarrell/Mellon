@@ -99,6 +99,7 @@ public class CreationPage extends VBox {
         upper.setSelected(true);
         CheckBox lower = new CheckBox("Lowercase");
         lower.setSelected(true);
+
         CheckBox symb = new CheckBox("Symbols");
         symb.setSelected(true);
         CheckBox numbers = new CheckBox("Numbers");
@@ -137,6 +138,22 @@ public class CreationPage extends VBox {
                     lengthVB.getChildren().addAll(custLength);
                     length.requestFocus();
                 }
+        });
+
+        generate.setOnAction(e -> {
+            int pwLength = 0;
+            try {
+                pwLength = Integer.parseInt(String.valueOf(cb.getValue()));
+            } catch (NumberFormatException e1) {
+                // Password length was not a number.
+            }
+            Password password = new Password.PasswordBuilder(pwLength)
+                    .includeCapitals(upper.isSelected())
+                    .includeLowers(lower.isSelected())
+                    .includeNumbers(numbers.isSelected())
+                    .includeSpecialCharacters(symb.isSelected())
+                    .build();
+            output.setText(password.getPasswordString());
         });
         
         goBack.setOnAction(e -> {
