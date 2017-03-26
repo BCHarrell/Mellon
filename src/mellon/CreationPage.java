@@ -1,6 +1,7 @@
 
 package mellon;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -9,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.util.Callback;
 
 /**
  *
@@ -113,6 +115,34 @@ public class CreationPage extends VBox {
         custVB.getChildren().addAll(customize, optionVB, advanced);
         topHB.getChildren().addAll(namingVB, custVB);
         
+        //Expiration
+        VBox expirationBox = new VBox();
+        expirationBox.setAlignment(Pos.CENTER);
+        expirationBox.setSpacing(5);
+        CheckBox expireCB = new CheckBox("Set password expiration date?");
+        DatePicker expiration = new DatePicker();
+        expiration.setValue(LocalDate.now());
+        Callback<DatePicker, DateCell> cellFactory = 
+            new Callback<DatePicker, DateCell>() {
+                @Override
+                public DateCell call(final DatePicker datePicker) {
+                    return new DateCell() {
+                        @Override
+                        public void updateItem(LocalDate item, boolean empty) {
+                            super.updateItem(item, empty);
+                           
+                            if (item.isBefore(LocalDate.now())) {
+                                    setDisable(true);
+                                    setStyle("-fx-background-color: #AFAFAF;");
+                            }   
+                    }
+                };
+            }
+        };
+        expiration.setDayCellFactory(cellFactory);
+        expiration.setVisible(false);
+        expirationBox.getChildren().addAll(expireCB, expiration);
+        
         //Generate
         VBox generateVB = new VBox();
         generateVB.setAlignment(Pos.CENTER);
@@ -124,7 +154,7 @@ public class CreationPage extends VBox {
         Button save = new Button("Save Account");
         generateVB.getChildren().addAll(generate, output, toMain, save);
         
-        this.getChildren().addAll(topHB, generateVB);
+        this.getChildren().addAll(topHB, expirationBox, generateVB);
         
         
         /*****************
@@ -168,6 +198,15 @@ public class CreationPage extends VBox {
         advanced.setOnAction(e -> {
             framework.getScene().setRoot(adv);
         });
+        
+        expireCB.selectedProperty().addListener(e -> {
+            if(expireCB.isSelected()){
+                expiration.setVisible(true);
+            } else {
+                expiration.setVisible(false);
+            }
+        });
+        
     } //End addItems()
     
     public void setAllowable(ArrayList<Character> list) {
