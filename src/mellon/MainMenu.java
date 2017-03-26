@@ -41,5 +41,11 @@ public class MainMenu extends BorderPane {
         settingsBar.getChildren().addAll(settings, help);
 
         this.setBottom(settingsBar);
+        
+        /************************
+         *EVENT LISTENER SECTION*
+         ************************/
+        create.setOnAction(e -> parent.getScene()
+                .setRoot(new CreationPage(parent, this)));
     }
 }

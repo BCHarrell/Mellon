@@ -58,15 +58,22 @@ public class SignUpPage extends VBox {
         hb.setSpacing(15);
         Button back = new Button("Back to Login");
         //Returns to the login screen which kept any text entered
-        back.setOnAction(e -> {
-            parent.getScene().setRoot(login);
-        });
+        
         Button submit = new Button("Create Account");
         hb.getChildren().addAll(back, submit);
         vb.getChildren().addAll(username, password, verify, hb);
 
         this.getChildren().addAll(logo, vb);
-
+        
+        
+        /*****************
+         *EVENT LISTENERS*
+         *****************/
+        
+        back.setOnAction(e -> {
+            parent.getScene().setRoot(login);
+        });
+        
         submit.setOnAction(e -> {
             // Store input into local variables
             String inputUsername = username.getText();

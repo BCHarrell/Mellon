@@ -7,6 +7,8 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 
 import java.security.NoSuchAlgorithmException;
+import javafx.event.ActionEvent;
+import javafx.scene.input.KeyCode;
 
 /**
  * @author Brent H.
@@ -48,6 +50,12 @@ public class LoginPage extends VBox {
         this.getChildren().addAll(logo, vb);
 
         //Event Listeners
+        password.setOnKeyPressed(e -> {
+           if (e.getCode().equals(KeyCode.ENTER)) { 
+               login.fireEvent(new ActionEvent());
+           }
+        });
+        
         // BUTTON - login
         login.setOnAction(e -> {
             // If either field is empty
