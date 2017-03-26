@@ -144,5 +144,10 @@ public class CreationPage extends VBox {
             framework.getScene().setRoot(main);
         });
         
+        advanced.setOnAction(e -> {
+            framework.getScene().setRoot(new AdvancedMenu(framework, this));
+        });
+        
+        
     }
 }
