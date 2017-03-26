@@ -1,6 +1,7 @@
 
 package mellon;
 
+import java.util.ArrayList;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
@@ -17,6 +18,8 @@ public class CreationPage extends VBox {
     
     private MellonFramework framework;
     private MainMenu main;
+    private ArrayList<Character> allowedSymbols;
+    private AdvancedMenu adv;
 
     public CreationPage(MellonFramework framework, MainMenu main) {
         this.framework = framework;
@@ -27,6 +30,7 @@ public class CreationPage extends VBox {
     private void addItems() {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(75);
+        adv = new AdvancedMenu(framework, this);
         
         /*Main container
         VBox primaryVB = new VBox();
@@ -38,7 +42,7 @@ public class CreationPage extends VBox {
         topHB.setSpacing(200);
         
         VBox namingVB = new VBox();
-        namingVB.setSpacing(15);
+        namingVB.setSpacing(10);
         
         //Nickname
         VBox nickVB = new VBox();
@@ -145,9 +149,11 @@ public class CreationPage extends VBox {
         });
         
         advanced.setOnAction(e -> {
-            framework.getScene().setRoot(new AdvancedMenu(framework, this));
+            framework.getScene().setRoot(adv);
         });
-        
-        
+    } //End addItems()
+    
+    public void setAllowable(ArrayList<Character> list) {
+        allowedSymbols = list;
     }
 }

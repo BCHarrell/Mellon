@@ -17,7 +17,6 @@ public class AdvancedMenu extends VBox {
     private final String[] OPTIONS = {"!", "@", "#", "$", "%", "^", "&", "*", 
             "(", ")", "-", "_", "=", "+", ",", ".", "<", ">", "?", "/"}; //20
     private CheckBox[] boxes = new CheckBox[OPTIONS.length];
-    private ArrayList<Character> available = new ArrayList<>();
     
     public AdvancedMenu(MellonFramework fw, CreationPage parent) {
         framework = fw;
@@ -31,13 +30,14 @@ public class AdvancedMenu extends VBox {
         
         //Options
         GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
         
         int rowCount = 0, colCount = 0;
         
-        for (int i = 0; i < 20; i++){
-            CheckBox cb = boxes[i] = new CheckBox(OPTIONS[i]);
+        for (int i = 1; i < 21; i++){
+            CheckBox cb = boxes[i-1] = new CheckBox(OPTIONS[i-1]);
             cb.setSelected(true);
             grid.add(cb, colCount, rowCount);
             colCount++;
@@ -56,5 +56,22 @@ public class AdvancedMenu extends VBox {
          *EVENT LISTENERS*
          *****************/
         
+        save.setOnAction(e -> {
+            framework.getScene().setRoot(parent);
+            parent.setAllowable(getAllowable());
+        });
+    }//End addItems
+    
+    private ArrayList<Character> getAllowable() {
+        ArrayList<Character> allowable = new ArrayList<>();
+        
+        for (CheckBox c : boxes){
+            if (c.isSelected()) {
+                allowable.add(c.getText().charAt(0));
+                /*TESTING*/System.out.println(c.getText().charAt(0));
+            }
+        }
+        
+        return allowable;
     }
 }
