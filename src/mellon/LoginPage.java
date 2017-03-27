@@ -70,12 +70,6 @@ public class LoginPage extends VBox {
                 try {
                     MasterAccount user = new MasterAccount(username.getText(), password.getText());
 
-                    // Don't forget to get rid of these some day...
-//                    System.out.println(user.getUserAccounts());
-//                    System.out.println(user.getAuthenticated());
-//                    System.out.println(user.getUsernameHash());
-//                    System.out.println(user.getPasswordHash());
-
                     if (user.getAuthenticated()) {
                         // Go to the Main Menu page
                         framework.getScene().setRoot(new MainMenu(framework));

@@ -7,8 +7,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.util.Callback;
 
@@ -184,6 +182,22 @@ public class CreationPage extends VBox {
                     .includeSpecialCharacters(symb.isSelected())
                     .build();
             output.setText(password.getPasswordString());
+        });
+
+        save.setOnAction(e -> {
+            if (nickname.getText().isEmpty() ||
+                    username.getText().isEmpty() ||
+                    output.getText().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Invalid account details");
+                alert.setContentText("Please ensure the Nickname, Username, and Password fields are filled in.");
+                alert.showAndWait();
+            } else {
+                UserIDSingleton.getInstance();
+                int id = UserIDSingleton.getUserID();
+                System.out.println(id);
+            }
         });
         
         goBack.setOnAction(e -> {

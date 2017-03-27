@@ -100,6 +100,8 @@ public class DBConnect {
                 userID = rset.getInt(1);
                 if (userID != 0) {
                     ACCOUNT_FOUND = true;
+                    UserIDSingleton id = UserIDSingleton.getInstance();
+                    id.setUserID(userID);
                 } else {
                     ACCOUNT_FOUND = false;
                 }

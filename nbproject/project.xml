@@ -12,7 +12,7 @@
                 <dependency dependsOn="jar" target="run"/>
             </extension>
         </buildExtensions>
-        <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
+        <id xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>Mellon</name>
             <source-roots>
                 <root id="src.dir"/>
@@ -20,6 +20,6 @@
             <test-roots>
                 <root id="test.src.dir"/>
             </test-roots>
-        </data>
+        </id>
     </configuration>
 </project>
