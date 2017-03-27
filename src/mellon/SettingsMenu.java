@@ -121,10 +121,5 @@ public class SettingsMenu extends VBox {
            lengthHB.getChildren().remove(custLength);
            lengthHB.getChildren().add(cb);
         });
-        
-        
-        //Testing pull
-        System.out.println("remove me from SettingsMenu");
-    }
-    
+    } //end addItems 
 }
