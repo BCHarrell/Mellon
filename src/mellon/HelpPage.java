@@ -68,6 +68,9 @@ public class HelpPage extends Accordion {
         
         this.getPanes().addAll(start, creation, retrieve, edit, settings,
                         general, bugs, backPane);
+        
+        //Testing
+        System.out.println("Take me out of HelpPage");
     }
     
 }
