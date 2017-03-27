@@ -15,12 +15,12 @@ import javafx.scene.input.KeyCode;
  */
 public class LoginPage extends VBox {
 
-    MellonFramework parent;
+    MellonFramework framework;
     ImageView logo = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/templogo.png")));
 
-    public LoginPage(MellonFramework p) {
-        parent = p;
+    public LoginPage(MellonFramework fw) {
+        framework = fw;
         addItems();
     }
 
@@ -78,7 +78,7 @@ public class LoginPage extends VBox {
 
                     if (user.getAuthenticated()) {
                         // Go to the Main Menu page
-                        parent.getScene().setRoot(new MainMenu(parent));
+                        framework.getScene().setRoot(new MainMenu(framework));
                     } else {
                         // Pop-up a message displaying to the user
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -96,7 +96,8 @@ public class LoginPage extends VBox {
         });
 
         // BUTTON - Goes to sign up page
-        signUp.setOnAction(e -> parent.getScene().setRoot(new SignUpPage(parent, this)));
+        signUp.setOnAction(e -> framework.getScene
+                    ().setRoot(new SignUpPage(framework, this)));
 
     }
 }

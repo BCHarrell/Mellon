@@ -12,10 +12,10 @@ import javafx.scene.layout.HBox;
  * @author Brent H.
  */
 public class MainMenu extends BorderPane {
-    MellonFramework parent;
+    MellonFramework framework;
     
-    public MainMenu(MellonFramework p) {
-        parent = p;
+    public MainMenu(MellonFramework fw) {
+        framework = fw;
         addItems();
     }
     
@@ -45,7 +45,11 @@ public class MainMenu extends BorderPane {
         /************************
          *EVENT LISTENER SECTION*
          ************************/
-        create.setOnAction(e -> parent.getScene()
-                .setRoot(new CreationPage(parent, this)));
+        create.setOnAction(e -> framework.getScene()
+                .setRoot(new CreationPage(framework, this)));
+        
+        //TEMPORARY, WILL BE NEW WINDOW IN FUTURE
+        settings.setOnAction(e -> framework.getScene()
+                .setRoot(new SettingsMenu(framework, this)));
     }
 }
