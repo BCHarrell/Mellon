@@ -57,8 +57,12 @@ public class DBConnect {
             ACCOUNT_FOUND = checkUser(username, password);
             if (ACCOUNT_FOUND) {
                 // If master account is correct, need to populate web accounts
-                stmt = conn.prepareStatement("SELECT WEB_USERNAME, KEY, WEB_ID, ACCOUNT_NAME FROM WEB_ACCOUNTS WHERE USER_ID = ?");
-                stmt.setInt(1, userID);
+                stmt = conn.prepareStatement("SELECT WEB_USERNAME, KEY, WEB_ID, ACCOUNT_NAME FROM WEB_ACCOUNTS WHERE USER_ID IN \n" +
+                                             "(SELECT AM.USER_ID FROM ACCOUNT_MASTER AM INNER JOIN ACCOUNT_INFO AI ON AM.USER_ID = AI.USER_ID WHERE AM.USERNAME = ? "
+                                              + "AND AI.MASTER_KEY = ?");
+                //stmt.setInt(1, userID); // How is this being identified?
+                stmt.setString(1, username);
+                stmt.setString(2, password);
                 rset = stmt.executeQuery();
                 while (rset.next()) {
                     String webUsername = rset.getString(1);
@@ -111,7 +115,7 @@ public class DBConnect {
     }
 
     // Inputs are expected to be hashed, returns true if new master user created
-    public static boolean registerUser(String newUsername, String newPassword) {
+    public static boolean registerUser(String newUsername, String newPassword) {  
 
         PreparedStatement stmt1 = null;
         PreparedStatement stmt2 = null;
