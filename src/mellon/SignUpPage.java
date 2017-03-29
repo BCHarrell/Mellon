@@ -133,7 +133,7 @@ public class SignUpPage extends VBox {
             MasterAccount user = new MasterAccount(username, pass);
             usernameHash = user.getUsernameHash();
             passwordHash = user.getPasswordHash();
-            exists = DBConnect.checkUser(usernameHash, passwordHash);
+            exists = DBConnect.checkUser(usernameHash);
             // if the user exists, display error message
             if (exists) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);

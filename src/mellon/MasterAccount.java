@@ -31,7 +31,7 @@ public class MasterAccount {
 
         this.userAccounts = new ArrayList<>();
         this.connection = DBConnect.getConnect();
-        this.authenticated = DBConnect.checkUser(this.usernameHash, this.passwordHash);
+        this.authenticated = DBConnect.authenticateUser(this.usernameHash, this.passwordHash);
         this.userAccounts = DBConnect.getCredentials(this.usernameHash, this.passwordHash);
     }
 

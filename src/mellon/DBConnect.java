@@ -54,7 +54,7 @@ public class DBConnect {
 
         try {
             // Validates that the username and password is correct
-            ACCOUNT_FOUND = checkUser(username, password);
+            ACCOUNT_FOUND = authenticateUser(username, password);
             if (ACCOUNT_FOUND) {
                 // If master account is correct, need to populate web accounts
                 stmt = conn.prepareStatement("SELECT WEB_USERNAME, KEY, WEB_ID, ACCOUNT_NAME FROM WEB_ACCOUNTS WHERE USER_ID IN \n" +
@@ -87,7 +87,33 @@ public class DBConnect {
     // Method to check if an account exist
     // Added expected PASSWORD column and now checking both for the correct username and password
     // Inputs are expected to be hashed
-    public static boolean checkUser(String username, String password) {
+    public static boolean checkUser(String username) {
+        PreparedStatement stmt = null;
+        ResultSet rset = null;
+        Connection conn = getConnect();
+        try {
+            stmt = conn.prepareStatement("SELECT USER_ID FROM ACCOUNT_MASTER WHERE USERNAME = ?");
+            stmt.setString(1, username);
+            rset = stmt.executeQuery();
+            while (rset.next()) {
+                userID = rset.getInt(1);
+                if (userID != 0) {
+                    ACCOUNT_FOUND = true;
+                } else {
+                    ACCOUNT_FOUND = false;
+                }
+            }
+            rset.close();
+            stmt.close();
+            conn.close();
+
+        } catch (SQLException se) {
+            // We may need to add another class for exceptions only
+        }
+        return ACCOUNT_FOUND;
+    }
+
+    public static boolean authenticateUser(String username, String password) {
         PreparedStatement stmt = null;
         ResultSet rset = null;
         Connection conn = getConnect();
@@ -133,6 +159,8 @@ public class DBConnect {
             rset = stmt2.executeQuery();
             while (rset.next()) {
                 userID = rset.getInt(1);
+                UserIDSingleton id = UserIDSingleton.getInstance();
+                id.setUserID(userID);
             }
             stmt3 = conn.prepareStatement("INSERT INTO ACCOUNT_INFO (USER_ID,MASTER_KEY) values (?,?)");
             stmt3.setInt(1, userID);
