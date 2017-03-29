@@ -117,7 +117,10 @@ public class CreationPage extends VBox {
         VBox expirationBox = new VBox();
         expirationBox.setAlignment(Pos.CENTER);
         expirationBox.setSpacing(5);
-        CheckBox expireCB = new CheckBox("Set password expiration date?");
+        CheckBox expireCB = new CheckBox();
+        Label expireLabel = new Label("Set password expiration?");
+        expireLabel.setGraphic(expireCB);
+        expireLabel.setContentDisplay(ContentDisplay.RIGHT);
         DatePicker expiration = new DatePicker();
         expiration.setValue(LocalDate.now());
         Callback<DatePicker, DateCell> cellFactory = 
@@ -139,7 +142,7 @@ public class CreationPage extends VBox {
         };
         expiration.setDayCellFactory(cellFactory);
         expiration.setVisible(false);
-        expirationBox.getChildren().addAll(expireCB, expiration);
+        expirationBox.getChildren().addAll(expireLabel, expiration);
         
         //Generate
         VBox generateVB = new VBox();
