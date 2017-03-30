@@ -211,6 +211,7 @@ public class CreationPage extends VBox {
                 DBConnect.CreateWebAccount (id,inputNickname,newAccount.getEncodedUsername(),newAccount.getEncodedPassword(),inputExpiration);
                 //System.out.println(id);
             }
+            framework.getScene().setRoot(main);
         });
         
         
