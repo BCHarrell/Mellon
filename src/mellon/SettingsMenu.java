@@ -121,5 +121,7 @@ public class SettingsMenu extends VBox {
            lengthHB.getChildren().remove(custLength);
            lengthHB.getChildren().add(cb);
         });
+        
+        savePass.setOnAction(e -> password.setExpanded(false));
     } //end addItems 
 }
