@@ -1,5 +1,7 @@
 package mellon;
 
+import oracle.sql.CHAR;
+
 import java.util.*;
 
 /**
@@ -17,9 +19,7 @@ public class Password {
     private Random random;
 
     // Using ArrayLists to have complete control over the characters
-    private ArrayList<Character> specialCharacters = new ArrayList<>(Arrays.asList(
-            '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_',
-            '=', '+', ',', '.', '<', '>', '?', '/'));
+    private ArrayList<Character> allowedSymbols;
     private ArrayList<Character> numbers = new ArrayList<>(Arrays.asList(
             '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'));
     private ArrayList<Character> lowers = new ArrayList<>(Arrays.asList(
@@ -38,6 +38,7 @@ public class Password {
         this.includeCapitals = passwordBuilder.nestedIncludeCapitals;
         this.includeLowers = passwordBuilder.nestedIncludeLowers;
         this.password = new ArrayList<>(passwordLength);
+        this.allowedSymbols = passwordBuilder.nestedAllowedSymbols;
         setPassword();
     }
 
@@ -58,7 +59,7 @@ public class Password {
         }
         // Add special characters if checked
         if (this.includeSpecialCharacters) {
-            options.addAll(specialCharacters);
+            options.addAll(allowedSymbols);
         }
         // Now that the options list includes all available characters, iterate through
         // the length of the password and randomly choose characters to insert
@@ -117,12 +118,12 @@ public class Password {
         if (this.includeSpecialCharacters) {
             final boolean[] isValid = {false};
             password.stream().forEach(x -> {
-                if (specialCharacters.contains(x)) {
+                if (allowedSymbols.contains(x)) {
                     isValid[0] = true;
                 }
             });
             if (!isValid[0]) {
-                fixPassword(password, specialCharacters);
+                fixPassword(password, allowedSymbols);
                 checkPassword(this.password);
             }
         }
@@ -150,7 +151,7 @@ public class Password {
                 includedUppers.add(x);
             } else if (numbers.contains(x)) {
                 includedNumbers.add(x);
-            } else if (specialCharacters.contains(x)) {
+            } else if (allowedSymbols.contains(x)) {
                 includedSpecials.add(x);
             }
         });
@@ -187,12 +188,11 @@ public class Password {
 
         // Rebuilt the arrays
         ArrayList<Character> newPassword = new ArrayList<>();
-        newPassword.add(opt);
         newPassword.addAll(includedLowers);
         newPassword.addAll(includedUppers);
         newPassword.addAll(includedNumbers);
         newPassword.addAll(includedSpecials);
-
+        newPassword.add(random.nextInt(password.size()), opt);
         this.password = newPassword;
 
     }
@@ -211,6 +211,7 @@ public class Password {
         private boolean nestedIncludeNumbers;
         private boolean nestedIncludeCapitals;
         private boolean nestedIncludeLowers;
+        private ArrayList<Character> nestedAllowedSymbols;
 
         public PasswordBuilder(int length) {
             this.nestedLength = length;
@@ -233,6 +234,11 @@ public class Password {
 
         public PasswordBuilder includeLowers(boolean includeLowers) {
             this.nestedIncludeLowers = includeLowers;
+            return this;
+        }
+
+        public PasswordBuilder includeAllowedSymbols(ArrayList<Character> allowedSymbols) {
+            this.nestedAllowedSymbols = allowedSymbols;
             return this;
         }
 

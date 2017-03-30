@@ -68,7 +68,7 @@ public class AdvancedMenu extends VBox {
         for (CheckBox c : boxes){
             if (c.isSelected()) {
                 allowable.add(c.getText().charAt(0));
-                /*TESTING*/System.out.println(c.getText().charAt(0));
+                ///*TESTING*/System.out.println(c.getText().charAt(0));
             }
         }
         

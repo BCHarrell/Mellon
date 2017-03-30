@@ -178,11 +178,13 @@ public class CreationPage extends VBox {
             } catch (NumberFormatException e1) {
                 // Password length was not a number.
             }
+
             Password password = new Password.PasswordBuilder(pwLength)
                     .includeCapitals(upper.isSelected())
                     .includeLowers(lower.isSelected())
                     .includeNumbers(numbers.isSelected())
                     .includeSpecialCharacters(symb.isSelected())
+                    .includeAllowedSymbols(allowedSymbols)
                     .build();
             output.setText(password.getPasswordString());
         });
