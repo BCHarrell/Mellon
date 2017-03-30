@@ -149,7 +149,8 @@ public class CreationPage extends VBox {
         generateVB.setSpacing(15);
         Button generate = new Button("Generate Password");
         TextField output = new TextField();
-        output.setMaxWidth(500);
+        output.setMaxWidth(400);
+        output.setAlignment(Pos.CENTER);
         Button toMain = new Button("Back to Main (will be anchored bottom)");
         Button save = new Button("Save Account");
         generateVB.getChildren().addAll(generate, output, toMain, save);

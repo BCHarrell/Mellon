@@ -93,6 +93,7 @@ public class SignUpPage extends VBox {
                 alert.showAndWait();
             }
         });
+        parent.getScene().setRoot(login);
     }
 
     private boolean verifyInput(String inputUsername, String inputPassword, String inputVerify) {
