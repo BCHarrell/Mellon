@@ -62,6 +62,12 @@ public class AdvancedMenu extends VBox {
         });
     }//End addItems
     
+    public void deselect(){
+        for (CheckBox c : boxes){
+            c.setSelected(false);
+        }
+    }
+    
     private ArrayList<Character> getAllowable() {
         ArrayList<Character> allowable = new ArrayList<>();
         

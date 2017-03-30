@@ -31,11 +31,6 @@ public class CreationPage extends VBox {
         this.setSpacing(75);
         adv = new AdvancedMenu(framework, this);
         
-        /*Main container
-        VBox primaryVB = new VBox();
-        primaryVB.setSpacing(15);
-        primaryVB.setAlignment(Pos.CENTER);*/
-        
         HBox topHB = new HBox();
         topHB.setAlignment(Pos.CENTER);
         topHB.setSpacing(200);
@@ -189,7 +184,7 @@ public class CreationPage extends VBox {
             output.setText(password.getPasswordString());
         });
 
- save.setOnAction(e -> {
+        save.setOnAction(e -> {
             if (nickname.getText().isEmpty() ||
                     username.getText().isEmpty() ||
                     output.getText().isEmpty()) {
@@ -229,6 +224,9 @@ public class CreationPage extends VBox {
         });
         
         advanced.setOnAction(e -> {
+            if(!symb.isSelected())
+                adv.deselect();
+            
             framework.getScene().setRoot(adv);
         });
         
