@@ -51,5 +51,8 @@ public class MainMenu extends BorderPane {
         //TEMPORARY, WILL BE NEW WINDOW IN FUTURE
         settings.setOnAction(e -> framework.getScene()
                 .setRoot(new SettingsMenu(framework, this)));
+        
+        help.setOnAction(e -> framework.getScene()
+                            .setRoot(new HelpPage(framework, this)));
     }
 }
