@@ -64,7 +64,7 @@ public class CreationPage extends VBox {
         VBox lengthVB = new VBox();
         Label lengthLabel = new Label("Password Length");
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
-        "8", "16", "24", "32", "48", "Custom"));
+        "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(350);
         cb.setValue("16");
         
