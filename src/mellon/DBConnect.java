@@ -8,12 +8,15 @@
 package mellon;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Properties;
 
 public class DBConnect {
 
     private static boolean ACCOUNT_FOUND;
+    private static boolean ACCOUNT_CREATED;
     private static int userID;
     private Connection connection;
 
@@ -69,7 +72,8 @@ public class DBConnect {
                     String key = rset.getString(2);
                     int webID = rset.getInt(3);
                     String accountName = rset.getString(4);
-                    users.add(new WebAccount(userID, webUsername, key, webID, accountName, password));
+                    LocalDate ouputExpiration = rset.getDate(5).toLocalDate();  //temporary
+                    users.add(new WebAccount(userID, webUsername, key, webID, accountName, password,ouputExpiration));
                 }
                 rset.close();
                 stmt.close();
@@ -128,6 +132,7 @@ public class DBConnect {
                     ACCOUNT_FOUND = true;
                     UserIDSingleton id = UserIDSingleton.getInstance();
                     id.setUserID(userID);
+                    id.setPassword(password);
                 } else {
                     ACCOUNT_FOUND = false;
                 }
@@ -177,5 +182,31 @@ public class DBConnect {
             // We may need to add another class for exceptions only
         }
         return ACCOUNT_FOUND;
+    }
+    // Inputs are expected to be hashed, returns true if new master user created
+    public static boolean CreateWebAccount(int id,String inputNickname,String username,String password,LocalDate inputExpiration) { 
+        Date date;
+        if (inputExpiration == null) {
+            date = null;
+        }else {
+            date = Date.valueOf(inputExpiration);
+        }
+        PreparedStatement stmt = null;
+        Connection conn = getConnect();
+        try {
+            stmt = conn.prepareStatement("INSERT INTO WEB_ACCOUNTS (USER_ID,ACCOUNT_NAME,WEB_USERNAME,KEY,EXP_DT) VALUES (?,?,?,?,to_date(?,'MM/DD/YYYY'))");
+            stmt.setInt(1, id);
+            stmt.setString(2, inputNickname);
+            stmt.setString(3, username);
+            stmt.setString(4, password);
+            stmt.setDate(5, date);
+            stmt.executeQuery();
+            stmt.close();
+            conn.close();
+            ACCOUNT_CREATED = true;
+        } catch (SQLException se) {
+            // We may need to add another class for exceptions only
+        }
+        return ACCOUNT_CREATED;
     }
 }

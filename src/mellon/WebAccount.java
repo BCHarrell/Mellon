@@ -20,6 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.Charset;
 import java.security.*;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Base64;
 
@@ -32,6 +33,7 @@ public class WebAccount {
     private String accountName;
     private int id;
     private int webID;
+    private LocalDate expDate;
 
     public int getID() {
         return id;
@@ -42,12 +44,13 @@ public class WebAccount {
     }
 
     // Use this constructor when creating instances of WebAccount from the database
-    public WebAccount(int ID, String encodedUsername, String encodedPassword, int webID, String accountName, String masterKey) {
+    public WebAccount(int ID, String encodedUsername, String encodedPassword, int webID, String accountName, String masterKey, LocalDate expDate) {
         this.id = ID;
         this.encodedUsername = encodedUsername;
         this.encodedPassword = encodedPassword;
         this.webID = webID;
         this.accountName = accountName;
+        this.expDate = expDate;
 
         // Decode the username and passwords
         this.username = decode(encodedUsername, masterKey);
@@ -55,17 +58,17 @@ public class WebAccount {
     }
 
     // Use this constructor when creating instances of WebAccount from user input
-    public WebAccount(String username, String password, String accountName, String masterKey) {
+    public WebAccount(String username, String password, String accountName, String masterKey, LocalDate expDate) {
         this.username = username;
         this.password = password;
         this.accountName = accountName;
+        this.expDate = expDate;
 
         // Encode the username and password
         this.encodedUsername = encode(username, masterKey);
         this.encodedPassword = encode(password, masterKey);
     }
-
-
+    
     public static String decode(final String ivAndEncryptedMessageBase64,
                                 final String masterPassword) {
         final byte[] symKeyData = masterPassword.getBytes();
@@ -169,5 +172,20 @@ public class WebAccount {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+     public String getEncodedUsername() {
+        return encodedUsername;
+    }
+
+    public void setEncodedUsername(String encodedUsername) {
+        this.encodedUsername = encodedUsername;
+    }
+
+    public String getEncodedPassword() {
+        return encodedPassword;
+    }
+
+    public void setEncodedPassword(String encodedPassword) {
+        this.encodedPassword = encodedPassword;
     }
 }

@@ -1,4 +1,3 @@
-
 package mellon;
 
 import java.time.LocalDate;
@@ -189,7 +188,7 @@ public class CreationPage extends VBox {
             output.setText(password.getPasswordString());
         });
 
-        save.setOnAction(e -> {
+ save.setOnAction(e -> {
             if (nickname.getText().isEmpty() ||
                     username.getText().isEmpty() ||
                     output.getText().isEmpty()) {
@@ -199,11 +198,25 @@ public class CreationPage extends VBox {
                 alert.setContentText("Please ensure the Nickname, Username, and Password fields are filled in.");
                 alert.showAndWait();
             } else {
+                WebAccount newAccount = null;
                 UserIDSingleton.getInstance();
                 int id = UserIDSingleton.getUserID();
-                System.out.println(id);
+                String masterKey = UserIDSingleton.getPassword();
+                String inputNickname = nickname.getText();
+                String inputUsername = username.getText();
+                String key = output.getText();
+                LocalDate inputExpiration;
+                if(expireCB.isSelected()){
+                inputExpiration = expiration.getValue();}
+                else {
+                    inputExpiration = null;
+                }
+                newAccount = new WebAccount (inputUsername,key,inputNickname,masterKey,inputExpiration);
+                DBConnect.CreateWebAccount (id,inputNickname,newAccount.getEncodedUsername(),newAccount.getEncodedPassword(),inputExpiration);
+                //System.out.println(id);
             }
         });
+        
         
         goBack.setOnAction(e -> {
            lengthVB.getChildren().remove(custLength);
@@ -232,3 +245,4 @@ public class CreationPage extends VBox {
         allowedSymbols = list;
     }
 }
+
