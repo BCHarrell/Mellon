@@ -17,7 +17,7 @@ public class LoginPage extends VBox {
 
     MellonFramework framework;
     ImageView logo = new ImageView(new Image(getClass()
-            .getResourceAsStream("/resources/templogo.png")));
+            .getResourceAsStream("/resources/mellon_logo_large.png")));
 
     public LoginPage(MellonFramework fw) {
         framework = fw;
