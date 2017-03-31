@@ -12,14 +12,14 @@ import javafx.scene.layout.*;
  */
 public class AdvancedMenu extends VBox {
     
-    private MellonFramework framework;
+    private final MenuContainer CONTAINER;
     private CreationPage parent;
     private final String[] OPTIONS = {"!", "@", "#", "$", "%", "^", "&", "*", 
             "(", ")", "-", "_", "=", "+", ",", ".", "<", ">", "?", "/"}; //20
     private CheckBox[] boxes = new CheckBox[OPTIONS.length];
     
-    public AdvancedMenu(MellonFramework fw, CreationPage parent) {
-        framework = fw;
+    public AdvancedMenu(MenuContainer c, CreationPage parent) {
+        CONTAINER = c;
         this.parent = parent;
         addItems();
     }
@@ -57,7 +57,7 @@ public class AdvancedMenu extends VBox {
          *****************/
         
         save.setOnAction(e -> {
-            framework.getScene().setRoot(parent);
+            CONTAINER.setCenter(parent);
             parent.setAllowable(getAllowable());
         });
     }//End addItems

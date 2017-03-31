@@ -13,12 +13,10 @@ import javafx.scene.layout.*;
 public class SettingsMenu extends VBox {
     
     //Temporary, will eventually open in new window
-    MellonFramework framework;
-    MainMenu main;
+    private final MenuContainer CONTAINER;
     
-    public SettingsMenu(MellonFramework fw, MainMenu main){
-        framework = fw;
-        this.main = main;
+    public SettingsMenu(MenuContainer c){
+        CONTAINER = c;
         addItems();
     }
     
@@ -103,7 +101,7 @@ public class SettingsMenu extends VBox {
          ****************/
         
         //TEMPORARY, WILL BE OWN WINDOW
-        save.setOnAction(e -> framework.getScene().setRoot(main));
+        save.setOnAction(e -> CONTAINER.setCenter(CONTAINER.getMain()));
         
         //Choicebox for length selection
         cb.getSelectionModel().selectedIndexProperty().addListener(

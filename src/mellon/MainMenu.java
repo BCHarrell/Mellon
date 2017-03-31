@@ -12,10 +12,10 @@ import javafx.scene.layout.HBox;
  * @author Brent H.
  */
 public class MainMenu extends BorderPane {
-    MellonFramework framework;
+   private final MenuContainer CONTAINER;
     
-    public MainMenu(MellonFramework fw) {
-        framework = fw;
+    public MainMenu(MenuContainer c) {
+        CONTAINER = c;
         addItems();
     }
     
@@ -30,29 +30,9 @@ public class MainMenu extends BorderPane {
         
         this.setCenter(hb);
         
-        //Temporary solution, will probably use a StackPane and won't need
-        //these on every menu.  Will also use icons
-        Button settings = new Button("Settings");
-        Button help = new Button("Help");
-        
-        HBox settingsBar = new HBox();
-        settingsBar.setAlignment(Pos.BOTTOM_RIGHT);
-        settingsBar.setSpacing(15);
-        settingsBar.getChildren().addAll(settings, help);
-
-        this.setBottom(settingsBar);
-        
         /************************
          *EVENT LISTENER SECTION*
          ************************/
-        create.setOnAction(e -> framework.getScene()
-                .setRoot(new CreationPage(framework, this)));
-        
-        //TEMPORARY, WILL BE NEW WINDOW IN FUTURE
-        settings.setOnAction(e -> framework.getScene()
-                .setRoot(new SettingsMenu(framework, this)));
-        
-        help.setOnAction(e -> framework.getScene()
-                            .setRoot(new HelpPage(framework, this)));
+        create.setOnAction(e -> CONTAINER.setCenter(new CreationPage(CONTAINER)));
     }
 }

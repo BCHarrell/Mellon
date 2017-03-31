@@ -15,21 +15,19 @@ import javafx.util.Callback;
  */
 public class CreationPage extends VBox {
     
-    private MellonFramework framework;
-    private MainMenu main;
+    private final MenuContainer CONTAINER;
     private ArrayList<Character> allowedSymbols;
     private AdvancedMenu adv;
 
-    public CreationPage(MellonFramework framework, MainMenu main) {
-        this.framework = framework;
-        this.main = main;
+    public CreationPage(MenuContainer c) {
+        CONTAINER = c;
         addItems();
     }
     
     private void addItems() {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(75);
-        adv = new AdvancedMenu(framework, this);
+        adv = new AdvancedMenu(CONTAINER, this);
         
         HBox topHB = new HBox();
         topHB.setAlignment(Pos.CENTER);
@@ -211,7 +209,7 @@ public class CreationPage extends VBox {
                 DBConnect.CreateWebAccount (id,inputNickname,newAccount.getEncodedUsername(),newAccount.getEncodedPassword(),inputExpiration);
                 //System.out.println(id);
             }
-            framework.getScene().setRoot(main);
+            CONTAINER.setCenter(CONTAINER.getMain());
         });
         
         
@@ -221,14 +219,14 @@ public class CreationPage extends VBox {
         });
         
         toMain.setOnAction(e -> {
-            framework.getScene().setRoot(main);
+            CONTAINER.setCenter(CONTAINER.getMain());
         });
         
         advanced.setOnAction(e -> {
             if(!symb.isSelected())
                 adv.deselect();
             
-            framework.getScene().setRoot(adv);
+            CONTAINER.setCenter(adv);
         });
         
         expireCB.selectedProperty().addListener(e -> {

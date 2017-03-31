@@ -17,16 +17,16 @@ import javafx.scene.layout.VBox;
  */
 public class SignUpPage extends VBox {
 
-    MellonFramework parent;
-    LoginPage login;
-    ImageView logo = new ImageView(new Image(getClass()
+    private final MellonFramework FRAMEWORK;
+    private final LoginPage LOGIN;
+    private final ImageView LOGO = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/mellon_logo_large.png")));
 
     //Accepts the primary class to get the scene, login page to return
     //in case the user clicked sign up by accident, keeps all text entered
-    public SignUpPage(MellonFramework p, LoginPage l) {
-        parent = p;
-        login = l;
+    public SignUpPage(MellonFramework fw, LoginPage l) {
+        FRAMEWORK = fw;
+        LOGIN = l;
         addItems();
     }
 
@@ -63,7 +63,7 @@ public class SignUpPage extends VBox {
         hb.getChildren().addAll(back, submit);
         vb.getChildren().addAll(username, password, verify, hb);
 
-        this.getChildren().addAll(logo, vb);
+        this.getChildren().addAll(LOGO, vb);
         
         
         /*****************
@@ -71,7 +71,7 @@ public class SignUpPage extends VBox {
          *****************/
         
         back.setOnAction(e -> {
-            parent.getScene().setRoot(login);
+            FRAMEWORK.getScene().setRoot(LOGIN);
         });
         
         submit.setOnAction(e -> {
@@ -93,7 +93,7 @@ public class SignUpPage extends VBox {
                 alert.showAndWait();
             }
         });
-        parent.getScene().setRoot(login);
+        FRAMEWORK.getScene().setRoot(LOGIN);
     }
 
     private boolean verifyInput(String inputUsername, String inputPassword, String inputVerify) {
@@ -150,7 +150,7 @@ public class SignUpPage extends VBox {
                     alert.setHeaderText("Account created");
                     alert.setContentText("your account has been created");
                     alert.showAndWait();
-                    parent.getScene().setRoot(login);
+                    FRAMEWORK.getScene().setRoot(LOGIN);
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");

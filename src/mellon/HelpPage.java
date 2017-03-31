@@ -12,12 +12,10 @@ public class HelpPage extends Accordion {
     
     //Temporary, will be its own window and accessible
     //from any other menu
-    MellonFramework framework;
-    MainMenu main;
+    private final MenuContainer CONTAINER;
     
-    public HelpPage(MellonFramework fw, MainMenu m) {
-        framework = fw;
-        main = m;
+    public HelpPage(MenuContainer c) {
+        CONTAINER = c;
         addItems();
     }
     
@@ -61,7 +59,7 @@ public class HelpPage extends Accordion {
         
         //TEMPORARY - BACK TO MENU
         Button back = new Button("Back to menu");
-        back.setOnAction(e -> framework.getScene().setRoot(main));
+        back.setOnAction(e -> CONTAINER.setCenter(CONTAINER.getMain()));
         TitledPane backPane = new TitledPane();
         backPane.setText("Back to Main");
         backPane.setContent(back);

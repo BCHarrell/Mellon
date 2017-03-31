@@ -15,12 +15,12 @@ import javafx.scene.input.KeyCode;
  */
 public class LoginPage extends VBox {
 
-    MellonFramework framework;
-    ImageView logo = new ImageView(new Image(getClass()
+    private final MellonFramework FRAMEWORK;
+    private final ImageView LOGO = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/mellon_logo_large.png")));
 
     public LoginPage(MellonFramework fw) {
-        framework = fw;
+        FRAMEWORK = fw;
         addItems();
     }
 
@@ -47,7 +47,7 @@ public class LoginPage extends VBox {
 
         hb.getChildren().addAll(login, signUp);
         vb.getChildren().addAll(username, password, hb);
-        this.getChildren().addAll(logo, vb);
+        this.getChildren().addAll(LOGO, vb);
 
         //Event Listeners
         password.setOnKeyPressed(e -> {
@@ -64,21 +64,25 @@ public class LoginPage extends VBox {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Invalid Username or Password");
-                alert.setContentText("Please ensure the Username and Password fields are filled in.");
+                alert.setContentText("Please ensure the Username and Password "
+                        + "fields are filled in.");
                 alert.showAndWait();
             } else {
                 try {
-                    MasterAccount user = new MasterAccount(username.getText(), password.getText());
+                    MasterAccount user = new MasterAccount(username.getText(),
+                                                password.getText());
 
                     if (user.getAuthenticated()) {
                         // Go to the Main Menu page
-                        framework.getScene().setRoot(new MainMenu(framework));
+                        FRAMEWORK.getScene()
+                                .setRoot(new MenuContainer(FRAMEWORK));
                     } else {
                         // Pop-up a message displaying to the user
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
                         alert.setHeaderText("Invalid Username or Password");
-                        alert.setContentText("Incorrect Username or Password. Please try again.");
+                        alert.setContentText("Incorrect Username or Password."
+                                + " Please try again.");
                         alert.showAndWait();
                     }
                 } catch (NoSuchAlgorithmException e1) {
@@ -90,8 +94,8 @@ public class LoginPage extends VBox {
         });
 
         // BUTTON - Goes to sign up page
-        signUp.setOnAction(e -> framework.getScene
-                    ().setRoot(new SignUpPage(framework, this)));
+        signUp.setOnAction(e -> FRAMEWORK.getScene()
+                .setRoot(new SignUpPage(FRAMEWORK, this)));
 
     }
 }
