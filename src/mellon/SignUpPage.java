@@ -20,7 +20,7 @@ public class SignUpPage extends VBox {
     MellonFramework parent;
     LoginPage login;
     ImageView logo = new ImageView(new Image(getClass()
-            .getResourceAsStream("/resources/mellon_logo_large.png")));
+            .getResourceAsStream("/resources/mellon_logo_largegit.png")));
 
     //Accepts the primary class to get the scene, login page to return
     //in case the user clicked sign up by accident, keeps all text entered
