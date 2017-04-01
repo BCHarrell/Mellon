@@ -24,6 +24,15 @@ public class UserInfoSingleton {
         return instance;
     }
 
+    public static void logout() {
+        userID = 0;
+        username = null;
+        password = null;
+        masterAccount = null;
+        profiles.clear();
+        instance = null;
+    }
+
     public static void updateMasterAccount(MasterAccount account) {
         masterAccount = account;
         addProfiles(account.getUserAccounts());
