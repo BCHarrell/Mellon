@@ -1,6 +1,5 @@
 package mellon;
 
-import oracle.sql.CHAR;
 
 import java.util.*;
 
@@ -20,6 +19,9 @@ public class Password {
 
     // Using ArrayLists to have complete control over the characters
     private ArrayList<Character> allowedSymbols;
+    private ArrayList<Character> specialCharacters = new ArrayList<>(Arrays.asList(
+            '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_',
+            '=', '+', ',', '.', '<', '>', '?', '/'));
     private ArrayList<Character> numbers = new ArrayList<>(Arrays.asList(
             '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'));
     private ArrayList<Character> lowers = new ArrayList<>(Arrays.asList(
@@ -58,7 +60,10 @@ public class Password {
             options.addAll(numbers);
         }
         // Add special characters if checked
-        if (this.includeSpecialCharacters) {
+        if (this.includeSpecialCharacters && allowedSymbols.size() == 0) {
+            allowedSymbols.addAll(specialCharacters);
+            options.addAll(allowedSymbols);
+        } else if (this.includeSpecialCharacters) {
             options.addAll(allowedSymbols);
         }
         // Now that the options list includes all available characters, iterate through

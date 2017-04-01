@@ -171,7 +171,9 @@ public class CreationPage extends VBox {
             } catch (NumberFormatException e1) {
                 // Password length was not a number.
             }
-
+            if (symb.isSelected() && allowedSymbols == null) {
+                allowedSymbols = new ArrayList<>();
+            }
             Password password = new Password.PasswordBuilder(pwLength)
                     .includeCapitals(upper.isSelected())
                     .includeLowers(lower.isSelected())
