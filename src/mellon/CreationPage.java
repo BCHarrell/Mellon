@@ -195,9 +195,9 @@ public class CreationPage extends VBox {
                 alert.showAndWait();
             } else {
                 WebAccount newAccount = null;
-                UserIDSingleton.getInstance();
-                int id = UserIDSingleton.getUserID();
-                String masterKey = UserIDSingleton.getPassword();
+                UserInfoSingleton.getInstance();
+                int id = UserInfoSingleton.getUserID();
+                String masterKey = UserInfoSingleton.getPassword();
                 String inputNickname = nickname.getText();
                 String inputUsername = username.getText();
                 String key = output.getText();
@@ -207,9 +207,16 @@ public class CreationPage extends VBox {
                 else {
                     inputExpiration = null;
                 }
-                newAccount = new WebAccount (inputUsername,key,inputNickname,masterKey,inputExpiration);
-                DBConnect.CreateWebAccount (id,inputNickname,newAccount.getEncodedUsername(),newAccount.getEncodedPassword(),inputExpiration);
-                //System.out.println(id);
+                newAccount = new WebAccount (inputUsername,
+                                             key,
+                                             inputNickname,
+                                             masterKey,
+                                             inputExpiration);
+                DBConnect.CreateWebAccount (id,
+                                            newAccount.getEncodedAccountName(),
+                                            newAccount.getEncodedUsername(),
+                                            newAccount.getEncodedPassword(),
+                                            inputExpiration);
             }
             CONTAINER.setCenter(CONTAINER.getMain());
         });

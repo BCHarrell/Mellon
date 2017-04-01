@@ -9,7 +9,6 @@ package mellon;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -130,7 +129,7 @@ public class DBConnect {
                 userID = rset.getInt(1);
                 if (userID != 0) {
                     ACCOUNT_FOUND = true;
-                    UserIDSingleton id = UserIDSingleton.getInstance();
+                    UserInfoSingleton id = UserInfoSingleton.getInstance();
                     id.setUserID(userID);
                     id.setPassword(password);
                 } else {
@@ -164,7 +163,7 @@ public class DBConnect {
             rset = stmt2.executeQuery();
             while (rset.next()) {
                 userID = rset.getInt(1);
-                UserIDSingleton id = UserIDSingleton.getInstance();
+                UserInfoSingleton id = UserInfoSingleton.getInstance();
                 id.setUserID(userID);
             }
             stmt3 = conn.prepareStatement("INSERT INTO ACCOUNT_INFO (USER_ID,MASTER_KEY) values (?,?)");

@@ -31,6 +31,7 @@ public class WebAccount {
     private String encodedUsername;
     private String encodedPassword;
     private String accountName;
+    private String encodedAccountName;
     private int id;
     private int webID;
     private LocalDate expDate;
@@ -44,21 +45,32 @@ public class WebAccount {
     }
 
     // Use this constructor when creating instances of WebAccount from the database
-    public WebAccount(int ID, String encodedUsername, String encodedPassword, int webID, String accountName, String masterKey, LocalDate expDate) {
+    public WebAccount(int ID,
+                      String encodedUsername,
+                      String encodedPassword,
+                      int webID,
+                      String encodedAccountName,
+                      String masterKey,
+                      LocalDate expDate) {
         this.id = ID;
         this.encodedUsername = encodedUsername;
         this.encodedPassword = encodedPassword;
+        this.encodedAccountName = encodedAccountName;
         this.webID = webID;
-        this.accountName = accountName;
         this.expDate = expDate;
 
         // Decode the username and passwords
         this.username = decode(encodedUsername, masterKey);
         this.password = decode(encodedPassword, masterKey);
+        this.accountName = decode(encodedAccountName, masterKey);
     }
 
     // Use this constructor when creating instances of WebAccount from user input
-    public WebAccount(String username, String password, String accountName, String masterKey, LocalDate expDate) {
+    public WebAccount(String username,
+                      String password,
+                      String accountName,
+                      String masterKey,
+                      LocalDate expDate) {
         this.username = username;
         this.password = password;
         this.accountName = accountName;
@@ -67,6 +79,7 @@ public class WebAccount {
         // Encode the username and password
         this.encodedUsername = encode(username, masterKey);
         this.encodedPassword = encode(password, masterKey);
+        this.encodedAccountName = encode(accountName, masterKey);
     }
     
     public static String decode(final String ivAndEncryptedMessageBase64,
@@ -191,5 +204,9 @@ public class WebAccount {
 
     public void setEncodedPassword(String encodedPassword) {
         this.encodedPassword = encodedPassword;
+    }
+
+    public String getEncodedAccountName() {
+        return encodedAccountName;
     }
 }
