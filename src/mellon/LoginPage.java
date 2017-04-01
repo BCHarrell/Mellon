@@ -73,9 +73,10 @@ public class LoginPage extends VBox {
                                                 password.getText());
 
                     if (user.getAuthenticated()) {
+                        UserInfoSingleton.getInstance().updateMasterAccount(user);
                         // Go to the Main Menu page
                         FRAMEWORK.getScene()
-                                .setRoot(new MenuContainer(FRAMEWORK, user));
+                                .setRoot(new MenuContainer(FRAMEWORK));
                     } else {
                         // Pop-up a message displaying to the user
                         Alert alert = new Alert(Alert.AlertType.ERROR);

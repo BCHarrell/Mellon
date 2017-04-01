@@ -29,6 +29,10 @@ public class UserInfoSingleton {
         addProfiles(account.getUserAccounts());
     }
 
+    public static MasterAccount getMasterAccount() {
+        return masterAccount;
+    }
+
     public static int getUserID() {
         return userID;
     }

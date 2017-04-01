@@ -13,10 +13,10 @@ public class MenuContainer extends BorderPane{
     private final MainMenu MAIN;
     private final MasterAccount USER;
     
-    public MenuContainer(MellonFramework fw, MasterAccount u){
+    public MenuContainer(MellonFramework fw){
         FRAMEWORK = fw;
         MAIN = new MainMenu(this);
-        USER = u;
+        USER = UserInfoSingleton.getInstance().getMasterAccount();
         this.setTop(new NavBar(FRAMEWORK, this, MAIN));
         this.setCenter(MAIN);
     }
