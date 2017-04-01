@@ -28,11 +28,11 @@ public class MasterAccount {
     public MasterAccount(String username, String password) throws NoSuchAlgorithmException {
         this.usernameHash = hashString(username);
         this.passwordHash = hashString(password);
-
+        UserInfoSingleton.getInstance().setPassword(password);
         this.userAccounts = new ArrayList<>();
         this.connection = DBConnect.getConnect();
         this.authenticated = DBConnect.authenticateUser(this.usernameHash, this.passwordHash);
-        this.userAccounts = DBConnect.getCredentials(this.usernameHash, this.passwordHash);
+        this.userAccounts = DBConnect.getCredentials(this.usernameHash, this.passwordHash, password);
     }
 
     private String hashString(String input) {

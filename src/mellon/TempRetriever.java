@@ -23,8 +23,10 @@ public class TempRetriever extends Accordion {
     }
     
     private void addItems(){
-        ArrayList<WebAccount> accounts = CONTAINER.getUser()
-                                            .getUserAccounts();
+        // Couldn't get grabbing accounts from the CONTAINER to work.
+//        ArrayList<WebAccount> accounts = CONTAINER.getUser().getUserAccounts();
+        ArrayList<WebAccount> accounts = UserInfoSingleton.getInstance().getProfiles();
+        System.out.println("accounts: " + accounts.size());
         for (WebAccount x : accounts){
             System.out.println(x.getAccountName());
             System.out.println(x.getUsername());

@@ -2,6 +2,7 @@ package mellon;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
@@ -10,11 +11,10 @@ import javafx.scene.layout.*;
 import javafx.util.Callback;
 
 /**
- *
  * @author Brent H.
  */
 public class CreationPage extends VBox {
-    
+
     private final MenuContainer CONTAINER;
     private ArrayList<Character> allowedSymbols;
     private AdvancedMenu adv;
@@ -23,19 +23,19 @@ public class CreationPage extends VBox {
         CONTAINER = c;
         addItems();
     }
-    
+
     private void addItems() {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(75);
         adv = new AdvancedMenu(CONTAINER, this);
-        
+
         HBox topHB = new HBox();
         topHB.setAlignment(Pos.CENTER);
         topHB.setSpacing(200);
-        
+
         VBox namingVB = new VBox();
         namingVB.setSpacing(10);
-        
+
         //Nickname
         VBox nickVB = new VBox();
         Label nickLabel = new Label("Nickname");
@@ -46,7 +46,7 @@ public class CreationPage extends VBox {
                 + "the password in the future. For example: \"Gmail\"");
         nickname.setTooltip(nickTip);
         nickVB.getChildren().addAll(nickLabel, nickname);
-        
+
         //Username
         VBox userVB = new VBox();
         Label userLabel = new Label("Username");
@@ -57,15 +57,15 @@ public class CreationPage extends VBox {
                 + "For example, your email address or \"MellonUser\"");
         username.setTooltip(userTip);
         userVB.getChildren().addAll(userLabel, username);
-        
+
         //Length selection
         VBox lengthVB = new VBox();
         Label lengthLabel = new Label("Password Length");
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
-        "8", "16", "24", "32", "48", new Separator(), "Custom"));
+                "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(350);
         cb.setValue("16");
-        
+
         HBox custLength = new HBox();
         custLength.setSpacing(5);
         TextField length = new TextField();
@@ -73,17 +73,17 @@ public class CreationPage extends VBox {
         Button goBack = new Button("Back to Selection");
         custLength.getChildren().addAll(length, goBack);
         lengthVB.getChildren().addAll(lengthLabel, cb);
-        
+
         namingVB.getChildren().addAll(nickVB, userVB, lengthVB);
-        
+
         //CUSTOMIZATION
         VBox custVB = new VBox();
         custVB.setAlignment(Pos.CENTER_RIGHT);
         custVB.setSpacing(5);
-        
+
         //Quick customize
         Label customize = new Label("Quick Customize");
-        
+
         VBox optionVB = new VBox();
         optionVB.setAlignment(Pos.CENTER_LEFT);
         optionVB.setSpacing(3);
@@ -97,14 +97,14 @@ public class CreationPage extends VBox {
         CheckBox numbers = new CheckBox("Numbers");
         numbers.setSelected(true);
         optionVB.getChildren().addAll(upper, lower, symb, numbers);
-        
+
         //Advanced menu
         Button advanced = new Button("Advanced");
-        
+
         //ADD
         custVB.getChildren().addAll(customize, optionVB, advanced);
         topHB.getChildren().addAll(namingVB, custVB);
-        
+
         //Expiration
         VBox expirationBox = new VBox();
         expirationBox.setAlignment(Pos.CENTER);
@@ -115,54 +115,54 @@ public class CreationPage extends VBox {
         expireLabel.setContentDisplay(ContentDisplay.RIGHT);
         DatePicker expiration = new DatePicker();
         expiration.setValue(LocalDate.now());
-        Callback<DatePicker, DateCell> cellFactory = 
-            new Callback<DatePicker, DateCell>() {
-                @Override
-                public DateCell call(final DatePicker datePicker) {
-                    return new DateCell() {
-                        @Override
-                        public void updateItem(LocalDate item, boolean empty) {
-                            super.updateItem(item, empty);
-                           
-                            if (item.isBefore(LocalDate.now())) {
+        Callback<DatePicker, DateCell> cellFactory =
+                new Callback<DatePicker, DateCell>() {
+                    @Override
+                    public DateCell call(final DatePicker datePicker) {
+                        return new DateCell() {
+                            @Override
+                            public void updateItem(LocalDate item, boolean empty) {
+                                super.updateItem(item, empty);
+
+                                if (item.isBefore(LocalDate.now())) {
                                     setDisable(true);
                                     setStyle("-fx-background-color: #AFAFAF;");
-                            }   
+                                }
+                            }
+                        };
                     }
                 };
-            }
-        };
         expiration.setDayCellFactory(cellFactory);
         expiration.setVisible(false);
         expirationBox.getChildren().addAll(expireLabel, expiration);
-        
+
         //Generate
         VBox generateVB = new VBox();
         generateVB.setAlignment(Pos.CENTER);
         generateVB.setSpacing(15);
         Button generate = new Button("Generate Password");
-        TextField output = new TextField();
-        output.setMaxWidth(400);
-        output.setAlignment(Pos.CENTER);
+        TextField generatedWebPassword = new TextField();
+        generatedWebPassword.setMaxWidth(400);
+        generatedWebPassword.setAlignment(Pos.CENTER);
         Button toMain = new Button("Back to Main (will be anchored bottom)");
         Button save = new Button("Save Account");
-        generateVB.getChildren().addAll(generate, output, toMain, save);
-        
+        generateVB.getChildren().addAll(generate, generatedWebPassword, toMain, save);
+
         this.getChildren().addAll(topHB, expirationBox, generateVB);
-        
-        
+
+
         /*****************
          *EVENT LISTENERS*
          *****************/
         cb.getSelectionModel().selectedIndexProperty().addListener(
-            (ObservableValue<? extends Number> ov, Number old_val,
-            Number new_val) -> {
-                if (new_val.intValue() == 5){
-                    lengthVB.getChildren().remove(cb);
-                    lengthVB.getChildren().addAll(custLength);
-                    length.requestFocus();
-                }
-        });
+                (ObservableValue<? extends Number> ov, Number old_val,
+                 Number new_val) -> {
+                    if (new_val.intValue() == 5) {
+                        lengthVB.getChildren().remove(cb);
+                        lengthVB.getChildren().addAll(custLength);
+                        length.requestFocus();
+                    }
+                });
 
         generate.setOnAction(e -> {
             int pwLength = 0;
@@ -181,13 +181,13 @@ public class CreationPage extends VBox {
                     .includeSpecialCharacters(symb.isSelected())
                     .includeAllowedSymbols(allowedSymbols)
                     .build();
-            output.setText(password.getPasswordString());
+            generatedWebPassword.setText(password.getPasswordString());
         });
 
         save.setOnAction(e -> {
             if (nickname.getText().isEmpty() ||
                     username.getText().isEmpty() ||
-                    output.getText().isEmpty()) {
+                    generatedWebPassword.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Invalid account details");
@@ -200,54 +200,55 @@ public class CreationPage extends VBox {
                 String masterKey = UserInfoSingleton.getPassword();
                 String inputNickname = nickname.getText();
                 String inputUsername = username.getText();
-                String key = output.getText();
+                String webAccountPassword = generatedWebPassword.getText();
                 LocalDate inputExpiration;
-                if(expireCB.isSelected()){
-                inputExpiration = expiration.getValue();}
-                else {
+                if (expireCB.isSelected()) {
+                    inputExpiration = expiration.getValue();
+                } else {
                     inputExpiration = null;
                 }
-                newAccount = new WebAccount (inputUsername,
-                                             key,
-                                             inputNickname,
-                                             masterKey,
-                                             inputExpiration);
-                DBConnect.CreateWebAccount (id,
-                                            newAccount.getEncodedAccountName(),
-                                            newAccount.getEncodedUsername(),
-                                            newAccount.getEncodedPassword(),
-                                            inputExpiration);
+                newAccount = new WebAccount(inputUsername,
+                        webAccountPassword,
+                        inputNickname,
+                        masterKey,
+                        inputExpiration);
+                DBConnect.CreateWebAccount(id,
+                        newAccount.getEncodedAccountName(),
+                        newAccount.getEncodedUsername(),
+                        newAccount.getEncodedPassword(),
+                        inputExpiration);
+                UserInfoSingleton.getInstance().addSingleProfile(newAccount);
             }
             CONTAINER.setCenter(CONTAINER.getMain());
         });
-        
-        
+
+
         goBack.setOnAction(e -> {
-           lengthVB.getChildren().remove(custLength);
-           lengthVB.getChildren().add(cb);
+            lengthVB.getChildren().remove(custLength);
+            lengthVB.getChildren().add(cb);
         });
-        
+
         toMain.setOnAction(e -> {
             CONTAINER.setCenter(CONTAINER.getMain());
         });
-        
+
         advanced.setOnAction(e -> {
-            if(!symb.isSelected())
+            if (!symb.isSelected())
                 adv.deselect();
-            
+
             CONTAINER.setCenter(adv);
         });
-        
+
         expireCB.selectedProperty().addListener(e -> {
-            if(expireCB.isSelected()){
+            if (expireCB.isSelected()) {
                 expiration.setVisible(true);
             } else {
                 expiration.setVisible(false);
             }
         });
-        
+
     } //End addItems()
-    
+
     public void setAllowable(ArrayList<Character> list) {
         allowedSymbols = list;
     }

@@ -11,6 +11,7 @@ public class UserInfoSingleton {
     private static int userID;
     private static String username;
     private static String password;
+    private static MasterAccount masterAccount;
     private static ArrayList<WebAccount> profiles = new ArrayList<>();
 
     private UserInfoSingleton() {
@@ -21,6 +22,11 @@ public class UserInfoSingleton {
             instance = new UserInfoSingleton();
         }
         return instance;
+    }
+
+    public static void updateMasterAccount(MasterAccount account) {
+        masterAccount = account;
+        addProfiles(account.getUserAccounts());
     }
 
     public static int getUserID() {
@@ -52,6 +58,10 @@ public class UserInfoSingleton {
             profiles.clear();
         }
         UserInfoSingleton.profiles.addAll(profilesIn);
+    }
+
+    public static void addSingleProfile(WebAccount profileIn) {
+        profiles.add(profileIn);
     }
 
     public static ArrayList<WebAccount> getProfiles() {

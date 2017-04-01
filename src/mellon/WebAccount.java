@@ -11,14 +11,9 @@
 
 package mellon;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -45,134 +40,97 @@ public class WebAccount {
     }
 
     // Use this constructor when creating instances of WebAccount from the database
-    public WebAccount(int ID,
-                      String encodedUsername,
-                      String encodedPassword,
-                      int webID,
-                      String encodedAccountName,
+    // Expects encoded input with plain text master password
+    public WebAccount(int IDIn,
+                      String encodedUsernameIn,
+                      String encodedPasswordIn,
+                      int webIDIn,
+                      String encodedAccountNameIn,
                       String masterKey,
-                      LocalDate expDate) {
-        this.id = ID;
-        this.encodedUsername = encodedUsername;
-        this.encodedPassword = encodedPassword;
-        this.encodedAccountName = encodedAccountName;
-        this.webID = webID;
-        this.expDate = expDate;
+                      LocalDate expDateIn) {
+        this.id = IDIn;
+        this.encodedUsername = encodedUsernameIn;
+        this.encodedPassword = encodedPasswordIn;
+        this.encodedAccountName = encodedAccountNameIn;
+        this.webID = webIDIn;
+        this.expDate = expDateIn;
 
         // Decode the username and passwords
-        this.username = decode(encodedUsername, masterKey);
-        this.password = decode(encodedPassword, masterKey);
-        this.accountName = decode(encodedAccountName, masterKey);
+        this.username = decode(this.encodedUsername, masterKey);
+        this.password = decode(this.encodedPassword, masterKey);
+        this.accountName = decode(this.encodedAccountName, masterKey);
     }
 
     // Use this constructor when creating instances of WebAccount from user input
-    public WebAccount(String username,
-                      String password,
-                      String accountName,
+    // Expects plain text input
+    public WebAccount(String usernameIn,
+                      String passwordIn,
+                      String accountNameIn,
                       String masterKey,
-                      LocalDate expDate) {
-        this.username = username;
-        this.password = password;
-        this.accountName = accountName;
-        this.expDate = expDate;
+                      LocalDate expDateIn) {
+        this.username = usernameIn;
+        this.password = passwordIn;
+        this.accountName = accountNameIn;
+        this.expDate = expDateIn;
 
         // Encode the username and password
-        this.encodedUsername = encode(username, masterKey);
-        this.encodedPassword = encode(password, masterKey);
-        this.encodedAccountName = encode(accountName, masterKey);
-    }
-    
-    public static String decode(final String ivAndEncryptedMessageBase64,
-                                final String masterPassword) {
-        final byte[] symKeyData = masterPassword.getBytes();
-
-        final byte[] ivAndEncryptedMessage = DatatypeConverter
-                .parseBase64Binary(ivAndEncryptedMessageBase64);
-        try {
-            final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            final int blockSize = cipher.getBlockSize();
-
-            // create the key
-            final SecretKeySpec symKey = new SecretKeySpec(Arrays.copyOf(symKeyData, 16), "AES");
-
-            // retrieve random IV from start of the received message
-            final byte[] ivData = new byte[blockSize];
-            System.arraycopy(ivAndEncryptedMessage, 0, ivData, 0, blockSize);
-            final IvParameterSpec iv = new IvParameterSpec(ivData);
-
-            // retrieve the encrypted message itself
-            final byte[] encryptedMessage = new byte[ivAndEncryptedMessage.length
-                    - blockSize];
-            System.arraycopy(ivAndEncryptedMessage, blockSize,
-                    encryptedMessage, 0, encryptedMessage.length);
-
-            cipher.init(Cipher.DECRYPT_MODE, symKey, iv);
-
-            final byte[] encodedMessage = cipher.doFinal(encryptedMessage);
-
-            // concatenate IV and encrypted message
-            final String message = new String(encodedMessage,
-                    Charset.forName("UTF-8"));
-
-            return message;
-        } catch (InvalidKeyException e) {
-            throw new IllegalArgumentException(
-                    "key argument does not contain a valid AES key");
-        } catch (BadPaddingException e) {
-            // you'd better know about padding oracle attacks
-            return null;
-        } catch (GeneralSecurityException e) {
-            throw new IllegalStateException(
-                    "Unexpected exception during decryption", e);
-        }
+        this.encodedUsername = encode(this.username, masterKey);
+        this.encodedPassword = encode(this.password, masterKey);
+        this.encodedAccountName = encode(this.accountName, masterKey);
     }
 
-    public static String encode(final String plainMessage,
-                                final String masterPassword) {
-        final byte[] symKeyData = masterPassword.getBytes();
-
-        final byte[] encodedMessage = plainMessage.getBytes(Charset
-                .forName("UTF-8"));
+    public static SecretKey setEncryptionKey(String myKey) {
+        MessageDigest sha = null;
+        byte[] key = new byte[0];
+        SecretKey secretKey = null;
         try {
-            final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            final int blockSize = cipher.getBlockSize();
-
-            // create the key
-            final SecretKeySpec symKey = new SecretKeySpec(Arrays.copyOf(symKeyData, 16), "AES");
-
-            // generate random IV using block size (possibly create a method for
-            // this)
-            final byte[] ivData = new byte[blockSize];
-            final SecureRandom rnd = SecureRandom.getInstance("SHA1PRNG");
-            rnd.nextBytes(ivData);
-            final IvParameterSpec iv = new IvParameterSpec(ivData);
-
-            cipher.init(Cipher.ENCRYPT_MODE, symKey, iv);
-
-            final byte[] encryptedMessage = cipher.doFinal(encodedMessage);
-
-            // concatenate IV and encrypted message
-            final byte[] ivAndEncryptedMessage = new byte[ivData.length
-                    + encryptedMessage.length];
-            System.arraycopy(ivData, 0, ivAndEncryptedMessage, 0, blockSize);
-            System.arraycopy(encryptedMessage, 0, ivAndEncryptedMessage,
-                    blockSize, encryptedMessage.length);
-
-            final String ivAndEncryptedMessageBase64 = DatatypeConverter
-                    .printBase64Binary(ivAndEncryptedMessage);
-
-            return ivAndEncryptedMessageBase64;
-        } catch (InvalidKeyException e) {
-            throw new IllegalArgumentException(
-                    "key argument does not contain a valid AES key");
-        } catch (GeneralSecurityException e) {
-            throw new IllegalStateException(
-                    "Unexpected exception during encryption", e);
+            key = myKey.getBytes("UTF-8");
+            sha = MessageDigest.getInstance("SHA-256");
+            key = sha.digest(key);
+            key = Arrays.copyOf(key, 16);
+            secretKey = new SecretKeySpec(key, "AES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
+
+        return secretKey;
+    }
+
+    public static SecretKey setDecryptionKey(String myKey) {
+        SecretKey encryptionKey = setEncryptionKey(myKey);
+        SecretKey decryptionKey = new SecretKeySpec(encryptionKey.getEncoded(),
+                encryptionKey.getAlgorithm());
+        return decryptionKey;
+    }
+
+    public static String encode(String strToEncrypt, String secret) {
+        try {
+            SecretKey secretKey = setEncryptionKey(secret);
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
+        } catch (Exception e) {
+            System.out.println("Error while encrypting: " + e.toString());
+        }
+        return null;
+    }
+
+    public static String decode(String strToDecrypt, String secret) {
+        try {
+            SecretKey secretKey = setDecryptionKey(secret);
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)), "UTF-8");
+        } catch (Exception e) {
+            System.out.println("Error while decrypting: " + e.toString());
+        }
+        return null;
     }
     
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
     public void setUsername(String username) {
@@ -180,18 +138,19 @@ public class WebAccount {
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
     
     public String getAccountName(){
-        return accountName;
+        return this.accountName;
     }
     
     public void setPassword(String password) {
         this.password = password;
     }
+
      public String getEncodedUsername() {
-        return encodedUsername;
+        return this.encodedUsername;
     }
 
     public void setEncodedUsername(String encodedUsername) {
@@ -199,7 +158,7 @@ public class WebAccount {
     }
 
     public String getEncodedPassword() {
-        return encodedPassword;
+        return this.encodedPassword;
     }
 
     public void setEncodedPassword(String encodedPassword) {
@@ -207,6 +166,6 @@ public class WebAccount {
     }
 
     public String getEncodedAccountName() {
-        return encodedAccountName;
+        return this.encodedAccountName;
     }
 }
