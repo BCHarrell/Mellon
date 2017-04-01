@@ -75,7 +75,7 @@ public class LoginPage extends VBox {
                     if (user.getAuthenticated()) {
                         // Go to the Main Menu page
                         FRAMEWORK.getScene()
-                                .setRoot(new MenuContainer(FRAMEWORK));
+                                .setRoot(new MenuContainer(FRAMEWORK, user));
                     } else {
                         // Pop-up a message displaying to the user
                         Alert alert = new Alert(Alert.AlertType.ERROR);

@@ -33,6 +33,9 @@ public class MainMenu extends BorderPane {
         /************************
          *EVENT LISTENER SECTION*
          ************************/
-        create.setOnAction(e -> CONTAINER.setCenter(new CreationPage(CONTAINER)));
+        create.setOnAction(e -> CONTAINER
+                .setCenter(new CreationPage(CONTAINER)));
+        retrieve.setOnAction (e -> CONTAINER
+                .setCenter(new TempRetriever(CONTAINER)));
     }
 }

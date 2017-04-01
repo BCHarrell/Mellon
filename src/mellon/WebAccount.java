@@ -169,7 +169,11 @@ public class WebAccount {
     public String getPassword() {
         return password;
     }
-
+    
+    public String getAccountName(){
+        return accountName;
+    }
+    
     public void setPassword(String password) {
         this.password = password;
     }
