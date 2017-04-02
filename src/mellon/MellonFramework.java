@@ -1,15 +1,10 @@
 package mellon;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
-
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -19,6 +14,8 @@ public class MellonFramework extends Application {
     
     private Stage stage;
     private Scene scene;
+    private final Image ICON = new Image(getClass()
+            .getResourceAsStream("/resources/tray_icon.png"));
     
     @Override
     public void start(Stage primaryStage) {
@@ -27,6 +24,10 @@ public class MellonFramework extends Application {
         
         stage = primaryStage;
         stage.setScene(scene);
+        stage.setResizable(false);
+        stage.getIcons().add(ICON);
+        //For future use: will need to add a top pane for closing and dragging
+        //stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
     }
     

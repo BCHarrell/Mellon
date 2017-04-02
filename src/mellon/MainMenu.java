@@ -22,12 +22,11 @@ public class MainMenu extends BorderPane {
     private void addItems() {
         Button create = new Button("Create a Password");
         Button retrieve = new Button("Retrieve a Password");
-        Button logout = new Button("Logout");
         
         HBox hb = new HBox();
         hb.setAlignment(Pos.CENTER);
         hb.setSpacing(15);
-        hb.getChildren().addAll(create, retrieve, logout);
+        hb.getChildren().addAll(create, retrieve);
         
         this.setCenter(hb);
         
@@ -38,9 +37,5 @@ public class MainMenu extends BorderPane {
                 .setCenter(new CreationPage(CONTAINER)));
         retrieve.setOnAction (e -> CONTAINER
                 .setCenter(new TempRetriever(CONTAINER)));
-        logout.setOnAction(e -> {
-            UserInfoSingleton.getInstance().logout();
-            CONTAINER.logout();
-        });
     }
 }

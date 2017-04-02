@@ -4,6 +4,7 @@ package mellon;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -20,8 +21,11 @@ public class NavBar extends BorderPane{
             .getResourceAsStream("/resources/settings_icon.png")));
     private final ImageView HOME = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/home_icon.png")));
+    private final ImageView LOGOUT = new ImageView(new Image(getClass()
+            .getResourceAsStream("/resources/logout_icon.png")));
     private final ImageView LOGO = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/mellon_logo_small.png")));
+    
     private final MenuContainer CONTAINER;
     private final MainMenu MAIN;
     private final MellonFramework FRAMEWORK;
@@ -62,7 +66,13 @@ public class NavBar extends BorderPane{
         helpBtn.setGraphic(HELP);
         helpBtn.setBackground(Background.EMPTY);
         
-        icons.getChildren().addAll(homeBtn, settingsBtn, helpBtn);
+        //Logout
+        Button logoutBtn = new Button();
+        logoutBtn.setGraphic(LOGOUT);
+        logoutBtn.setBackground(Background.EMPTY);
+        
+        
+        icons.getChildren().addAll(homeBtn, settingsBtn, helpBtn, logoutBtn);
         
         this.setLeft(logoBox);
         this.setRight(icons);
@@ -77,6 +87,16 @@ public class NavBar extends BorderPane{
         
         settingsBtn.setOnAction(e -> CONTAINER
                     .setCenter(new SettingsMenu(CONTAINER)));
+        
+        logoutBtn.setOnAction(e -> {
+            Alert confirm = new Alert(AlertType.CONFIRMATION, "Are you sure"
+                    + " you want to log out?", ButtonType.YES, ButtonType.NO);
+            confirm.setTitle("Confirm Logout");
+            
+            confirm.showAndWait()
+                    .filter(response -> response == ButtonType.YES)
+                    .ifPresent(response -> CONTAINER.logout());
+        });
     }
     
 }
