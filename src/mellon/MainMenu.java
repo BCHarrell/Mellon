@@ -31,22 +31,21 @@ public class MainMenu extends VBox {
      * Creates the UI elements
      */
     public void update() {
-        Accordion accordion = new Accordion();
-        
-        for (WebAccount a : accounts) {
-            accordion.getPanes().add(new ProfilePane(CONTAINER, a));
-        }
-        
         ScrollPane scroll = new ScrollPane();
         scroll.setStyle("-fx-background-color: transparent;");
         scroll.setFitToWidth(true);
         scroll.setPrefSize(425, 500);
-        scroll.setContent(accordion);
-        this.getChildren().setAll(scroll);
+        scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        //ADD TO CSS TO SPEED UP
         
-        /************************
-         *EVENT LISTENER SECTION*
-         ************************/
+        VBox innerBox = new VBox();
+        innerBox.setSpacing(15);
         
+        for (WebAccount a : accounts) {
+            innerBox.getChildren().add(new ProfilePane(CONTAINER, a));
+        }
+        
+        scroll.setContent(innerBox);
+        this.getChildren().add(scroll);
     }
 }
