@@ -275,6 +275,7 @@ public class CreationPage extends VBox {
                     alert.showAndWait();
                 }
             }
+            CONTAINER.getMain().update();
             CONTAINER.setCenter(CONTAINER.getMain());
         });
         

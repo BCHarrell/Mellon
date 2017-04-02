@@ -2,10 +2,11 @@
 package mellon;
 
 
+import java.util.ArrayList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 
 /**
  * The main menu contains all of the existing profiles for the logged-in
@@ -14,32 +15,37 @@ import javafx.scene.layout.HBox;
  * 
  * @author Brent H.
  */
-public class MainMenu extends BorderPane {
-   private final MenuContainer CONTAINER;
+public class MainMenu extends VBox {
     
+    private final MenuContainer CONTAINER;
+    private ArrayList<WebAccount> accounts; //not final so it can be updated
     public MainMenu(MenuContainer c) {
         CONTAINER = c;
-        addItems();
+        accounts = UserInfoSingleton.getInstance().getProfiles();
+        this.setAlignment(Pos.CENTER);
+        this.setPadding(new Insets(0, 50, 0, 50));
+        update();
     }
     
     /**
      * Creates the UI elements
      */
-    private void addItems() {
-        Button retrieve = new Button("Retrieve a Password");
+    public void update() {
+        Accordion accordion = new Accordion();
         
-        HBox hb = new HBox();
-        hb.setAlignment(Pos.CENTER);
-        hb.setSpacing(15);
-        hb.getChildren().add(retrieve);
+        for (WebAccount a : accounts) {
+            accordion.getPanes().add(new ProfilePane(CONTAINER, a));
+        }
         
-        this.setCenter(hb);
+        ScrollPane scroll = new ScrollPane();
+        scroll.setFitToWidth(true);
+        scroll.setPrefSize(425, 500);
+        scroll.setContent(accordion);
+        this.getChildren().setAll(scroll);
         
         /************************
          *EVENT LISTENER SECTION*
          ************************/
-        retrieve.setOnAction (e -> {
-            CONTAINER.setCenter(new TempRetriever(CONTAINER));
-        });
+        
     }
 }
