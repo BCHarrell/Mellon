@@ -8,7 +8,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 /**
- *
+ * The main menu contains all of the existing profiles for the logged-in
+ * account.  Users can select an existing profile to view the stored username
+ * and password combinations.
+ * 
  * @author Brent H.
  */
 public class MainMenu extends BorderPane {
@@ -19,6 +22,9 @@ public class MainMenu extends BorderPane {
         addItems();
     }
     
+    /**
+     * Creates the UI elements
+     */
     private void addItems() {
         Button retrieve = new Button("Retrieve a Password");
         
@@ -32,7 +38,8 @@ public class MainMenu extends BorderPane {
         /************************
          *EVENT LISTENER SECTION*
          ************************/
-        retrieve.setOnAction (e -> CONTAINER
-                .setCenter(new TempRetriever(CONTAINER)));
+        retrieve.setOnAction (e -> {
+            CONTAINER.setCenter(new TempRetriever(CONTAINER));
+        });
     }
 }

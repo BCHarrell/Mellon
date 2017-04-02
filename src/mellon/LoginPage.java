@@ -11,6 +11,11 @@ import javafx.event.ActionEvent;
 import javafx.scene.input.KeyCode;
 
 /**
+ * The login page is initially called by MellonFramework.  This UI accepts
+ * a username and password combination and verifies the information when
+ * submit is selected.  The user can also choose to create a new account via
+ * the Sign Up button.
+ * 
  * @author Brent H.
  */
 public class LoginPage extends VBox {
@@ -23,12 +28,16 @@ public class LoginPage extends VBox {
         FRAMEWORK = fw;
         addItems();
     }
-
+    
+    /**
+     * Creates the UI elements
+     */
     private void addItems() {
         this.setMaxSize(350, 450);
         this.setAlignment(CENTER);
         this.setSpacing(45);
-
+        
+        //Vertical box housing all of the input elements
         VBox vb = new VBox();
         vb.setAlignment(CENTER);
         vb.setSpacing(15);
@@ -38,25 +47,36 @@ public class LoginPage extends VBox {
         PasswordField password = new PasswordField();
         password.setMaxWidth(300);
         password.setPromptText("Password");
-
+        
+        //Horizontal box housing the buttons
         HBox hb = new HBox();
         hb.setAlignment(CENTER);
         hb.setSpacing(15);
         Button login = new Button("Log In");
         Button signUp = new Button("Sign Up");
-
+        
+        //Add the items to appropriate containers
         hb.getChildren().addAll(login, signUp);
         vb.getChildren().addAll(username, password, hb);
         this.getChildren().addAll(LOGO, vb);
 
-        //Event Listeners
+        /*****************
+         *EVENT LISTENERS*
+         *****************/
+        //Pressing enter in the password field submits
         password.setOnKeyPressed(e -> {
            if (e.getCode().equals(KeyCode.ENTER)) { 
                login.fireEvent(new ActionEvent());
            }
         });
         
-        // BUTTON - login
+        username.setOnKeyPressed (e ->{
+            if (e.getCode().equals(KeyCode.ENTER)) { 
+                   login.fireEvent(new ActionEvent());
+            }
+        });
+        
+        //Login
         login.setOnAction(e -> {
             // If either field is empty
             if (username.getText().isEmpty() || password.getText().isEmpty()) {

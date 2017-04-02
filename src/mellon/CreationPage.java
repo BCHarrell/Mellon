@@ -27,6 +27,14 @@ public class CreationPage extends VBox {
         addItems();
     }
     
+    /**
+     * Alternate constructor for edit mode.  Pre-populates information already
+     * stored in the profile
+     * @param c The MenuContainer
+     * @param nick the profile's nickname
+     * @param user the profile's stored password
+     * @param pass the profile's stored password
+     */
     public CreationPage(MenuContainer c, String nick, String user,
                             String pass) {
         CONTAINER = c;
@@ -36,16 +44,21 @@ public class CreationPage extends VBox {
         currentPass = pass;
         addItems();
     }
-
+    
+    /**
+     * Creates the UI elements
+     */
     private void addItems() {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(75);
         adv = new AdvancedMenu(CONTAINER, this);
-
+        
+        //Top Horizontal Box
         HBox topHB = new HBox();
         topHB.setAlignment(Pos.CENTER);
         topHB.setSpacing(200);
-
+        
+        //Vertical box to house nickname and username elements
         VBox namingVB = new VBox();
         namingVB.setSpacing(10);
 
@@ -95,12 +108,12 @@ public class CreationPage extends VBox {
 
         namingVB.getChildren().addAll(nickVB, userVB, lengthVB);
 
-        //CUSTOMIZATION
+        //CUSTOMIZATION box
         VBox custVB = new VBox();
         custVB.setAlignment(Pos.CENTER_RIGHT);
         custVB.setSpacing(5);
 
-        //Quick customize
+        //Quick customize box
         Label customize = new Label("Quick Customize");
 
         VBox optionVB = new VBox();
@@ -135,22 +148,22 @@ public class CreationPage extends VBox {
         DatePicker expiration = new DatePicker();
         expiration.setValue(LocalDate.now());
         Callback<DatePicker, DateCell> cellFactory =
-                new Callback<DatePicker, DateCell>() {
-                    @Override
-                    public DateCell call(final DatePicker datePicker) {
-                        return new DateCell() {
-                            @Override
-                            public void updateItem(LocalDate item, boolean empty) {
-                                super.updateItem(item, empty);
+            new Callback<DatePicker, DateCell>() {
+                @Override
+                public DateCell call(final DatePicker datePicker) {
+                    return new DateCell() {
+                        @Override
+                        public void updateItem(LocalDate item, boolean empty) {
+                            super.updateItem(item, empty);
 
-                                if (item.isBefore(LocalDate.now())) {
-                                    setDisable(true);
-                                    setStyle("-fx-background-color: #AFAFAF;");
-                                }
+                            if (item.isBefore(LocalDate.now())) {
+                                setDisable(true);
+                                setStyle("-fx-background-color: #AFAFAF;");
                             }
-                        };
-                    }
-                };
+                        }
+                    };
+                }
+            };
         expiration.setDayCellFactory(cellFactory);
         expiration.setVisible(false);
         expirationBox.getChildren().addAll(expireLabel, expiration);
@@ -169,7 +182,8 @@ public class CreationPage extends VBox {
         
         Button toMain = new Button("Back to Main (will be anchored bottom)");
         Button save = new Button("Save Account");
-        generateVB.getChildren().addAll(generate, generatedWebPassword, toMain, save);
+        generateVB.getChildren().addAll(generate, generatedWebPassword,
+                                            toMain, save);
 
         this.getChildren().addAll(topHB, expirationBox, generateVB);
 
@@ -177,6 +191,7 @@ public class CreationPage extends VBox {
         /*****************
          *EVENT LISTENERS*
          *****************/
+        //Choice box switch-out
         cb.getSelectionModel().selectedIndexProperty().addListener(
                 (ObservableValue<? extends Number> ov, Number old_val,
                  Number new_val) -> {
@@ -185,8 +200,15 @@ public class CreationPage extends VBox {
                         lengthVB.getChildren().addAll(custLength);
                         length.requestFocus();
                     }
-                });
-
+        });
+        
+        //Returns to the choice box
+        goBack.setOnAction(e -> {
+            lengthVB.getChildren().remove(custLength);
+            lengthVB.getChildren().add(cb);
+        });
+        
+        //Password generation
         generate.setOnAction(e -> {
             int pwLength = 0;
             try {
@@ -206,7 +228,8 @@ public class CreationPage extends VBox {
                     .build();
             generatedWebPassword.setText(password.getPasswordString());
         });
-
+        
+        //Save account
         save.setOnAction(e -> {
             if (nickField.getText().isEmpty() ||
                     userField.getText().isEmpty() ||
@@ -214,7 +237,8 @@ public class CreationPage extends VBox {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Invalid account details");
-                alert.setContentText("Please ensure the Nickname, Username, and Password fields are filled in.");
+                alert.setContentText("Please ensure the Nickname, Username,"
+                        + " and Password fields are filled in.");
                 alert.showAndWait();
             } else {
                 WebAccount newAccount = null;
@@ -246,30 +270,28 @@ public class CreationPage extends VBox {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
                     alert.setHeaderText("Account not created");
-                    alert.setContentText("The profile was not created, please try again.");
+                    alert.setContentText("The profile was not created,"
+                            + " please try again.");
                     alert.showAndWait();
                 }
             }
             CONTAINER.setCenter(CONTAINER.getMain());
         });
-
-
-        goBack.setOnAction(e -> {
-            lengthVB.getChildren().remove(custLength);
-            lengthVB.getChildren().add(cb);
-        });
-
+        
+        //Back to main menu
         toMain.setOnAction(e -> {
             CONTAINER.setCenter(CONTAINER.getMain());
         });
-
+        
+        //Opens advanced symbol menu
         advanced.setOnAction(e -> {
             if (!symb.isSelected())
                 adv.deselect();
 
             CONTAINER.setCenter(adv);
         });
-
+        
+        //Expiration date checkbox
         expireCB.selectedProperty().addListener(e -> {
             if (expireCB.isSelected()) {
                 expiration.setVisible(true);
@@ -279,7 +301,10 @@ public class CreationPage extends VBox {
         });
 
     } //End addItems()
-
+    
+    /**
+     * @param list List of allowable characters from the advanced menu
+     */
     public void setAllowable(ArrayList<Character> list) {
         allowedSymbols = list;
     }

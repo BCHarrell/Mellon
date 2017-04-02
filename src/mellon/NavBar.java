@@ -10,7 +10,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 /**
- *
+ * The navigation bar remains visible once the user is logged in and can be
+ * used to create a new profile, get account settings, get help, return to the
+ * main menu, or log out.
+ * 
  * @author Brent H.
  */
 public class NavBar extends BorderPane{
@@ -39,15 +42,20 @@ public class NavBar extends BorderPane{
         createBar();
     }
     
+    /**
+     * Creates the UI elements
+     */
     private void createBar(){
 
         this.setPadding(new Insets(15.0, 15.0, 15.0, 15.0));
         this.setStyle("-fx-background-color: #0088AA");
         
+        //Centers the logo on the left
         VBox logoBox = new VBox();
         logoBox.setAlignment(Pos.CENTER_LEFT);
         logoBox.getChildren().add(LOGO);
         
+        //Horizontal box for the icon elements
         HBox icons = new HBox();
         icons.setSpacing(10);
         icons.setStyle("-fx-background-color: #0088AA");
@@ -111,7 +119,10 @@ public class NavBar extends BorderPane{
             
             confirm.showAndWait()
                     .filter(response -> response == ButtonType.YES)
-                    .ifPresent(response -> CONTAINER.logout());
+                    .ifPresent(response -> {
+                        CONTAINER.logout();
+                        UserInfoSingleton.getInstance().logout();
+                    });
         });
     }
     

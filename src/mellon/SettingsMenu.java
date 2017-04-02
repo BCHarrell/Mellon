@@ -20,6 +20,9 @@ public class SettingsMenu extends VBox {
         addItems();
     }
     
+    /**
+     * Creates the UI elements
+     */
     private void addItems() {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(45);

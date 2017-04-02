@@ -1,8 +1,8 @@
 package mellon;
 
 /**
- * Created by Thomas Hodges on 3/26/2017.
- * AccountInfoPane.java
+ * This class will create individual profile information panes to be displayed
+ * on the main menu.
  */
 public class ProfilePane {
 }

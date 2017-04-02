@@ -8,7 +8,7 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 
 /**
- *
+ * Temporary method to retrieve existing accounts
  * @author Brent H.
  */
 public class TempRetriever extends Accordion {
@@ -26,16 +26,19 @@ public class TempRetriever extends Accordion {
     
     private void addItems(){
         // Couldn't get grabbing accounts from the CONTAINER to work.
-//        ArrayList<WebAccount> accounts = CONTAINER.getUser().getUserAccounts();
+        //ArrayList<WebAccount> accounts = CONTAINER.getUser().getUserAccounts();
         ArrayList<WebAccount> accounts = UserInfoSingleton.getInstance().getProfiles();
         for (WebAccount a : accounts) {
+            //New titled pane for each account
             TitledPane p = new TitledPane();
             p.setText(a.getAccountName());
             
+            //Overarching vertical box to align elements
             VBox vb = new VBox();
             vb.setSpacing(15);
             vb.setAlignment(Pos.CENTER_LEFT);
             
+            //Username label and field
             VBox userVB = new VBox();
             userVB.setSpacing(5);
             Label userLabel = new Label("Username:");
@@ -46,20 +49,24 @@ public class TempRetriever extends Accordion {
             username.setEditable(false);
             userVB.getChildren().addAll(userLabel, username);
             
+            //Password label and field
             VBox passVB = new VBox();
             passVB.setSpacing(5);
             Label passLabel = new Label("Password:");
             
+            //Holds the password field and the visibility button
             HBox hb = new HBox();
             hb.setSpacing(5);
             hb.setMaxWidth(Double.MAX_VALUE);
             
+            //used to obscure the password (temporary)
             PasswordField password = new PasswordField();
             password.setEditable(false);
             password.setPrefWidth(350);
             password.setText(a.getPassword());
             password.setEditable(false);
             
+            //displays the password
             TextField passwordVis = new TextField();
             passwordVis.setEditable(false);
             passwordVis.setPrefWidth(350);
@@ -82,6 +89,10 @@ public class TempRetriever extends Accordion {
             hb.getChildren().addAll(passwordVis, visible);
             
             passVB.getChildren().addAll(passLabel, hb);
+            
+            /*****************
+             *EVENT LISTENERS*
+             *****************/
             
             Button edit = new Button("Edit Profile");
             edit.setOnAction(e -> {

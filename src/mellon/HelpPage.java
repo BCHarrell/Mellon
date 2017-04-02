@@ -5,8 +5,9 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
 /**
- * Created by Thomas Hodges on 3/26/2017.
- * HelpPage.java
+ * Contains useful information about operating the program and reporting bugs.
+ * 
+ * @author Brent H.
  */
 public class HelpPage extends Accordion {
     

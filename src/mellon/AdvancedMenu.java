@@ -18,12 +18,16 @@ public class AdvancedMenu extends VBox {
             "(", ")", "-", "_", "=", "+", ",", ".", "<", ">", "?", "/"}; //20
     private CheckBox[] boxes = new CheckBox[OPTIONS.length];
     
+    
     public AdvancedMenu(MenuContainer c, CreationPage parent) {
         CONTAINER = c;
         this.parent = parent;
         addItems();
     }
     
+    /**
+     * Creates the UI elements
+     */
     private void addItems() {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(15);
@@ -62,12 +66,19 @@ public class AdvancedMenu extends VBox {
         });
     }//End addItems
     
+    /**
+     * Called if the Symbol checkbox in the main creation page is not checked.
+     * Deselects all checkboxes in this menu
+     */
     public void deselect(){
         for (CheckBox c : boxes){
             c.setSelected(false);
         }
     }
     
+    /**
+     * @return An ArrayList of all selected characters
+     */
     private ArrayList<Character> getAllowable() {
         ArrayList<Character> allowable = new ArrayList<>();
         

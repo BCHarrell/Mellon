@@ -12,7 +12,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- *
+ * This class creates the UI for master account creation.  It contains three
+ * text fields for username, and password with verification.  An alert is shown
+ * if the form is not correctly filled out, and returns to the main menu
+ * when the back button or successful account creation are reached.
  * @author Brent H.
  */
 public class SignUpPage extends VBox {
@@ -29,20 +32,23 @@ public class SignUpPage extends VBox {
         LOGIN = l;
         addItems();
     }
-
-    ;
     
+    /**
+     * Creates the UI elements
+     */
     private void addItems() {
         //Primary VBox
         this.setMaxSize(350, 450);
         this.setAlignment(CENTER);
         this.setSpacing(45);
-
+        
+        //Input fields area
         //VBox for the fields and buttons
         VBox vb = new VBox();
         vb.setSpacing(15);
         vb.setAlignment(CENTER);
-
+        
+        //Fields
         TextField username = new TextField();
         username.setMaxWidth(300);
         username.setPromptText("Username");
@@ -52,13 +58,12 @@ public class SignUpPage extends VBox {
         PasswordField verify = new PasswordField();
         verify.setMaxWidth(300);
         verify.setPromptText("Enter your password again");
-
+        
+        //Submit and back buttons
         HBox hb = new HBox();
         hb.setAlignment(CENTER);
         hb.setSpacing(15);
         Button back = new Button("Back to Login");
-        //Returns to the login screen which kept any text entered
-        
         Button submit = new Button("Create Account");
         hb.getChildren().addAll(back, submit);
         vb.getChildren().addAll(username, password, verify, hb);
@@ -75,27 +80,43 @@ public class SignUpPage extends VBox {
         });
         
         submit.setOnAction(e -> {
-            // Store input into local variables
-            String inputUsername = username.getText();
-            String inputPassword = password.getText();
-            String inputVerify = verify.getText();
-            boolean verificationResult = false;
-            // Check user input
-            verificationResult = verifyInput(inputUsername, inputPassword, inputVerify);
-            if (verificationResult) {
-                // get user input and store them into variables to perform encryption
-                getUserInput(inputUsername, inputPassword);
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Registration Error");
-                alert.setContentText("Please ensure the Username and Password fields are filled in and passwords match.");
-                alert.showAndWait();
-            }
+            submit(username.getText(), password.getText(), verify.getText());
         });
-        FRAMEWORK.getScene().setRoot(LOGIN);
     }
-
+    
+    /**
+     * Performs the operation of submitting a new account
+     * @param username the submitted username
+     * @param password the submitted password
+     * @param verify the repeated password
+     */
+    private void submit(String username, String password, String verify) {
+        // Store input into local variables
+        String inputUsername = username;
+        String inputPassword = password;
+        String inputVerify = verify;
+        boolean verificationResult = false;
+        // Check user input
+        verificationResult = verifyInput(inputUsername, inputPassword, inputVerify);
+        if (verificationResult) {
+            // get user input and store them into variables to perform encryption
+            getUserInput(inputUsername, inputPassword);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Registration Error");
+            alert.setContentText("Please ensure the Username and Password fields are filled in and passwords match.");
+            alert.showAndWait();
+        }
+    }
+    
+    /**
+     * Verifies the inputed information
+     * @param inputUsername the inputted username
+     * @param inputPassword the inputted password
+     * @param inputVerify password verification
+     * @return 
+     */
     private boolean verifyInput(String inputUsername, String inputPassword, String inputVerify) {
 
         boolean result = false;

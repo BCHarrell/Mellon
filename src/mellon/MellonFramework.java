@@ -7,8 +7,10 @@ import javafx.scene.image.Image;
 import javafx.stage.StageStyle;
 
 /**
- *
- * @author Bobcat
+ * The primary stage for the application.  Houses the main scene and creates
+ * the login page.
+ * 
+ * @author Brent H.
  */
 public class MellonFramework extends Application {
     
