@@ -20,21 +20,18 @@ public class MainMenu extends BorderPane {
     }
     
     private void addItems() {
-        Button create = new Button("Create a Password");
         Button retrieve = new Button("Retrieve a Password");
         
         HBox hb = new HBox();
         hb.setAlignment(Pos.CENTER);
         hb.setSpacing(15);
-        hb.getChildren().addAll(create, retrieve);
+        hb.getChildren().add(retrieve);
         
         this.setCenter(hb);
         
         /************************
          *EVENT LISTENER SECTION*
          ************************/
-        create.setOnAction(e -> CONTAINER
-                .setCenter(new CreationPage(CONTAINER)));
         retrieve.setOnAction (e -> CONTAINER
                 .setCenter(new TempRetriever(CONTAINER)));
     }

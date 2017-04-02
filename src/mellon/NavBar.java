@@ -15,6 +15,8 @@ import javafx.scene.layout.*;
  */
 public class NavBar extends BorderPane{
     
+    private final ImageView ADD = new ImageView(new Image(getClass()
+            .getResourceAsStream("/resources/add_icon.png")));
     private final ImageView HELP = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/help_icon.png")));
     private final ImageView SETTINGS = new ImageView(new Image(getClass()
@@ -47,7 +49,7 @@ public class NavBar extends BorderPane{
         logoBox.getChildren().add(LOGO);
         
         HBox icons = new HBox();
-        icons.setSpacing(15);
+        icons.setSpacing(10);
         icons.setStyle("-fx-background-color: #0088AA");
         icons.setAlignment(Pos.CENTER_RIGHT);
         
@@ -55,24 +57,35 @@ public class NavBar extends BorderPane{
         Button homeBtn = new Button();
         homeBtn.setGraphic(HOME);
         homeBtn.setBackground(Background.EMPTY);
+        homeBtn.setTooltip(new Tooltip("Main Menu"));
+        
+        //Add
+        Button addBtn = new Button();
+        addBtn.setGraphic(ADD);
+        addBtn.setBackground(Background.EMPTY);
+        addBtn.setTooltip(new Tooltip("Create a Profile"));
         
         //Settings
         Button settingsBtn = new Button();
         settingsBtn.setGraphic(SETTINGS);
         settingsBtn.setBackground(Background.EMPTY);
+        settingsBtn.setTooltip(new Tooltip("Account Settings"));
         
         //Help
         Button helpBtn = new Button();
         helpBtn.setGraphic(HELP);
         helpBtn.setBackground(Background.EMPTY);
+        helpBtn.setTooltip(new Tooltip("How to use Mellon"));
         
         //Logout
         Button logoutBtn = new Button();
         logoutBtn.setGraphic(LOGOUT);
         logoutBtn.setBackground(Background.EMPTY);
+        logoutBtn.setTooltip(new Tooltip("Logout"));
         
         
-        icons.getChildren().addAll(homeBtn, settingsBtn, helpBtn, logoutBtn);
+        icons.getChildren().addAll(homeBtn, addBtn, settingsBtn,
+                                        helpBtn, logoutBtn);
         
         this.setLeft(logoBox);
         this.setRight(icons);
@@ -81,6 +94,9 @@ public class NavBar extends BorderPane{
          *EVENT LISTENERS*
          *****************/
         homeBtn.setOnAction(e -> CONTAINER.setCenter(MAIN));
+        
+        addBtn.setOnAction(e -> CONTAINER
+                    .setCenter(new CreationPage(CONTAINER)));
         
         helpBtn.setOnAction(e -> CONTAINER
                     .setCenter(new HelpPage(CONTAINER)));
