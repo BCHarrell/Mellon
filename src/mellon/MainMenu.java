@@ -40,7 +40,7 @@ public class MainMenu extends BorderPane {
                 .setCenter(new TempRetriever(CONTAINER)));
         logout.setOnAction(e -> {
             UserInfoSingleton.getInstance().logout();
-            // Need method here to return to login screen
+            CONTAINER.logout();
         });
     }
 }

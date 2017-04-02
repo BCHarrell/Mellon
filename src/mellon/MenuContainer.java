@@ -28,4 +28,8 @@ public class MenuContainer extends BorderPane{
     public MasterAccount getUser(){
         return USER;
     }
+    
+    public void logout(){
+        FRAMEWORK.getScene().setRoot(new LoginPage(FRAMEWORK));
+    }
 }
