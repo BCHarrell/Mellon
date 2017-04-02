@@ -212,12 +212,20 @@ public class CreationPage extends VBox {
                         inputNickname,
                         masterKey,
                         inputExpiration);
-                DBConnect.CreateWebAccount(id,
+                boolean accountCreated = DBConnect.CreateWebAccount(id,
                         newAccount.getEncodedAccountName(),
                         newAccount.getEncodedUsername(),
                         newAccount.getEncodedPassword(),
                         inputExpiration);
-                UserInfoSingleton.getInstance().addSingleProfile(newAccount);
+                if (accountCreated) {
+                    UserInfoSingleton.getInstance().addSingleProfile(newAccount);
+                } else if (!accountCreated) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Account not created");
+                    alert.setContentText("The profile was not created, please try again.");
+                    alert.showAndWait();
+                }
             }
             CONTAINER.setCenter(CONTAINER.getMain());
         });

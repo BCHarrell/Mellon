@@ -206,21 +206,23 @@ public class DBConnect {
                                            String username,
                                            String password,
                                            LocalDate inputExpiration) {
-        Date date;
+        java.sql.Date date;
         if (inputExpiration == null) {
             date = null;
         }else {
-            date = Date.valueOf(inputExpiration);
+            date = java.sql.Date.valueOf(inputExpiration);
+            System.out.println("Date: " + date);
         }
         PreparedStatement preparedStatement = null;
         Connection connection = getConnect();
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO WEB_ACCOUNTS (USER_ID, " +
-                                                                    "ACCOUNT_NAME, " +
-                                                                    "WEB_USERNAME, " +
-                                                                    "KEY, " +
-                                                                    "EXP_DT) " +
-                                        "VALUES (?,?,?,?,to_date(?,'MM/DD/YYYY'))");
+            preparedStatement = connection.prepareStatement(
+                    "INSERT INTO WEB_ACCOUNTS (USER_ID, " +
+                                                    "ACCOUNT_NAME, " +
+                                                    "WEB_USERNAME, " +
+                                                    "KEY, " +
+                                                    "EXP_DT) " +
+                        "VALUES (?,?,?,?,to_date(?))");
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, inputNickname);
             preparedStatement.setString(3, username);
