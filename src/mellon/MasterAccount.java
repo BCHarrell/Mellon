@@ -35,7 +35,7 @@ public class MasterAccount {
         this.userAccounts = DBConnect.getCredentials(this.usernameHash, this.passwordHash, password);
     }
 
-    private String hashString(String input) {
+    public static String hashString(String input) {
 
         try {
 

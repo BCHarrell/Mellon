@@ -31,14 +31,6 @@ public class WebAccount {
     private int webID;
     private LocalDate expDate;
 
-    public int getID() {
-        return id;
-    }
-
-    public void setID(int id) {
-        this.id = id;
-    }
-
     // Use this constructor when creating instances of WebAccount from the database
     // Expects encoded input with plain text master password
     public WebAccount(int IDIn,
@@ -127,6 +119,29 @@ public class WebAccount {
             System.out.println("Error while decrypting: " + e.toString());
         }
         return null;
+    }
+
+    public WebAccount updatePassword(String newMasterPassword) {
+        this.encodedAccountName = encode(this.accountName, newMasterPassword);
+        this.encodedUsername = encode(this.username, newMasterPassword);
+        this.encodedPassword = encode(this.password, newMasterPassword);
+        return this;
+    }
+
+    public int getID() {
+        return this.id;
+    }
+
+    public void setID(int id) {
+        this.id = id;
+    }
+
+    public int getWebID() {
+        return this.webID;
+    }
+
+    public void setWebID(int webID) {
+        this.webID = webID;
     }
     
     public String getUsername() {

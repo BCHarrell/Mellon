@@ -6,6 +6,8 @@ import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
+import java.util.ArrayList;
+
 /**
  * 
  * 
@@ -123,6 +125,54 @@ public class SettingsMenu extends VBox {
            lengthHB.getChildren().add(cb);
         });
         
-        savePass.setOnAction(e -> password.setExpanded(false));
+        savePass.setOnAction(e -> {
+            String plainCurrentMasterPassword = old.getText();
+            String plainNewMasterPassword = newPass.getText();
+            String plainNewRepeatPassword = repeat.getText();
+            if (plainCurrentMasterPassword.isEmpty() ||
+                    plainNewMasterPassword.isEmpty() ||
+                    plainNewRepeatPassword.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Invalid password input");
+                alert.setContentText("Please ensure the current password,"
+                        + " new password, and repeated password fields are"
+                        + " filled in.");
+                alert.showAndWait();
+            } else {
+                MasterAccount oldMasterAccount = UserInfoSingleton.getInstance().getMasterAccount();
+                String newMasterPasswordHash = oldMasterAccount.hashString(plainNewMasterPassword);
+                ArrayList<WebAccount> oldWebAccounts = UserInfoSingleton.getInstance().getProfiles();
+                int userID = UserInfoSingleton.getInstance().getUserID();
+                ArrayList<WebAccount> newWebAccounts = new ArrayList<>();
+                // Updates the master account hash
+                DBConnect.updateMasterPassword(userID, newMasterPasswordHash);
+                // Updates all the associated web accounts
+                oldWebAccounts.stream().forEach(account -> {
+                    newWebAccounts.add(account.updatePassword(plainNewMasterPassword));
+                });
+                newWebAccounts.stream().forEach(account -> {
+                    DBConnect.updateWebPassword(userID,
+                                    account.getWebID(),
+                                    account.getEncodedAccountName(),
+                                    account.getEncodedUsername(),
+                                    account.getEncodedPassword());
+                });
+                // Update the singleton
+                UserInfoSingleton.getInstance().setPassword(plainNewMasterPassword);
+                UserInfoSingleton.getInstance().addProfiles(newWebAccounts);
+                old.clear();
+                newPass.clear();
+                repeat.clear();
+                password.setExpanded(false);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText("Password changed");
+                alert.setContentText("Your master password has been updated.");
+                alert.showAndWait();
+            }
+
+
+        });
     } //end addItems 
 }

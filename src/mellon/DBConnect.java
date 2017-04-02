@@ -103,26 +103,26 @@ public class DBConnect {
     // Added expected PASSWORD column and now checking both for the correct username and password
     // Inputs are expected to be hashed
     public static boolean checkUser(String username) {
-        PreparedStatement stmt = null;
-        ResultSet rset = null;
-        Connection conn = getConnect();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Connection connection = getConnect();
         try {
-            stmt = conn.prepareStatement("SELECT USER_ID " +
+            preparedStatement = connection.prepareStatement("SELECT USER_ID " +
                                          "FROM ACCOUNT_MASTER " +
                                          "WHERE USERNAME = ?");
-            stmt.setString(1, username);
-            rset = stmt.executeQuery();
-            while (rset.next()) {
-                userID = rset.getInt(1);
+            preparedStatement.setString(1, username);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                userID = resultSet.getInt(1);
                 if (userID != 0) {
                     ACCOUNT_FOUND = true;
                 } else {
                     ACCOUNT_FOUND = false;
                 }
             }
-            rset.close();
-            stmt.close();
-            conn.close();
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
 
         } catch (SQLException se) {
             // We may need to add another class for exceptions only
@@ -131,21 +131,21 @@ public class DBConnect {
     }
 
     public static boolean authenticateUser(String username, String password) {
-        PreparedStatement stmt = null;
-        ResultSet rset = null;
-        Connection conn = getConnect();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Connection connection = getConnect();
         try {
-            stmt = conn.prepareStatement("SELECT AM.USER_ID " +
+            preparedStatement = connection.prepareStatement("SELECT AM.USER_ID " +
                                          "FROM ACCOUNT_MASTER AM " +
                                          "INNER JOIN ACCOUNT_INFO AI " +
                                          "ON AM.USER_ID = AI.USER_ID " +
                                          "WHERE AM.USERNAME = ? " +
                                          "AND AI.MASTER_KEY = ?");
-            stmt.setString(1, username);
-            stmt.setString(2, password);
-            rset = stmt.executeQuery();
-            while (rset.next()) {
-                userID = rset.getInt(1);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                userID = resultSet.getInt(1);
                 if (userID != 0) {
                     ACCOUNT_FOUND = true;
                     UserInfoSingleton id = UserInfoSingleton.getInstance();
@@ -154,9 +154,9 @@ public class DBConnect {
                     ACCOUNT_FOUND = false;
                 }
             }
-            rset.close();
-            stmt.close();
-            conn.close();
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
 
         } catch (SQLException se) {
             // We may need to add another class for exceptions only
@@ -167,32 +167,32 @@ public class DBConnect {
     // Inputs are expected to be hashed, returns true if new master user created
     public static boolean registerUser(String newUsername, String newPassword) {  
 
-        PreparedStatement stmt1 = null;
-        PreparedStatement stmt2 = null;
-        PreparedStatement stmt3 = null;
-        ResultSet rset = null;
-        Connection conn = getConnect();
+        PreparedStatement preparedStatement1 = null;
+        PreparedStatement preparedStatement2 = null;
+        PreparedStatement preparedStatement3 = null;
+        ResultSet resultSet = null;
+        Connection connection = getConnect();
         try {
-            stmt1 = conn.prepareStatement("INSERT INTO ACCOUNT_MASTER (USERNAME) VALUES (?)");
-            stmt1.setString(1, newUsername);
-            stmt1.executeQuery();
-            stmt2 = conn.prepareStatement("SELECT USER_ID FROM ACCOUNT_MASTER WHERE username = ?");
-            stmt2.setString(1, newUsername);
-            rset = stmt2.executeQuery();
-            while (rset.next()) {
-                userID = rset.getInt(1);
+            preparedStatement1 = connection.prepareStatement("INSERT INTO ACCOUNT_MASTER (USERNAME) VALUES (?)");
+            preparedStatement1.setString(1, newUsername);
+            preparedStatement1.executeQuery();
+            preparedStatement2 = connection.prepareStatement("SELECT USER_ID FROM ACCOUNT_MASTER WHERE username = ?");
+            preparedStatement2.setString(1, newUsername);
+            resultSet = preparedStatement2.executeQuery();
+            while (resultSet.next()) {
+                userID = resultSet.getInt(1);
                 UserInfoSingleton id = UserInfoSingleton.getInstance();
                 id.setUserID(userID);
             }
-            stmt3 = conn.prepareStatement("INSERT INTO ACCOUNT_INFO (USER_ID, MASTER_KEY) VALUES (?,?)");
-            stmt3.setInt(1, userID);
-            stmt3.setString(2, newPassword);
-            stmt3.executeQuery();
-            rset.close();
-            stmt1.close();
-            stmt2.close();
-            stmt3.close();
-            conn.close();
+            preparedStatement3 = connection.prepareStatement("INSERT INTO ACCOUNT_INFO (USER_ID, MASTER_KEY) VALUES (?,?)");
+            preparedStatement3.setInt(1, userID);
+            preparedStatement3.setString(2, newPassword);
+            preparedStatement3.executeQuery();
+            resultSet.close();
+            preparedStatement1.close();
+            preparedStatement2.close();
+            preparedStatement3.close();
+            connection.close();
             ACCOUNT_FOUND = true;
 
         } catch (SQLException se) {
@@ -236,5 +236,59 @@ public class DBConnect {
             // We may need to add another class for exceptions only
         }
         return ACCOUNT_CREATED;
+    }
+
+    public static boolean updateMasterPassword(int userIDin, String passwordHash) {
+        if (userIDin == 0 || passwordHash.isEmpty()) {
+            return false;
+        }
+        boolean updated = false;
+        Connection connection = getConnect();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE ACCOUNT_INFO " +
+                                                            "SET MASTER_KEY = ? " +
+                                                            "WHERE USER_ID = ?");
+            preparedStatement.setString(1, passwordHash);
+            preparedStatement.setInt(2, userIDin);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.close();
+            updated = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return updated;
+    }
+
+    public static boolean updateWebPassword(int userIDIn,
+                                            int webIDIn,
+                                            String accountName,
+                                            String username,
+                                            String password) {
+        if (userIDIn == 0 || webIDIn == 0 || accountName.isEmpty()
+                || username.isEmpty() || password.isEmpty()) {
+            return false;
+        }
+        boolean updated = false;
+        Connection connection = getConnect();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE WEB_ACCOUNTS " +
+                    "SET ACCOUNT_NAME = ?, WEB_USERNAME = ?, KEY = ?" +
+                    "WHERE USER_ID = ? AND WEB_ID = ?");
+            preparedStatement.setString(1, accountName);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, password);
+            preparedStatement.setInt(4, userIDIn);
+            preparedStatement.setInt(5, webIDIn);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.close();
+            updated = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return updated;
     }
 }
