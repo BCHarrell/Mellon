@@ -79,7 +79,7 @@ public class TempRetriever extends Accordion {
             visible.setGraphic(eye);
             visible.setBackground(Background.EMPTY);
             
-            hb.getChildren().addAll(password, visible);
+            hb.getChildren().addAll(passwordVis, visible);
             
             passVB.getChildren().addAll(passLabel, hb);
             
