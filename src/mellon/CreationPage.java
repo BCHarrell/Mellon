@@ -18,9 +18,21 @@ public class CreationPage extends VBox {
     private final MenuContainer CONTAINER;
     private ArrayList<Character> allowedSymbols;
     private AdvancedMenu adv;
+    private boolean edit;
+    private String currentNick, currentUser, currentPass;
 
     public CreationPage(MenuContainer c) {
         CONTAINER = c;
+        addItems();
+    }
+    
+    public CreationPage(MenuContainer c, String nick, String user,
+                            String pass) {
+        CONTAINER = c;
+        edit = true;
+        currentNick = nick;
+        currentUser = user;
+        currentPass = pass;
         addItems();
     }
 
@@ -39,24 +51,30 @@ public class CreationPage extends VBox {
         //Nickname
         VBox nickVB = new VBox();
         Label nickLabel = new Label("Nickname");
-        TextField nickname = new TextField();
-        nickname.setMaxWidth(350);
-        nickname.setPromptText("Enter account nickname");
+        TextField nickField = new TextField();
+        nickField.setMaxWidth(350);
+        nickField.setPromptText("Enter account nickname");
         Tooltip nickTip = new Tooltip("This is the name you will use to get "
                 + "the password in the future. For example: \"Gmail\"");
-        nickname.setTooltip(nickTip);
-        nickVB.getChildren().addAll(nickLabel, nickname);
+        nickField.setTooltip(nickTip);
+        if (edit){
+            nickField.setText(currentNick);
+        }
+        nickVB.getChildren().addAll(nickLabel, nickField);
 
         //Username
         VBox userVB = new VBox();
         Label userLabel = new Label("Username");
-        TextField username = new TextField();
-        username.setMaxWidth(350);
-        username.setPromptText("Enter username");
+        TextField userField = new TextField();
+        userField.setMaxWidth(350);
+        userField.setPromptText("Enter username");
         Tooltip userTip = new Tooltip("This is the username for your account. "
                 + "For example, your email address or \"MellonUser\"");
-        username.setTooltip(userTip);
-        userVB.getChildren().addAll(userLabel, username);
+        userField.setTooltip(userTip);
+        if (edit) {
+            userField.setText(currentUser);
+        }
+        userVB.getChildren().addAll(userLabel, userField);
 
         //Length selection
         VBox lengthVB = new VBox();
@@ -144,6 +162,10 @@ public class CreationPage extends VBox {
         TextField generatedWebPassword = new TextField();
         generatedWebPassword.setMaxWidth(400);
         generatedWebPassword.setAlignment(Pos.CENTER);
+        if (edit) {
+            generatedWebPassword.setText(currentPass);
+        }
+        
         Button toMain = new Button("Back to Main (will be anchored bottom)");
         Button save = new Button("Save Account");
         generateVB.getChildren().addAll(generate, generatedWebPassword, toMain, save);
@@ -185,8 +207,8 @@ public class CreationPage extends VBox {
         });
 
         save.setOnAction(e -> {
-            if (nickname.getText().isEmpty() ||
-                    username.getText().isEmpty() ||
+            if (nickField.getText().isEmpty() ||
+                    userField.getText().isEmpty() ||
                     generatedWebPassword.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -198,8 +220,8 @@ public class CreationPage extends VBox {
                 UserInfoSingleton.getInstance();
                 int id = UserInfoSingleton.getUserID();
                 String masterKey = UserInfoSingleton.getPassword();
-                String inputNickname = nickname.getText();
-                String inputUsername = username.getText();
+                String inputNickname = nickField.getText();
+                String inputUsername = userField.getText();
                 String webAccountPassword = generatedWebPassword.getText();
                 LocalDate inputExpiration;
                 if (expireCB.isSelected()) {

@@ -14,8 +14,10 @@ import javafx.scene.layout.*;
 public class TempRetriever extends Accordion {
     
     private final MenuContainer CONTAINER;
-    private final ImageView EYE_ICON = new ImageView(new Image(getClass()
-            .getResourceAsStream("/resources/eye_icon.png")));
+    private final Image EYE_ICON = new Image(getClass()
+                    .getResourceAsStream("/resources/eye_icon.png"));
+    /*private final ImageView EYE_ICON = new ImageView(new Image(getClass()
+            .getResourceAsStream("/resources/eye_icon.png")));*/
     
     public TempRetriever(MenuContainer c){
         CONTAINER = c;
@@ -26,13 +28,6 @@ public class TempRetriever extends Accordion {
         // Couldn't get grabbing accounts from the CONTAINER to work.
 //        ArrayList<WebAccount> accounts = CONTAINER.getUser().getUserAccounts();
         ArrayList<WebAccount> accounts = UserInfoSingleton.getInstance().getProfiles();
-        System.out.println("accounts: " + accounts.size());
-        for (WebAccount x : accounts){
-            System.out.println(x.getAccountName());
-            System.out.println(x.getUsername());
-            System.out.println(x.getPassword());
-        }
-        
         for (WebAccount a : accounts) {
             TitledPane p = new TitledPane();
             p.setText(a.getAccountName());
@@ -48,36 +43,58 @@ public class TempRetriever extends Accordion {
             username.setEditable(false);
             username.setMaxWidth(175);
             username.setText(a.getUsername());
+            username.setEditable(false);
             userVB.getChildren().addAll(userLabel, username);
             
             VBox passVB = new VBox();
             passVB.setSpacing(5);
             Label passLabel = new Label("Password:");
+            
             HBox hb = new HBox();
             hb.setSpacing(5);
-            TextField password = new TextField();
+            hb.setMaxWidth(Double.MAX_VALUE);
+            
+            PasswordField password = new PasswordField();
             password.setEditable(false);
-            password.setMaxWidth(400);
+            password.setPrefWidth(350);
             password.setText(a.getPassword());
-            //Insert BLUR
+            password.setEditable(false);
+            
+            TextField passwordVis = new TextField();
+            passwordVis.setEditable(false);
+            passwordVis.setPrefWidth(350);
+            passwordVis.setText(a.getPassword());
+            passwordVis.setEditable(false);
+            
+            //Insert BLUR (Temporary: use password field
             Button visible = new Button();
-            //Insert Action Listener
-            visible.setGraphic(EYE_ICON);
-            //visible.setBackground(Background.EMPTY);
+            visible.setOnAction(e -> {
+                if (hb.getChildren().contains(password)) {
+                    hb.getChildren().setAll(passwordVis, visible);
+                } else {
+                    hb.getChildren().setAll(password, visible);
+                }
+            });
+            ImageView eye = new ImageView(EYE_ICON);
+            visible.setGraphic(eye);
+            visible.setBackground(Background.EMPTY);
+            
             hb.getChildren().addAll(password, visible);
+            
             passVB.getChildren().addAll(passLabel, hb);
             
-            vb.getChildren().addAll(userVB, passVB);
+            Button edit = new Button("Edit Profile");
+            edit.setOnAction(e -> {
+                CONTAINER.setCenter(new CreationPage(CONTAINER,
+                            a.getAccountName(), a.getUsername(),
+                            a.getPassword()));
+            });
+            
+            vb.getChildren().addAll(userVB, passVB, edit);
             
             p.setContent(vb);
             this.getPanes().add(p);
         }
-        
-        TitledPane test = new TitledPane();
-        test.setText("Test");
-        //Button testBtn = new Button();
-        //testBtn.setGraphic(EYE_ICON);
-        test.setContent(EYE_ICON);
     }
     
 }
