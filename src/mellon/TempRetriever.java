@@ -41,28 +41,43 @@ public class TempRetriever extends Accordion {
             vb.setSpacing(15);
             vb.setAlignment(Pos.CENTER_LEFT);
             
+            VBox userVB = new VBox();
+            userVB.setSpacing(5);
+            Label userLabel = new Label("Username:");
             TextField username = new TextField();
             username.setEditable(false);
-            username.setPrefWidth(250);
+            username.setMaxWidth(175);
             username.setText(a.getUsername());
+            userVB.getChildren().addAll(userLabel, username);
             
+            VBox passVB = new VBox();
+            passVB.setSpacing(5);
+            Label passLabel = new Label("Password:");
             HBox hb = new HBox();
+            hb.setSpacing(5);
             TextField password = new TextField();
             password.setEditable(false);
-            password.setPrefWidth(400);
+            password.setMaxWidth(400);
             password.setText(a.getPassword());
             //Insert BLUR
             Button visible = new Button();
             //Insert Action Listener
             visible.setGraphic(EYE_ICON);
-            visible.setBackground(Background.EMPTY);
+            //visible.setBackground(Background.EMPTY);
             hb.getChildren().addAll(password, visible);
+            passVB.getChildren().addAll(passLabel, hb);
             
-            vb.getChildren().addAll(username, hb);
+            vb.getChildren().addAll(userVB, passVB);
             
             p.setContent(vb);
-            this.getChildren().add(p);
+            this.getPanes().add(p);
         }
+        
+        TitledPane test = new TitledPane();
+        test.setText("Test");
+        //Button testBtn = new Button();
+        //testBtn.setGraphic(EYE_ICON);
+        test.setContent(EYE_ICON);
     }
     
 }
