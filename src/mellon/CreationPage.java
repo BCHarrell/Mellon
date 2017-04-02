@@ -180,10 +180,8 @@ public class CreationPage extends VBox {
             generatedWebPassword.setText(currentPass);
         }
         
-        Button toMain = new Button("Back to Main (will be anchored bottom)");
         Button save = new Button("Save Account");
-        generateVB.getChildren().addAll(generate, generatedWebPassword,
-                                            toMain, save);
+        generateVB.getChildren().addAll(generate, generatedWebPassword, save);
 
         this.getChildren().addAll(topHB, expirationBox, generateVB);
 
@@ -276,11 +274,6 @@ public class CreationPage extends VBox {
                 }
             }
             CONTAINER.getMain().update();
-            CONTAINER.setCenter(CONTAINER.getMain());
-        });
-        
-        //Back to main menu
-        toMain.setOnAction(e -> {
             CONTAINER.setCenter(CONTAINER.getMain());
         });
         

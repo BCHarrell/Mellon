@@ -38,6 +38,7 @@ public class MainMenu extends VBox {
         }
         
         ScrollPane scroll = new ScrollPane();
+        scroll.setStyle("-fx-background-color: transparent;");
         scroll.setFitToWidth(true);
         scroll.setPrefSize(425, 500);
         scroll.setContent(accordion);
