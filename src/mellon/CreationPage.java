@@ -23,6 +23,7 @@ public class CreationPage extends VBox {
 
     public CreationPage(MenuContainer c) {
         CONTAINER = c;
+        edit = false;
         addItems();
     }
     
