@@ -45,7 +45,6 @@ public class ProfilePane extends VBox{
         
         DropShadow ds = new DropShadow();
         ds.setOffsetY(3.0);
-        ds.setOffsetX(3.0);
         ds.setColor(javafx.scene.paint.Color.GRAY);
         this.setEffect(ds);
         
@@ -135,6 +134,16 @@ public class ProfilePane extends VBox{
             } else {
                 this.getChildren().setAll(titleBox, contentBox);
             }
+        });
+        
+        //Lightens box on highlight
+        this.setOnMouseEntered(e -> {
+            this.setStyle("-fx-background-color: #00A9D4;");
+        });
+        
+        //Returns to normal color after mouse leaves
+        this.setOnMouseExited(e -> {
+            this.setStyle("-fx-background-color: #0088AA;");
         });
         
         //Blurs and unblurs the text

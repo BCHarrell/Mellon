@@ -53,7 +53,6 @@ public class NavBar extends BorderPane{
         
         DropShadow ds = new DropShadow();
         ds.setOffsetY(3.0);
-        ds.setOffsetX(3.0);
         ds.setColor(javafx.scene.paint.Color.GRAY);
         this.setEffect(ds);
         

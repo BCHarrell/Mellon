@@ -41,6 +41,10 @@ public class MainMenu extends VBox {
         VBox innerBox = new VBox();
         innerBox.setSpacing(15);
         
+        //Sorts by name
+        accounts.sort((o1, o2) -> 
+                o1.getAccountName().compareTo(o2.getAccountName()));
+        
         for (WebAccount a : accounts) {
             innerBox.getChildren().add(new ProfilePane(CONTAINER, a));
         }
