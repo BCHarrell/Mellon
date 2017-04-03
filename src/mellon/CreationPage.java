@@ -5,15 +5,17 @@ import java.util.ArrayList;
 
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.*;
 import javafx.util.Callback;
 
 /**
  * @author Brent H.
  */
-public class CreationPage extends VBox {
+public class CreationPage extends BorderPane {
 
     private final MenuContainer CONTAINER;
     private ArrayList<Character> allowedSymbols;
@@ -49,22 +51,27 @@ public class CreationPage extends VBox {
      * Creates the UI elements
      */
     private void addItems() {
-        this.setAlignment(Pos.CENTER);
-        this.setSpacing(75);
         adv = new AdvancedMenu(CONTAINER, this);
+        
+        VBox mainArea = new VBox();
+        mainArea.setAlignment(Pos.CENTER);
+        mainArea.setSpacing(75);
+        mainArea.setPadding(new Insets(0, 30, 0, 30));
         
         //Top Horizontal Box
         HBox topHB = new HBox();
         topHB.setAlignment(Pos.CENTER);
         topHB.setSpacing(200);
         
-        //Vertical box to house nickname and username elements
-        VBox namingVB = new VBox();
-        namingVB.setSpacing(10);
+        //Vertical box to profile elements
+        VBox settingsVB = new VBox();
+        settingsVB.setSpacing(15);
 
         //Nickname
         VBox nickVB = new VBox();
-        Label nickLabel = new Label("Nickname");
+        nickVB.setSpacing(3);
+        Text nickLabel = new Text("Nickname");
+        nickLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         TextField nickField = new TextField();
         nickField.setMaxWidth(350);
         nickField.setPromptText("Enter account nickname");
@@ -78,7 +85,9 @@ public class CreationPage extends VBox {
 
         //Username
         VBox userVB = new VBox();
-        Label userLabel = new Label("Username");
+        userVB.setSpacing(3);
+        Text userLabel = new Text("Username");
+        userLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         TextField userField = new TextField();
         userField.setMaxWidth(350);
         userField.setPromptText("Enter username");
@@ -92,7 +101,9 @@ public class CreationPage extends VBox {
 
         //Length selection
         VBox lengthVB = new VBox();
-        Label lengthLabel = new Label("Password Length");
+        lengthVB.setSpacing(3);
+        Text lengthLabel = new Text("Password Length");
+        lengthLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
                 "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(350);
@@ -105,44 +116,13 @@ public class CreationPage extends VBox {
         Button goBack = new Button("Back to Selection");
         custLength.getChildren().addAll(length, goBack);
         lengthVB.getChildren().addAll(lengthLabel, cb);
-
-        namingVB.getChildren().addAll(nickVB, userVB, lengthVB);
-
-        //CUSTOMIZATION box
-        VBox custVB = new VBox();
-        custVB.setAlignment(Pos.CENTER_RIGHT);
-        custVB.setSpacing(5);
-
-        //Quick customize box
-        Label customize = new Label("Quick Customize");
-
-        VBox optionVB = new VBox();
-        optionVB.setAlignment(Pos.CENTER_LEFT);
-        optionVB.setSpacing(3);
-        CheckBox upper = new CheckBox("Uppercase");
-        upper.setSelected(true);
-        CheckBox lower = new CheckBox("Lowercase");
-        lower.setSelected(true);
-
-        CheckBox symb = new CheckBox("Symbols");
-        symb.setSelected(true);
-        CheckBox numbers = new CheckBox("Numbers");
-        numbers.setSelected(true);
-        optionVB.getChildren().addAll(upper, lower, symb, numbers);
-
-        //Advanced menu
-        Button advanced = new Button("Advanced");
-
-        //ADD
-        custVB.getChildren().addAll(customize, optionVB, advanced);
-        topHB.getChildren().addAll(namingVB, custVB);
-
+        
         //Expiration
         VBox expirationBox = new VBox();
-        expirationBox.setAlignment(Pos.CENTER);
-        expirationBox.setSpacing(5);
+        expirationBox.setSpacing(3);
         CheckBox expireCB = new CheckBox();
         Label expireLabel = new Label("Set password expiration?");
+        expireLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         expireLabel.setGraphic(expireCB);
         expireLabel.setContentDisplay(ContentDisplay.RIGHT);
         DatePicker expiration = new DatePicker();
@@ -168,7 +148,49 @@ public class CreationPage extends VBox {
         expiration.setVisible(false);
         expirationBox.getChildren().addAll(expireLabel, expiration);
 
-        //Generate
+        settingsVB.getChildren().addAll(nickVB, userVB, lengthVB, expirationBox);
+
+        //CUSTOMIZATION box
+        VBox custVB = new VBox();
+        custVB.setAlignment(Pos.CENTER_RIGHT);
+        custVB.setSpacing(5);
+        custVB.setPadding(new Insets(5, 5, 5, 5));
+
+        //Quick customize box
+        Text customize = new Text("Quick Customize");
+        customize.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        
+        VBox innerVB = new VBox();
+        innerVB.setPadding(new Insets(10, 10, 10, 10));
+        innerVB.setSpacing(10);
+        
+        VBox optionVB = new VBox();
+        optionVB.setAlignment(Pos.CENTER_LEFT);
+        optionVB.setSpacing(8);
+        CheckBox upper = new CheckBox("Uppercase");
+        upper.setSelected(true);
+        CheckBox lower = new CheckBox("Lowercase");
+        lower.setSelected(true);
+
+        CheckBox symb = new CheckBox("Symbols");
+        symb.setSelected(true);
+        CheckBox numbers = new CheckBox("Numbers");
+        numbers.setSelected(true);
+        optionVB.getChildren().addAll(upper, lower, symb, numbers);
+
+        //Advanced menu
+        HBox centeringHB = new HBox();
+        centeringHB.setAlignment(Pos.CENTER);
+        Button advanced = new Button("Advanced");
+        centeringHB.getChildren().add(advanced);
+        
+        innerVB.getChildren().addAll(optionVB, centeringHB);
+
+        //ADD
+        custVB.getChildren().addAll(customize, innerVB);
+        topHB.getChildren().addAll(settingsVB, custVB);
+
+        //Generate Area
         VBox generateVB = new VBox();
         generateVB.setAlignment(Pos.CENTER);
         generateVB.setSpacing(15);
@@ -180,10 +202,18 @@ public class CreationPage extends VBox {
             generatedWebPassword.setText(currentPass);
         }
         
+        generateVB.getChildren().addAll(generatedWebPassword, generate);
+        
+        //Save anchored to bottom
+        HBox saveHB = new HBox();
+        saveHB.setAlignment(Pos.CENTER);
+        saveHB.setPadding(new Insets(0, 0, 15, 0));
         Button save = new Button("Save Account");
-        generateVB.getChildren().addAll(generate, generatedWebPassword, save);
-
-        this.getChildren().addAll(topHB, expirationBox, generateVB);
+        saveHB.getChildren().add(save);
+        
+        mainArea.getChildren().addAll(topHB, generateVB);
+        this.setCenter(mainArea);
+        this.setBottom(saveHB);
 
 
         /*****************

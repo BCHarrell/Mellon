@@ -38,9 +38,7 @@ public class ProfilePane extends VBox{
     private void addItems(){
         this.setSpacing(5);
         //Move to CSS file
-        this.setStyle("-fx-background-color: #0088AA;"
-                    + "-fx-stroke: black;"
-                    + "-fx-stroke-width: 3;");
+        this.setStyle("-fx-background-color: #0088AA;");
         this.setMinHeight(50);
         
         DropShadow ds = new DropShadow();
