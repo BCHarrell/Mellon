@@ -68,7 +68,7 @@ public class ProfilePane extends VBox{
         //USERNAME Box
         VBox userVB = new VBox();
         userVB.setSpacing(5);
-        Text userLabel = new Text("Username:");
+        Text userLabel = new Text("Username");
         userLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         userLabel.setStyle("-fx-fill: #ffffff");
         TextField username = new TextField();
