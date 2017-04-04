@@ -2,15 +2,33 @@ package mellon;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import static java.lang.System.in;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.jnlp.PrintService;
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
+import javax.print.PrintServiceLookup;
+import javax.print.ServiceUI;
+import javax.print.SimpleDoc;
+import javax.print.attribute.DocAttributeSet;
+import javax.print.attribute.HashDocAttributeSet;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.Copies;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -215,8 +233,24 @@ public class SettingsMenu extends VBox {
             alert.setContentText("Please retrieve you account report from printer");
             alert.showAndWait();
             // This is where the file should be sent to the printer
-            
-            // file.delete(); This commented out for now since you'll be looking at the file output
+
+            try {
+                PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
+                DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE; 
+                javax.print.PrintService printService[] = PrintServiceLookup.lookupPrintServices(flavor, pras);
+                javax.print.PrintService defaultService = PrintServiceLookup.lookupDefaultPrintService();
+                javax.print.PrintService service = PrintServiceLookup.lookupDefaultPrintService();
+                if (service != null) {
+                    DocPrintJob job = service.createPrintJob();
+                    FileInputStream fis = new FileInputStream(file);
+                    DocAttributeSet das = new HashDocAttributeSet();
+                    Doc doc = new SimpleDoc(fis, flavor, das);
+                    job.print(doc, pras);
+                }
+            } catch (Exception a) {
+                System.out.println(a.getMessage()); 
+            }
+         file.delete();
         });
     }//end addItems 
 }
