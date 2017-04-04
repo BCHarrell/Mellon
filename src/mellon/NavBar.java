@@ -50,6 +50,7 @@ public class NavBar extends BorderPane{
 
         this.setPadding(new Insets(15.0, 15.0, 15.0, 15.0));
         this.setStyle("-fx-background-color: #0088AA");
+        this.setPickOnBounds(true);
         
         DropShadow ds = new DropShadow();
         ds.setOffsetY(3.0);
@@ -107,16 +108,15 @@ public class NavBar extends BorderPane{
         /*****************
          *EVENT LISTENERS*
          *****************/
-        homeBtn.setOnAction(e -> CONTAINER.getContent().setCenter(MAIN));
+        homeBtn.setOnAction(e -> {CONTAINER.requestMenuChange(MAIN);});
         
-        addBtn.setOnAction(e -> CONTAINER.getContent()
-                    .setCenter(new CreationPage(CONTAINER)));
+        addBtn.setOnAction(e -> CONTAINER
+                .requestMenuChange(new CreationPage(CONTAINER)));
         
-        helpBtn.setOnAction(e -> CONTAINER.getContent()
-                    .setCenter(new HelpPage(CONTAINER)));
+        helpBtn.setOnAction(e -> CONTAINER
+                .requestMenuChange(new HelpPage(CONTAINER)));
         
-        settingsBtn.setOnAction(e -> CONTAINER.getContent()
-                    .setCenter(new SettingsMenu(CONTAINER)));
+        settingsBtn.setOnAction(e -> CONTAINER.displaySettings());
         
         logoutBtn.setOnAction(e -> {
             Alert confirm = new Alert(AlertType.CONFIRMATION, "Are you sure"

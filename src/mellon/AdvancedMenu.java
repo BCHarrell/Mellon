@@ -11,12 +11,13 @@ import javafx.scene.layout.*;
  *
  * @author Brent H.
  */
-public class AdvancedMenu extends VBox {
+public class AdvancedMenu extends BorderPane {
     
     private CreationPage parent;
     private final String[] OPTIONS = {"!", "@", "#", "$", "%", "^", "&", "*", 
             "(", ")", "-", "_", "=", "+", ",", ".", "<", ">", "?", "/"}; //20
     private CheckBox[] boxes = new CheckBox[OPTIONS.length];
+    private VBox contentBox = new VBox();
     
     
     public AdvancedMenu(CreationPage parent) {
@@ -28,11 +29,12 @@ public class AdvancedMenu extends VBox {
      * Creates the UI elements
      */
     private void addItems() {
-        this.setAlignment(Pos.CENTER);
-        this.setSpacing(15);
         this.setMaxSize(350, 200);
-        this.setPadding(new Insets(25, 25, 25, 25));
         this.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
+        
+        contentBox.setAlignment(Pos.CENTER);
+        contentBox.setSpacing(15);
+        contentBox.setPadding(new Insets(10, 25, 25, 25));
         
         //Options
         GridPane grid = new GridPane();
@@ -56,17 +58,32 @@ public class AdvancedMenu extends VBox {
         
         Button save = new Button("Save Selections");
         
-        this.getChildren().addAll(grid, save);
+        contentBox.getChildren().addAll(grid, save);
+        this.setCenter(contentBox);
+        
+        HBox closeBox = new HBox();
+        closeBox.setAlignment(Pos.CENTER_RIGHT);
+        Button close = new Button("X");
+        close.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+        close.setBackground(Background.EMPTY);
+        closeBox.getChildren().add(close);
+        this.setTop(closeBox);
         
         /*****************
          *EVENT LISTENERS*
          *****************/
         
+        //Saves and closes
         save.setOnAction(e -> {
-            //CONTAINER.setCenter(parent);
             parent.setAllowable(getAllowable());
             parent.popAdvanced();
         });
+        
+        //Closes on x
+        close.setOnAction(e -> {
+            parent.popAdvanced();
+        });
+        
     }//End addItems
     
     /**

@@ -31,7 +31,10 @@ public class MainMenu extends VBox {
     /**
      * Creates the UI elements
      */
-    public void update() {        
+    public void update() {
+        
+        accounts = UserInfoSingleton.getInstance().getProfiles();
+        
         ScrollPane scroll = new ScrollPane();
         scroll.setStyle("-fx-background-color: transparent;");
         scroll.setFitToWidth(true);

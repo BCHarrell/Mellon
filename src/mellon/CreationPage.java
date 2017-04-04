@@ -335,9 +335,9 @@ public class CreationPage extends StackPane {
                             + " please try again.");
                     alert.showAndWait();
                 }
-            }
-            CONTAINER.getMain().update();
-            CONTAINER.getContent().setCenter(CONTAINER.getMain());
+                CONTAINER.getMain().update();
+                CONTAINER.requestMenuChange(CONTAINER.getMain());
+            } 
         });
         
         //Opens advanced symbol menu

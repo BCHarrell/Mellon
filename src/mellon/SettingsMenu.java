@@ -11,16 +11,20 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import java.util.ArrayList;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 /**
  *
  *
  */
-public class SettingsMenu extends VBox {
+public class SettingsMenu extends BorderPane {
 
     //Temporary, will eventually open in new window
     private final MenuContainer CONTAINER;
-
+    private VBox contentBox = new VBox();
+    
     public SettingsMenu(MenuContainer c) {
         CONTAINER = c;
         addItems();
@@ -30,18 +34,27 @@ public class SettingsMenu extends VBox {
      * Creates the UI elements
      */
     private void addItems() {
-        this.setAlignment(Pos.CENTER);
-        this.setSpacing(45);
+        this.setMaxSize(500, 260);
+        this.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
+        
+        contentBox.setAlignment(Pos.CENTER);
+        contentBox.setSpacing(25);
 
-        VBox topVB = new VBox();
-        topVB.setAlignment(Pos.CENTER_LEFT);
-        topVB.setPadding(new Insets(0, 0, 0, 20));
-        topVB.setSpacing(10);
-
+        //Puts password reset on its own side so it does not affect the height
+        BorderPane splitter = new BorderPane();
+        splitter.setPadding(new Insets(10, 15, 0, 15));
+        
+        //Left side settings
+        VBox settingsVB = new VBox();
+        settingsVB.setAlignment(Pos.CENTER_LEFT);
+        settingsVB.setSpacing(20);
+        
         //Timeout
         HBox timeoutHB = new HBox();
         timeoutHB.setSpacing(10);
-        Label timeoutLabel = new Label("Timeout duration (minutes):");
+        Text timeoutLabel = new Text("Timeout duration (min):");
+        timeoutLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        timeoutLabel.setStyle("-fx-fill: #FFFFFF;");
         TextField timeoutTF = new TextField();
         /////////THIS WILL NEED UPDATING TO PULL USER SETTINGS/////////
         timeoutTF.setText("10");
@@ -50,15 +63,20 @@ public class SettingsMenu extends VBox {
         timeoutHB.getChildren().addAll(timeoutLabel, timeoutTF);
 
         //Copy password instead of displaying
-        Label copy = new Label("Copy password instead of displaying?   ");
+        HBox copyHB = new HBox();
+        copyHB.setSpacing(5);
+        Text copy = new Text("Auto copy password?");
+        copy.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        copy.setStyle("-fx-fill: #FFFFFF;");
         CheckBox copyCB = new CheckBox();
-        copy.setGraphic(copyCB);
-        copy.setContentDisplay(ContentDisplay.RIGHT);
+        copyHB.getChildren().addAll(copy, copyCB);
 
         //Default Password Length
         HBox lengthHB = new HBox();
         lengthHB.setSpacing(10);
-        Label lengthLabel = new Label("Default Password Length");
+        Text lengthLabel = new Text("Default Password Length");
+        lengthLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        lengthLabel.setStyle("-fx-fill: #FFFFFF;");
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
                 "8", "16", "24", "32", "48", "Custom"));
         cb.setMaxWidth(45);
@@ -68,11 +86,20 @@ public class SettingsMenu extends VBox {
         custLength.setSpacing(5);
         TextField length = new TextField();
         length.setMaxWidth(45);
-        Button goBack = new Button("Back to Selection");
+        Button goBack = new Button("Back");
         custLength.getChildren().addAll(length, goBack);
         lengthHB.getChildren().addAll(lengthLabel, cb);
+        
+        //View report
+        Button report = new Button("Print Passwords");
+
+        settingsVB.getChildren().addAll(timeoutHB, copyHB, lengthHB, report);
 
         //Change Password
+        //VBox to store height
+        VBox passwordVB = new VBox();
+        passwordVB.setMinHeight(150);
+        
         TitledPane password = new TitledPane();
         password.setText("Change Master Password");
         password.setExpanded(false);
@@ -93,25 +120,34 @@ public class SettingsMenu extends VBox {
         Button savePass = new Button("Save Password");
         box.getChildren().addAll(old, newPass, repeat, savePass);
         password.setContent(box);
-
-        //View report
-        Button report = new Button("Print Passwords");
-
-        topVB.getChildren().addAll(timeoutHB, copy, lengthHB,
-                password, report);
+        
+        passwordVB.getChildren().add(password);
+        splitter.setLeft(settingsVB);
+        splitter.setRight(passwordVB);
 
         //Save changes
         Button save = new Button("Save Changes");
 
-        this.getChildren().addAll(topVB, save);
+        contentBox.getChildren().addAll(splitter, save);
+        this.setCenter(contentBox);
+        
+        HBox closeBox = new HBox();
+        closeBox.setAlignment(Pos.CENTER_RIGHT);
+        Button close = new Button("X");
+        close.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+        close.setBackground(Background.EMPTY);
+        closeBox.getChildren().add(close);
+        this.setTop(closeBox);
 
         /**
          * **************
          * EVENT LISTENERS **************
          */
-        //TEMPORARY, WILL BE OWN WINDOW
-        save.setOnAction(e -> CONTAINER.getContent()
-                            .setCenter(CONTAINER.getMain()));
+        //Closes on save
+        save.setOnAction(e -> CONTAINER.closeSettings());
+        
+        //Closes on X
+        close.setOnAction(e -> CONTAINER.closeSettings());
 
         //Choicebox for length selection
         cb.getSelectionModel().selectedIndexProperty().addListener(
@@ -128,6 +164,7 @@ public class SettingsMenu extends VBox {
         goBack.setOnAction(e -> {
             lengthHB.getChildren().remove(custLength);
             lengthHB.getChildren().add(cb);
+            cb.setValue(16);
         });
 
         // Thomas, how do you feel about ignoring web accounts here. We can hash old pass and compare with 
