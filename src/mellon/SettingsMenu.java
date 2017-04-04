@@ -110,7 +110,8 @@ public class SettingsMenu extends VBox {
          * EVENT LISTENERS **************
          */
         //TEMPORARY, WILL BE OWN WINDOW
-        save.setOnAction(e -> CONTAINER.setCenter(CONTAINER.getMain()));
+        save.setOnAction(e -> CONTAINER.getContent()
+                            .setCenter(CONTAINER.getMain()));
 
         //Choicebox for length selection
         cb.getSelectionModel().selectedIndexProperty().addListener(

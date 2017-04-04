@@ -60,7 +60,8 @@ public class HelpPage extends Accordion {
         
         //TEMPORARY - BACK TO MENU
         Button back = new Button("Back to menu");
-        back.setOnAction(e -> CONTAINER.setCenter(CONTAINER.getMain()));
+        back.setOnAction(e -> CONTAINER.getContent()
+                            .setCenter(CONTAINER.getMain()));
         TitledPane backPane = new TitledPane();
         backPane.setText("Back to Main");
         backPane.setContent(back);

@@ -2,6 +2,7 @@
 package mellon;
 
 import java.util.ArrayList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -12,15 +13,13 @@ import javafx.scene.layout.*;
  */
 public class AdvancedMenu extends VBox {
     
-    private final MenuContainer CONTAINER;
     private CreationPage parent;
     private final String[] OPTIONS = {"!", "@", "#", "$", "%", "^", "&", "*", 
             "(", ")", "-", "_", "=", "+", ",", ".", "<", ">", "?", "/"}; //20
     private CheckBox[] boxes = new CheckBox[OPTIONS.length];
     
     
-    public AdvancedMenu(MenuContainer c, CreationPage parent) {
-        CONTAINER = c;
+    public AdvancedMenu(CreationPage parent) {
         this.parent = parent;
         addItems();
     }
@@ -31,6 +30,9 @@ public class AdvancedMenu extends VBox {
     private void addItems() {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(15);
+        this.setMaxSize(350, 200);
+        this.setPadding(new Insets(25, 25, 25, 25));
+        this.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
         
         //Options
         GridPane grid = new GridPane();
@@ -46,7 +48,7 @@ public class AdvancedMenu extends VBox {
             grid.add(cb, colCount, rowCount);
             colCount++;
             
-            if (i != 0 && i % 3 == 0){
+            if (i != 0 && i % 5 == 0){
                 rowCount++;
                 colCount = 0;
             }
@@ -61,8 +63,9 @@ public class AdvancedMenu extends VBox {
          *****************/
         
         save.setOnAction(e -> {
-            CONTAINER.setCenter(parent);
+            //CONTAINER.setCenter(parent);
             parent.setAllowable(getAllowable());
+            parent.popAdvanced();
         });
     }//End addItems
     

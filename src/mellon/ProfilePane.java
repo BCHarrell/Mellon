@@ -1,6 +1,7 @@
 package mellon;
 
 
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -120,7 +121,7 @@ public class ProfilePane extends VBox{
          *****************/
         //Edit button
         edit.setOnAction(e -> {
-            CONTAINER.setCenter(new CreationPage(CONTAINER,
+            CONTAINER.getContent().setCenter(new CreationPage(CONTAINER,
                         account.getAccountName(), account.getUsername(),
                         account.getPassword()));
         });
@@ -155,22 +156,42 @@ public class ProfilePane extends VBox{
         
         //Copies text to clipboard and alerts the user
         password.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2){
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                ClipboardContent content = new ClipboardContent();
-                content.putString(password.getText());
-                clipboard.setContent(content);
-                copied.setVisible(true);
-                
-                //removes label after 5 sec
-                Timeline timer = new Timeline(new KeyFrame(Duration.seconds(5),
-                    (ActionEvent event) -> {
-                        copied.setVisible(false);
-                    })
-                );
-                timer.play();
-            }
+            
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(password.getText());
+            clipboard.setContent(content);
+            createCopyNotification();
         });
+    }
+    
+    private void createCopyNotification(){
+        AnchorPane anch = new AnchorPane();
+        anch.setPickOnBounds(false);
+        
+        HBox notification = new HBox();
+        notification.setAlignment(Pos.CENTER);
+        notification.setPrefSize(125, 30);
+        notification.setPadding(new Insets(5, 15, 5, 15));
+        notification.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
+        
+        Text notificationText = new Text("Copied to Clipboard");
+        notificationText.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        notificationText.setStyle("-fx-fill: #FFFFFF;");
+        notification.getChildren().add(notificationText);
+        
+        anch.getChildren().add(notification);
+        AnchorPane.setBottomAnchor(notification, 30.0);
+        AnchorPane.setLeftAnchor(notification, 186.0);
+        
+        CONTAINER.getChildren().add(anch);
+        
+        FadeTransition ft = new FadeTransition(Duration.millis(2500), anch);
+        ft.setFromValue(1.0);
+        ft.setToValue(0);
+        ft.setDelay(Duration.millis(1500));
+        ft.setOnFinished(e -> CONTAINER.getChildren().remove(anch));
+        ft.play();
     }
     
     /**

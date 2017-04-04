@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.util.Callback;
@@ -15,18 +16,20 @@ import javafx.util.Callback;
 /**
  * @author Brent H.
  */
-public class CreationPage extends BorderPane {
+public class CreationPage extends StackPane {
 
     private final MenuContainer CONTAINER;
     private ArrayList<Character> allowedSymbols;
     private AdvancedMenu adv;
     private boolean edit;
     private String currentNick, currentUser, currentPass;
+    private BorderPane bp = new BorderPane();
+    private HBox advHB = new HBox();
 
     public CreationPage(MenuContainer c) {
         CONTAINER = c;
         edit = false;
-        addItems();
+        createBorderPane();
     }
     
     /**
@@ -44,14 +47,19 @@ public class CreationPage extends BorderPane {
         currentNick = nick;
         currentUser = user;
         currentPass = pass;
-        addItems();
+        createBorderPane();
+    }
+    
+    private void addAdvMenu() {
+        this.getChildren().add(adv);
+        blur();
     }
     
     /**
      * Creates the UI elements
      */
-    private void addItems() {
-        adv = new AdvancedMenu(CONTAINER, this);
+    private void createBorderPane() {
+        adv = new AdvancedMenu(this);
         
         VBox mainArea = new VBox();
         mainArea.setAlignment(Pos.CENTER);
@@ -212,8 +220,9 @@ public class CreationPage extends BorderPane {
         saveHB.getChildren().add(save);
         
         mainArea.getChildren().addAll(topHB, generateVB);
-        this.setCenter(mainArea);
-        this.setBottom(saveHB);
+        bp.setCenter(mainArea);
+        bp.setBottom(saveHB);
+        this.getChildren().add(bp);
 
 
         /*****************
@@ -258,6 +267,7 @@ public class CreationPage extends BorderPane {
         });
         
         //Save account
+        //THIS CAN BE MOVED TO ITS OWN METHOD FOR CLARITY
         save.setOnAction(e -> {
             if (nickField.getText().isEmpty() ||
                     userField.getText().isEmpty() ||
@@ -318,7 +328,7 @@ public class CreationPage extends BorderPane {
                 }
             }
             CONTAINER.getMain().update();
-            CONTAINER.setCenter(CONTAINER.getMain());
+            CONTAINER.getContent().setCenter(CONTAINER.getMain());
         });
         
         //Opens advanced symbol menu
@@ -326,7 +336,7 @@ public class CreationPage extends BorderPane {
             if (!symb.isSelected())
                 adv.deselect();
 
-            CONTAINER.setCenter(adv);
+            addAdvMenu();
         });
         
         //Expiration date checkbox
@@ -345,6 +355,25 @@ public class CreationPage extends BorderPane {
      */
     public void setAllowable(ArrayList<Character> list) {
         allowedSymbols = list;
+    }
+    
+    public void popAdvanced(){
+        if (this.getChildren().contains(adv)) {
+            this.getChildren().remove(adv);
+            unBlur();
+        }
+    }
+    
+    private void blur(){
+        BoxBlur blur = new BoxBlur();
+        blur.setWidth(5);
+        blur.setHeight(5);
+        blur.setIterations(3);
+        bp.setEffect(blur);
+    }
+    
+    private void unBlur(){
+        bp.setEffect(null);
     }
 }
 

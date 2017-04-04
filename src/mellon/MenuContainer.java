@@ -1,7 +1,7 @@
 
 package mellon;
 
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.*;
 
 /**
  * This class is the main UI class for managing the displayed menus.  It
@@ -10,18 +10,20 @@ import javafx.scene.layout.BorderPane;
  * 
  * @author Brent H.
  */
-public class MenuContainer extends BorderPane{
+public class MenuContainer extends StackPane{
     
     private final MellonFramework FRAMEWORK;
     private final MainMenu MAIN;
     private final MasterAccount USER;
+    private final BorderPane content = new BorderPane();
     
     public MenuContainer(MellonFramework fw){
         FRAMEWORK = fw;
         MAIN = new MainMenu(this);
         USER = UserInfoSingleton.getInstance().getMasterAccount();
-        this.setTop(new NavBar(FRAMEWORK, this, MAIN));
-        this.setCenter(MAIN);
+        content.setTop(new NavBar(FRAMEWORK, this, MAIN));
+        content.setCenter(MAIN);
+        this.getChildren().add(content);
     }
     
     /**
@@ -43,5 +45,12 @@ public class MenuContainer extends BorderPane{
      */
     public void logout(){
         FRAMEWORK.getScene().setRoot(new LoginPage(FRAMEWORK));
+    }
+    
+    /**
+     * @return Gets the content pane in the container
+     */
+    public BorderPane getContent(){
+        return content;
     }
 }

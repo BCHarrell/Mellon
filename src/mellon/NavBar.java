@@ -107,15 +107,15 @@ public class NavBar extends BorderPane{
         /*****************
          *EVENT LISTENERS*
          *****************/
-        homeBtn.setOnAction(e -> CONTAINER.setCenter(MAIN));
+        homeBtn.setOnAction(e -> CONTAINER.getContent().setCenter(MAIN));
         
-        addBtn.setOnAction(e -> CONTAINER
+        addBtn.setOnAction(e -> CONTAINER.getContent()
                     .setCenter(new CreationPage(CONTAINER)));
         
-        helpBtn.setOnAction(e -> CONTAINER
+        helpBtn.setOnAction(e -> CONTAINER.getContent()
                     .setCenter(new HelpPage(CONTAINER)));
         
-        settingsBtn.setOnAction(e -> CONTAINER
+        settingsBtn.setOnAction(e -> CONTAINER.getContent()
                     .setCenter(new SettingsMenu(CONTAINER)));
         
         logoutBtn.setOnAction(e -> {

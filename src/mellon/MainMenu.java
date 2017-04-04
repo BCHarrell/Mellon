@@ -19,6 +19,7 @@ public class MainMenu extends VBox {
     
     private final MenuContainer CONTAINER;
     private ArrayList<WebAccount> accounts; //not final so it can be updated
+    
     public MainMenu(MenuContainer c) {
         CONTAINER = c;
         accounts = UserInfoSingleton.getInstance().getProfiles();
@@ -30,13 +31,13 @@ public class MainMenu extends VBox {
     /**
      * Creates the UI elements
      */
-    public void update() {
+    public void update() {        
         ScrollPane scroll = new ScrollPane();
         scroll.setStyle("-fx-background-color: transparent;");
         scroll.setFitToWidth(true);
         scroll.setPrefSize(425, 500);
         scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        //ADD TO CSS TO SPEED UP
+        //ADD TO CSS TO SPEED UP, .scroll-pane > .viewport{}
         
         VBox innerBox = new VBox();
         innerBox.setSpacing(15);
@@ -50,6 +51,13 @@ public class MainMenu extends VBox {
         }
         
         scroll.setContent(innerBox);
-        this.getChildren().add(scroll);
+        this.getChildren().setAll(scroll);
+        
+        //DEBUG
+        for (WebAccount x : accounts){
+            System.out.println(x.getAccountName() + " // " + x.getUsername() +
+                    " // " + x.getPassword());
+        }
+        System.out.println("*****");
     }
 }

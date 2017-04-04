@@ -96,7 +96,7 @@ public class TempRetriever extends Accordion {
             
             Button edit = new Button("Edit Profile");
             edit.setOnAction(e -> {
-                CONTAINER.setCenter(new CreationPage(CONTAINER,
+                CONTAINER.getContent().setCenter(new CreationPage(CONTAINER,
                             a.getAccountName(), a.getUsername(),
                             a.getPassword()));
             });
