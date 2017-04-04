@@ -271,7 +271,7 @@ public class CreationPage extends BorderPane {
             } else {
                 WebAccount newAccount = null;
                 UserInfoSingleton.getInstance();
-                int id = UserInfoSingleton.getUserID();
+                int userID = UserInfoSingleton.getUserID();
                 String masterKey = UserInfoSingleton.getPassword();
                 String inputNickname = nickField.getText();
                 String inputUsername = userField.getText();
@@ -287,11 +287,25 @@ public class CreationPage extends BorderPane {
                         inputNickname,
                         masterKey,
                         inputExpiration);
-                boolean accountCreated = DBConnect.CreateWebAccount(id,
-                        newAccount.getEncodedAccountName(),
-                        newAccount.getEncodedUsername(),
-                        newAccount.getEncodedPassword(),
-                        inputExpiration);
+                boolean accountCreated = false;
+                int existingWebAccount = DBConnect.existingWebAccount(userID,
+                                         newAccount.getEncodedAccountName());
+                if (existingWebAccount > 0) {
+                    // Web account already exists, update it
+                    DBConnect.updateWebAccount(userID,
+                            newAccount.getWebID(),
+                            newAccount.getEncodedAccountName(),
+                            newAccount.getEncodedUsername(),
+                            newAccount.getEncodedPassword());
+                    accountCreated = true;
+                } else {
+                    // Web account doesn't exist, create it
+                    accountCreated = DBConnect.CreateWebAccount(userID,
+                            newAccount.getEncodedAccountName(),
+                            newAccount.getEncodedUsername(),
+                            newAccount.getEncodedPassword(),
+                            inputExpiration);
+                }
                 if (accountCreated) {
                     UserInfoSingleton.getInstance().addSingleProfile(newAccount);
                 } else if (!accountCreated) {

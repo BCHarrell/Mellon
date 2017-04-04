@@ -23,6 +23,9 @@ public class MasterAccount {
     private Connection connection;
     private ArrayList<WebAccount> userAccounts;
     private boolean authenticated;
+    private int timeoutDuration;
+    private boolean copyPassword;
+    private int defaultPasswordLength;
 
 
     public MasterAccount(String username, String password) throws NoSuchAlgorithmException {

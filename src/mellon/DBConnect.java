@@ -261,11 +261,11 @@ public class DBConnect {
         return updated;
     }
 
-    public static boolean updateWebPassword(int userIDIn,
-                                            int webIDIn,
-                                            String accountName,
-                                            String username,
-                                            String password) {
+    public static boolean updateWebAccount(int userIDIn,
+                                           int webIDIn,
+                                           String accountName,
+                                           String username,
+                                           String password) {
         if (userIDIn == 0 || webIDIn == 0 || accountName.isEmpty()
                 || username.isEmpty() || password.isEmpty()) {
             return false;
@@ -290,5 +290,54 @@ public class DBConnect {
             e.printStackTrace();
         }
         return updated;
+    }
+
+    public static int existingWebAccount(int userIDIn, String accountNameIn) {
+        int existingWebAccount = 0;
+        Connection connection = getConnect();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT WEB_ID " +
+                    "FROM WEB_ACCOUNTS " +
+                    "WHERE USER_ID = ? " +
+                    "AND ACCOUNT_NAME = ?");
+            preparedStatement.setInt(1, userIDIn);
+            preparedStatement.setString(2, accountNameIn);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                existingWebAccount = resultSet.getInt(1);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return existingWebAccount;
+    }
+
+    public static int getTimeoutDuration(int userIDin) {
+        Connection connection = getConnect();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        int timeout = 0;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT TIMEOUT " +
+                                                    "FROM USER_SETTINGS " +
+                                                    "WHERE USER_ID = ?");
+            preparedStatement.setInt(1, userIDin);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                timeout = resultSet.getInt(1);
+                UserInfoSingleton.getInstance().setTimeoutDuration(timeout);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return timeout;
     }
 }

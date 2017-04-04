@@ -152,7 +152,7 @@ public class SettingsMenu extends VBox {
                     newWebAccounts.add(account.updatePassword(plainNewMasterPassword));
                 });
                 newWebAccounts.stream().forEach(account -> {
-                    DBConnect.updateWebPassword(userID,
+                    DBConnect.updateWebAccount(userID,
                                     account.getWebID(),
                                     account.getEncodedAccountName(),
                                     account.getEncodedUsername(),

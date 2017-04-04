@@ -12,6 +12,9 @@ public class UserInfoSingleton {
     private static String username;
     private static String password;
     private static MasterAccount masterAccount;
+    private static int timeoutDuration;
+    private static boolean copyPassword;
+    private static int defaultPasswordLength;
     private static ArrayList<WebAccount> profiles = new ArrayList<>();
 
     private UserInfoSingleton() {
@@ -29,6 +32,9 @@ public class UserInfoSingleton {
         username = null;
         password = null;
         masterAccount = null;
+        timeoutDuration = 999;
+        copyPassword = false;
+        defaultPasswordLength = 16;
         profiles.clear();
         instance = null;
     }
@@ -74,10 +80,41 @@ public class UserInfoSingleton {
     }
 
     public static void addSingleProfile(WebAccount profileIn) {
+        profiles.stream().forEach(p -> {
+            if (p.getWebID() == profileIn.getWebID()) {
+                int index = profiles.indexOf(p);
+                profiles.set(index, profileIn);
+                return;
+            }
+        });
         profiles.add(profileIn);
     }
 
     public static ArrayList<WebAccount> getProfiles() {
         return profiles;
+    }
+
+    public static int getTimeoutDuration() {
+        return timeoutDuration;
+    }
+
+    public static void setTimeoutDuration(int timeoutDuration) {
+        UserInfoSingleton.timeoutDuration = timeoutDuration;
+    }
+
+    public static boolean isCopyPassword() {
+        return copyPassword;
+    }
+
+    public static void setCopyPassword(boolean copyPassword) {
+        UserInfoSingleton.copyPassword = copyPassword;
+    }
+
+    public static int getDefaultPasswordLength() {
+        return defaultPasswordLength;
+    }
+
+    public static void setDefaultPasswordLength(int defaultPasswordLength) {
+        UserInfoSingleton.defaultPasswordLength = defaultPasswordLength;
     }
 }
