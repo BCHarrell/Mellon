@@ -170,6 +170,7 @@ public class DBConnect {
         PreparedStatement preparedStatement1 = null;
         PreparedStatement preparedStatement2 = null;
         PreparedStatement preparedStatement3 = null;
+        PreparedStatement preparedStatement4 = null;
         ResultSet resultSet = null;
         Connection connection = getConnect();
         try {
@@ -188,10 +189,14 @@ public class DBConnect {
             preparedStatement3.setInt(1, userID);
             preparedStatement3.setString(2, newPassword);
             preparedStatement3.executeQuery();
+            preparedStatement4 = connection.prepareStatement("INSERT INTO ACCOUNT_SETTINGS (USER_ID) VALUES (?)");
+            preparedStatement4.setInt(1, userID);
+            preparedStatement4.executeQuery();
             resultSet.close();
             preparedStatement1.close();
             preparedStatement2.close();
             preparedStatement3.close();
+            preparedStatement4.close();
             connection.close();
             ACCOUNT_FOUND = true;
 
