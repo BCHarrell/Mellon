@@ -165,6 +165,10 @@ public class ProfilePane extends VBox{
         });
     }
     
+    /**
+     * Creates and displays a notification to the user that the password
+     * was copied to the clipboard, fades after a set time.
+     */
     private void createCopyNotification(){
         AnchorPane anch = new AnchorPane();
         anch.setPickOnBounds(false);

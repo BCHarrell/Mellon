@@ -2,6 +2,7 @@ package mellon;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import javafx.animation.FadeTransition;
 
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -12,6 +13,7 @@ import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
 /**
  * @author Brent H.
@@ -50,9 +52,16 @@ public class CreationPage extends StackPane {
         createBorderPane();
     }
     
+    /**
+     * Displays the advanced menu after a fade transition
+     */
     private void addAdvMenu() {
         this.getChildren().add(adv);
         blur();
+        FadeTransition ft = new FadeTransition(Duration.millis(250), adv);
+        ft.setFromValue(0);
+        ft.setToValue(1.0);
+        ft.play();  
     }
     
     /**
@@ -358,9 +367,16 @@ public class CreationPage extends StackPane {
     }
     
     public void popAdvanced(){
+        //Check just to be sure
         if (this.getChildren().contains(adv)) {
-            this.getChildren().remove(adv);
-            unBlur();
+            FadeTransition ft = new FadeTransition(Duration.millis(250), adv);
+            ft.setFromValue(1.0);
+            ft.setToValue(0);
+            ft.setOnFinished(e -> {
+                this.getChildren().remove(adv);
+                unBlur();
+            });
+            ft.play(); 
         }
     }
     
