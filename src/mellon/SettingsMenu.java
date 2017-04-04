@@ -9,19 +9,19 @@ import javafx.collections.FXCollections;
 import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-
 import java.util.ArrayList;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.text.*;
+
 
 /**
- *
+ * Settings menu appears as an overlay on any menu, called from the nav
+ * bar.
+ * 
+ * @author Brent H.
  *
  */
 public class SettingsMenu extends BorderPane {
 
-    //Temporary, will eventually open in new window
     private final MenuContainer CONTAINER;
     private VBox contentBox = new VBox();
     
