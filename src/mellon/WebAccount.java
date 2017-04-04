@@ -1,14 +1,12 @@
 /**
  *
- Let's use this class to construct a user.
- You can define all variables that the user may use within the application.
- Just add the varibale and setters and getters. Modify constructors as needed to implement new variables
-
-
-
+ * Let's use this class to construct a user.
+ * You can define all variables that the user may use within the application.
+ * Just add the varibale and setters and getters. Modify constructors as needed to implement new variables
+ *
+ *
+ *
  */
-
-
 package mellon;
 
 import javax.crypto.*;
@@ -34,12 +32,12 @@ public class WebAccount {
     // Use this constructor when creating instances of WebAccount from the database
     // Expects encoded input with plain text master password
     public WebAccount(int IDIn,
-                      String encodedUsernameIn,
-                      String encodedPasswordIn,
-                      int webIDIn,
-                      String encodedAccountNameIn,
-                      String masterKey,
-                      LocalDate expDateIn) {
+            String encodedUsernameIn,
+            String encodedPasswordIn,
+            int webIDIn,
+            String encodedAccountNameIn,
+            String masterKey,
+            LocalDate expDateIn) {
         this.id = IDIn;
         this.encodedUsername = encodedUsernameIn;
         this.encodedPassword = encodedPasswordIn;
@@ -56,10 +54,10 @@ public class WebAccount {
     // Use this constructor when creating instances of WebAccount from user input
     // Expects plain text input
     public WebAccount(String usernameIn,
-                      String passwordIn,
-                      String accountNameIn,
-                      String masterKey,
-                      LocalDate expDateIn) {
+            String passwordIn,
+            String accountNameIn,
+            String masterKey,
+            LocalDate expDateIn) {
         this.username = usernameIn;
         this.password = passwordIn;
         this.accountName = accountNameIn;
@@ -143,7 +141,7 @@ public class WebAccount {
     public void setWebID(int webID) {
         this.webID = webID;
     }
-    
+
     public String getUsername() {
         return this.username;
     }
@@ -155,16 +153,16 @@ public class WebAccount {
     public String getPassword() {
         return this.password;
     }
-    
-    public String getAccountName(){
+
+    public String getAccountName() {
         return this.accountName;
     }
-    
+
     public void setPassword(String password) {
         this.password = password;
     }
 
-     public String getEncodedUsername() {
+    public String getEncodedUsername() {
         return this.encodedUsername;
     }
 
@@ -182,5 +180,13 @@ public class WebAccount {
 
     public String getEncodedAccountName() {
         return this.encodedAccountName;
+    }
+
+    public LocalDate getExpDate() {
+        return expDate;
+    }
+
+    public void setExpDate(LocalDate expDate) {
+        this.expDate = expDate;
     }
 }
