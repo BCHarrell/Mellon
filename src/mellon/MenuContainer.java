@@ -27,7 +27,7 @@ public class MenuContainer extends StackPane{
         FRAMEWORK = fw;
         MAIN = new MainMenu(this);
         USER = UserInfoSingleton.getInstance().getMasterAccount();
-        content.setTop(new NavBar(FRAMEWORK, this, MAIN));
+        content.setTop(new NavBar(this));
         content.setCenter(MAIN);
         this.getChildren().add(content);
     }
