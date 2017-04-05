@@ -9,6 +9,8 @@ import javafx.animation.FadeTransition;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.scene.input.KeyCode;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
@@ -29,7 +31,7 @@ public class LoginPage extends VBox {
     
     private TextField username = new TextField();
     private PasswordField password = new PasswordField();
-    private boolean success = false;
+    private String notificationText = "";
 
     public LoginPage(MellonFramework fw, ExternalContainer ec) {
         FRAMEWORK = fw;
@@ -73,6 +75,10 @@ public class LoginPage extends VBox {
         authenticationBox.getChildren().addAll(prog, authenticating);
         authenticationBox.setVisible(false);
         
+        //Notification to user for failure
+        Text notification = new Text();
+        notification.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        notification.setStyle("-fx-fill: red;");
         
         //Add the items to appropriate containers
         hb.getChildren().addAll(login, signUp);
@@ -97,26 +103,32 @@ public class LoginPage extends VBox {
         
         //Login
         login.setOnAction(e -> {
+            authenticationBox.getChildren().setAll(prog, authenticating);
             authenticationBox.setVisible(true);
-            success = false;
             
             Task authenticate = new Task<Void>(){
                 @Override
                 protected Void call() throws Exception {
-                    success = login();
-                    if (success){
-                        transition();
-                    }
+                    login();
                     return null;
                 }
             };
+            authenticate.setOnSucceeded(a -> {
+                transition();
+            });
+            
+            authenticate.setOnFailed(a -> {
+                notification.setText(notificationText);
+                authenticationBox.getChildren().setAll(notification);
+            });
+            
             new Thread(authenticate).start();
         });
             
 
         // BUTTON - Goes to sign up page
-        signUp.setOnAction(e -> CONTAINER.getContent()
-                .setCenter(new SignUpPage(CONTAINER, this)));
+        signUp.setOnAction(e -> CONTAINER
+                .requestMenuChange(new SignUpPage(CONTAINER, this)));
 
     }
     
@@ -133,16 +145,11 @@ public class LoginPage extends VBox {
     /**
      * Performs the login authentication
      */
-    private boolean login(){
+    private void login() throws Exception{
         // If either field is empty
         if (username.getText().isEmpty() || password.getText().isEmpty()) {
-            // Pop-up a message displaying to the user
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Invalid Username or Password");
-            alert.setHeaderText("");
-            alert.setContentText("Please ensure the Username and Password "
-                    + "fields are filled in.");
-            alert.showAndWait();
+            notificationText = "Please fill in all fields";
+            throw new Exception();
         } else {
             try {
                 MasterAccount user = new MasterAccount(username.getText(),
@@ -150,21 +157,14 @@ public class LoginPage extends VBox {
 
                 if (user.getAuthenticated()) {
                     UserInfoSingleton.getInstance().updateMasterAccount(user);
-                    return true;
                 } else {
                     // Pop-up a message displaying to the user
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Invalid Username or Password");
-                    alert.setHeaderText("");
-                    alert.setContentText("Incorrect Username or Password."
-                            + " Please try again.");
-                    alert.showAndWait();
+                    notificationText = "Incorrect username or password";
+            throw new Exception();
                 }
             } catch (NoSuchAlgorithmException e1) {
                 e1.printStackTrace();
             }
         }
-        return false;
-            
     }
 }

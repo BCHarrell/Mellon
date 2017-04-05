@@ -1,10 +1,13 @@
 
 package mellon;
 
+import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 /**
  * StackPane to contain the login and sign up page while maintaining the window
@@ -38,6 +41,38 @@ public class ExternalContainer extends StackPane {
     
     public BorderPane getContent(){
         return content;
+    }
+    
+    public void requestMenuChange(Node newMenu){
+        fadeOut(newMenu);
+    }
+    
+    /**
+     * Fades the current menu out
+     * @param newMenu The new menu to set after the fade completes
+     */
+    private void fadeOut(Node newMenu){
+        FadeTransition ft = new FadeTransition(Duration.millis(250),
+                                content.getCenter());
+        ft.setFromValue(1.0);
+        ft.setToValue(0);
+        ft.setOnFinished(e -> {
+            newMenu.setOpacity(0);
+            content.setCenter(newMenu);
+            fadeIn();
+        });
+        ft.play();
+    }
+    
+    /**
+     * Fades the new menu in
+     */
+    private void fadeIn(){
+        FadeTransition ft = new FadeTransition(Duration.millis(250),
+                                    content.getCenter());
+        ft.setFromValue(0);
+        ft.setToValue(1.0);
+        ft.play();
     }
     
 }

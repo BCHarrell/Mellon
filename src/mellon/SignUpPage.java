@@ -1,10 +1,18 @@
 package mellon;
 
 import java.security.NoSuchAlgorithmException;
+import javafx.animation.FadeTransition;
+import javafx.concurrent.Task;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import static javafx.geometry.Pos.CENTER;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 /**
  * This class creates the UI for master account creation.  It contains three
@@ -19,6 +27,11 @@ public class SignUpPage extends VBox {
     private final LoginPage LOGIN;
     private final ImageView LOGO = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/mellon_logo_large.png")));
+    
+    private TextField username = new TextField();
+    private PasswordField password = new PasswordField();
+    private PasswordField verify = new PasswordField();
+    private String notificationText = "";
 
     //Accepts the primary class to get the scene, login page to return
     //in case the user clicked sign up by accident, keeps all text entered
@@ -44,13 +57,13 @@ public class SignUpPage extends VBox {
         vb.setAlignment(CENTER);
         
         //Fields
-        TextField username = new TextField();
+        username = new TextField();
         username.setMaxWidth(300);
         username.setPromptText("Username");
-        PasswordField password = new PasswordField();
+        password = new PasswordField();
         password.setMaxWidth(300);
         password.setPromptText("Password");
-        PasswordField verify = new PasswordField();
+        verify = new PasswordField();
         verify.setMaxWidth(300);
         verify.setPromptText("Enter your password again");
         
@@ -61,7 +74,24 @@ public class SignUpPage extends VBox {
         Button back = new Button("Back to Login");
         Button submit = new Button("Create Account");
         hb.getChildren().addAll(back, submit);
-        vb.getChildren().addAll(username, password, verify, hb);
+        
+        //progress indicator
+        HBox authenticationBox = new HBox();
+        authenticationBox.setAlignment(CENTER);
+        authenticationBox.setPrefHeight(25);
+        authenticationBox.setSpacing(10);
+        ProgressIndicator prog = new ProgressIndicator(-1.0f);
+        Text authenticating = new Text("Authenticating...");
+        authenticationBox.getChildren().addAll(prog, authenticating);
+        authenticationBox.setVisible(false);
+        
+        //Notification text for failures
+        Text notification = new Text();
+        notification.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        notification.setStyle("-fx-fill: red;");
+        
+        vb.getChildren().addAll(username, password, verify, hb,
+                                    authenticationBox);
 
         this.getChildren().addAll(LOGO, vb);
         
@@ -71,12 +101,69 @@ public class SignUpPage extends VBox {
          *****************/
         
         back.setOnAction(e -> {
-            CONTAINER.getContent().setCenter(LOGIN);
+            CONTAINER.requestMenuChange(LOGIN);
         });
         
         submit.setOnAction(e -> {
-            submit(username.getText(), password.getText(), verify.getText());
+            authenticationBox.getChildren().setAll(prog, authenticating);
+            authenticationBox.setVisible(true);
+            
+            Task authenticate = new Task<Void>(){
+                @Override
+                protected Void call() throws Exception {
+                    submit(username.getText(), password.getText(),
+                            verify.getText());
+                    return null;
+                }
+            };
+            authenticate.setOnSucceeded(a -> {
+                authenticationBox.setVisible(false);
+                displaySuccess();
+            });
+            
+            authenticate.setOnFailed(b -> {
+                notification.setText(notificationText);
+                authenticationBox.getChildren().setAll(notification);
+            });
+            
+            new Thread(authenticate).start(); 
         });
+    }
+    
+    /**
+     * Displays a notification that the account was successfully created, then
+     * transitions to login screen after brief delay
+     */
+    private void displaySuccess(){
+        AnchorPane anch = new AnchorPane();
+        anch.setPickOnBounds(false);
+        
+        HBox notification = new HBox();
+        notification.setAlignment(Pos.CENTER);
+        notification.setPrefSize(125, 30);
+        notification.setPadding(new Insets(5, 15, 5, 15));
+        notification.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
+        
+        Text notificationText = new Text("Copied to Clipboard");
+        notificationText.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        notificationText.setStyle("-fx-fill: #FFFFFF;");
+        notification.getChildren().add(notificationText);
+        
+        anch.getChildren().add(notification);
+        AnchorPane.setBottomAnchor(notification, 30.0);
+        AnchorPane.setLeftAnchor(notification, 186.0);
+        
+        CONTAINER.getChildren().add(anch);
+        
+        FadeTransition ft = new FadeTransition(Duration.millis(1500), anch);
+        ft.setFromValue(1.0);
+        ft.setToValue(0);
+        ft.setDelay(Duration.millis(1500));
+        ft.setOnFinished(e -> {
+            CONTAINER.getChildren().remove(anch);
+            CONTAINER.requestMenuChange(LOGIN);
+        });
+        ft.play();
     }
     
     /**
@@ -85,7 +172,8 @@ public class SignUpPage extends VBox {
      * @param password the submitted password
      * @param verify the repeated password
      */
-    private void submit(String username, String password, String verify) {
+    private void submit(String username, String password, String verify) 
+                                    throws Exception {
         // Store input into local variables
         String inputUsername = username;
         String inputPassword = password;
@@ -97,12 +185,8 @@ public class SignUpPage extends VBox {
             // get user input and store them into variables to perform encryption
             getUserInput(inputUsername, inputPassword);
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Registration Error");
-            alert.setHeaderText("");
-            alert.setContentText("Please ensure the Username and Password"
-                    + " fields are filled in and passwords match.");
-            alert.showAndWait();
+            notificationText = "Please fill in all fields";
+            throw new Exception();
         }
     }
     
@@ -114,20 +198,14 @@ public class SignUpPage extends VBox {
      * @return 
      */
     private boolean verifyInput(String inputUsername, String inputPassword,
-            String inputVerify) {
+            String inputVerify) throws Exception {
 
         boolean result = false;
         // if fields are empty, don't process anything (display error until user
         //enter something)
         if (inputUsername.isEmpty() || inputPassword.isEmpty()) {
-            // Pop-up a message displaying to the user
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Please enter Username or Password");
-            alert.setHeaderText("");
-            alert.setContentText("Please ensure the Username and Password fields"
-                    + " are filled in.");
-            alert.showAndWait();
-            result = false;
+            notificationText = "Please fill in all fields";
+            throw new Exception();
         } else {
             // Make sure that password = verify
             if (inputPassword.equals(inputVerify)) {
@@ -144,7 +222,7 @@ public class SignUpPage extends VBox {
         return result;
     }
 
-    private void getUserInput(String username, String pass) {
+    private void getUserInput(String username, String pass) throws Exception {
         String usernameHash;
         String passwordHash;
         boolean exists = false;
@@ -157,29 +235,13 @@ public class SignUpPage extends VBox {
             exists = DBConnect.checkUser(usernameHash);
             // if the user exists, display error message
             if (exists) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Account Already Exists");
-                alert.setHeaderText("");
-                alert.setContentText("username is already taken,"
-                        + " please try a different username or"
-                        + " use your credintials to login.");
-                alert.showAndWait();
+                notificationText = "Username already taken";
+                throw new Exception();
             } else {
                 registered = DBConnect.registerUser(usernameHash, passwordHash);
-                if (registered) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Success");
-                    alert.setHeaderText("Account created");
-                    alert.setContentText("your account has been created");
-                    alert.showAndWait();
-                    CONTAINER.getContent().setCenter(LOGIN);
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Account Creation Failed");
-                    alert.setHeaderText("");
-                    alert.setContentText("Your account creation failed,"
-                            + " please try again or report a bug.");
-                    alert.showAndWait();
+                if (!registered) {
+                    notificationText = "Account creation failed.";
+                    throw new Exception();
                 }
             }
         } catch (NoSuchAlgorithmException e1) {
