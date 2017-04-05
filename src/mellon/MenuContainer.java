@@ -50,7 +50,7 @@ public class MenuContainer extends StackPane{
      * Returns to the login page
      */
     public void logout(){
-        FRAMEWORK.getScene().setRoot(new LoginPage(FRAMEWORK));
+        FRAMEWORK.getScene().setRoot(new ExternalContainer(FRAMEWORK));
     }
     
     /**

@@ -1,11 +1,9 @@
 package mellon;
 
 import static javafx.geometry.Pos.*;
-
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
-
 import java.security.NoSuchAlgorithmException;
 import javafx.event.ActionEvent;
 import javafx.scene.input.KeyCode;
@@ -21,11 +19,13 @@ import javafx.scene.input.KeyCode;
 public class LoginPage extends VBox {
 
     private final MellonFramework FRAMEWORK;
+    private final ExternalContainer CONTAINER;
     private final ImageView LOGO = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/mellon_logo_large.png")));
 
-    public LoginPage(MellonFramework fw) {
+    public LoginPage(MellonFramework fw, ExternalContainer ec) {
         FRAMEWORK = fw;
+        CONTAINER = ec;
         addItems();
     }
     
@@ -115,8 +115,8 @@ public class LoginPage extends VBox {
         });
 
         // BUTTON - Goes to sign up page
-        signUp.setOnAction(e -> FRAMEWORK.getScene()
-                .setRoot(new SignUpPage(FRAMEWORK, this)));
+        signUp.setOnAction(e -> CONTAINER.getContent()
+                .setCenter(new SignUpPage(CONTAINER, this)));
 
     }
 }

@@ -9,6 +9,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 
 /**
  * The navigation bar remains visible once the user is logged in and can be
@@ -33,13 +34,10 @@ public class NavBar extends BorderPane{
             .getResourceAsStream("/resources/mellon_logo_small.png")));
     
     private final MenuContainer CONTAINER;
-    private final MainMenu MAIN;
-    private final MellonFramework FRAMEWORK;
+    private double xOffset = 0, yOffset = 0;
     
-    public NavBar(MellonFramework fw, MenuContainer cont, MainMenu m){
-        FRAMEWORK = fw;
+    public NavBar(MenuContainer cont){
         CONTAINER = cont;
-        MAIN = m;
         createBar();
     }
     
@@ -48,7 +46,7 @@ public class NavBar extends BorderPane{
      */
     private void createBar(){
 
-        this.setPadding(new Insets(15.0, 15.0, 15.0, 15.0));
+        this.setPadding(new Insets(0, 15.0, 15.0, 15.0));
         this.setStyle("-fx-background-color: #0088AA");
         this.setPickOnBounds(true);
         
@@ -102,13 +100,18 @@ public class NavBar extends BorderPane{
         icons.getChildren().addAll(homeBtn, addBtn, settingsBtn,
                                         helpBtn, logoutBtn);
         
+        //Close/Minimize bar to get rid of the window
+        
+        
         this.setLeft(logoBox);
         this.setRight(icons);
+        this.setTop(new WindowControl(CONTAINER));
         
         /*****************
          *EVENT LISTENERS*
          *****************/
-        homeBtn.setOnAction(e -> {CONTAINER.requestMenuChange(MAIN);});
+        homeBtn.setOnAction(e -> CONTAINER
+                .requestMenuChange(CONTAINER.getMain()));
         
         addBtn.setOnAction(e -> CONTAINER
                 .requestMenuChange(new CreationPage(CONTAINER)));
@@ -122,13 +125,14 @@ public class NavBar extends BorderPane{
             Alert confirm = new Alert(AlertType.CONFIRMATION, "Are you sure"
                     + " you want to log out?", ButtonType.YES, ButtonType.NO);
             confirm.setTitle("Confirm Logout");
+            confirm.setHeaderText("");
             
             confirm.showAndWait()
                     .filter(response -> response == ButtonType.YES)
                     .ifPresent(response -> {
                         CONTAINER.logout();
                         UserInfoSingleton.getInstance().logout();
-                    });
+            });
         });
     }
     

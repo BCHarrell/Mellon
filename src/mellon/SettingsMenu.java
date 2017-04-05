@@ -133,6 +133,7 @@ public class SettingsMenu extends BorderPane {
         contentBox.getChildren().addAll(splitter, save);
         this.setCenter(contentBox);
         
+        //Pane control
         HBox closeBox = new HBox();
         closeBox.setAlignment(Pos.CENTER_RIGHT);
         Button close = new Button("X");
@@ -181,8 +182,8 @@ public class SettingsMenu extends BorderPane {
                     || plainNewMasterPassword.isEmpty()
                     || plainNewRepeatPassword.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Invalid password input");
+                alert.setTitle("Invalid Entry");
+                alert.setHeaderText("");
                 alert.setContentText("Please ensure the current password,"
                         + " new password, and repeated password fields are"
                         + " filled in.");
@@ -220,7 +221,6 @@ public class SettingsMenu extends BorderPane {
                 password.setExpanded(false);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
-                alert.setHeaderText("Password changed");
                 alert.setContentText("Your master password has been updated.");
                 alert.showAndWait();
             }
@@ -247,8 +247,8 @@ public class SettingsMenu extends BorderPane {
             } catch (IOException io) {
                 System.out.println("File IO Exception" + io.getMessage());
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Failed");
-                alert.setHeaderText("Report Generation Failed");
+                alert.setTitle("Report Generation Failed");
+                alert.setHeaderText("");
                 alert.setContentText("Looks like something went wrong while "
                         + "generating your report.  Please try again or "
                         + "report this as a bug.");

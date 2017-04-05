@@ -2,14 +2,9 @@ package mellon;
 
 import java.security.NoSuchAlgorithmException;
 import static javafx.geometry.Pos.CENTER;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
 
 /**
  * This class creates the UI for master account creation.  It contains three
@@ -20,15 +15,15 @@ import javafx.scene.layout.VBox;
  */
 public class SignUpPage extends VBox {
 
-    private final MellonFramework FRAMEWORK;
+    private final ExternalContainer CONTAINER;
     private final LoginPage LOGIN;
     private final ImageView LOGO = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/mellon_logo_large.png")));
 
     //Accepts the primary class to get the scene, login page to return
     //in case the user clicked sign up by accident, keeps all text entered
-    public SignUpPage(MellonFramework fw, LoginPage l) {
-        FRAMEWORK = fw;
+    public SignUpPage(ExternalContainer c, LoginPage l) {
+        CONTAINER = c;
         LOGIN = l;
         addItems();
     }
@@ -76,7 +71,7 @@ public class SignUpPage extends VBox {
          *****************/
         
         back.setOnAction(e -> {
-            FRAMEWORK.getScene().setRoot(LOGIN);
+            CONTAINER.getContent().setCenter(LOGIN);
         });
         
         submit.setOnAction(e -> {
@@ -103,9 +98,10 @@ public class SignUpPage extends VBox {
             getUserInput(inputUsername, inputPassword);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Registration Error");
-            alert.setContentText("Please ensure the Username and Password fields are filled in and passwords match.");
+            alert.setTitle("Registration Error");
+            alert.setHeaderText("");
+            alert.setContentText("Please ensure the Username and Password"
+                    + " fields are filled in and passwords match.");
             alert.showAndWait();
         }
     }
@@ -117,16 +113,19 @@ public class SignUpPage extends VBox {
      * @param inputVerify password verification
      * @return 
      */
-    private boolean verifyInput(String inputUsername, String inputPassword, String inputVerify) {
+    private boolean verifyInput(String inputUsername, String inputPassword,
+            String inputVerify) {
 
         boolean result = false;
-        // if fields are empty, don't process anything (display error until user enter something)
+        // if fields are empty, don't process anything (display error until user
+        //enter something)
         if (inputUsername.isEmpty() || inputPassword.isEmpty()) {
             // Pop-up a message displaying to the user
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Please enter Username or Password");
-            alert.setContentText("Please ensure the Username and Password fields are filled in.");
+            alert.setTitle("Please enter Username or Password");
+            alert.setHeaderText("");
+            alert.setContentText("Please ensure the Username and Password fields"
+                    + " are filled in.");
             alert.showAndWait();
             result = false;
         } else {
@@ -135,8 +134,8 @@ public class SignUpPage extends VBox {
                 result = true;
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Password Mismatch");
+                alert.setTitle("Password Mismatch");
+                alert.setHeaderText("");
                 alert.setContentText("Please ensure to enter the same password");
                 alert.showAndWait();
                 result = false;
@@ -159,9 +158,11 @@ public class SignUpPage extends VBox {
             // if the user exists, display error message
             if (exists) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Account already exists");
-                alert.setContentText("username is already taken, please try a different username or use your credintials to login.");
+                alert.setTitle("Account Already Exists");
+                alert.setHeaderText("");
+                alert.setContentText("username is already taken,"
+                        + " please try a different username or"
+                        + " use your credintials to login.");
                 alert.showAndWait();
             } else {
                 registered = DBConnect.registerUser(usernameHash, passwordHash);
@@ -171,12 +172,13 @@ public class SignUpPage extends VBox {
                     alert.setHeaderText("Account created");
                     alert.setContentText("your account has been created");
                     alert.showAndWait();
-                    FRAMEWORK.getScene().setRoot(LOGIN);
+                    CONTAINER.getContent().setCenter(LOGIN);
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Account creation failed");
-                    alert.setContentText("Your account creation failed, please contact system administrator. ");
+                    alert.setTitle("Account Creation Failed");
+                    alert.setHeaderText("");
+                    alert.setContentText("Your account creation failed,"
+                            + " please try again or report a bug.");
                     alert.showAndWait();
                 }
             }

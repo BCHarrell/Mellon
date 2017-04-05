@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.StageStyle;
 
 /**
@@ -22,14 +23,14 @@ public class MellonFramework extends Application {
     @Override
     public void start(Stage primaryStage) {
         
-        scene = new Scene(new LoginPage(this), 525, 650);
+        scene = new Scene(new ExternalContainer(this), 525, 650);
+        scene.setFill(Color.TRANSPARENT);
         
         stage = primaryStage;
         stage.setScene(scene);
         stage.setResizable(false);
         stage.getIcons().add(ICON);
-        //For future use: will need to add a top pane for closing and dragging
-        //stage.initStyle(StageStyle.UNDECORATED);
+        stage.initStyle(StageStyle.TRANSPARENT);
         stage.show();
     }
     
