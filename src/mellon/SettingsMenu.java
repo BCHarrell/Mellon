@@ -227,8 +227,7 @@ public class SettingsMenu extends BorderPane {
 
         });
         
-        //Section to print the stored passwords. Recommend moving
-        //this to a new class so the UI thread is not processing all of this
+        //Section to print the stored passwords.
         report.setOnAction(e -> {
             showNotification();
         });
