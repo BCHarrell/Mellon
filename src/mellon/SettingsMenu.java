@@ -10,7 +10,9 @@ import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import java.util.ArrayList;
+import javafx.animation.FadeTransition;
 import javafx.scene.text.*;
+import javafx.util.Duration;
 
 
 /**
@@ -167,8 +169,10 @@ public class SettingsMenu extends BorderPane {
             cb.setValue(16);
         });
 
-        // Thomas, how do you feel about ignoring web accounts here. We can hash old pass and compare with 
-        // existing master password. If equals then issue an update using updateMasterPassword(). if not then display alert
+        /* Thomas, how do you feel about ignoring web accounts here. 
+        We can hash old pass and compare with existing master password.
+        If equals then issue an update using updateMasterPassword().
+        if not then display alert*/
         savePass.setOnAction(e -> {
             String plainCurrentMasterPassword = old.getText();
             String plainNewMasterPassword = newPass.getText();
@@ -184,16 +188,20 @@ public class SettingsMenu extends BorderPane {
                         + " filled in.");
                 alert.showAndWait();
             } else {
-                MasterAccount oldMasterAccount = UserInfoSingleton.getInstance().getMasterAccount();
-                String newMasterPasswordHash = oldMasterAccount.hashString(plainNewMasterPassword);
-                ArrayList<WebAccount> oldWebAccounts = UserInfoSingleton.getInstance().getProfiles();
+                MasterAccount oldMasterAccount 
+                        = UserInfoSingleton.getInstance().getMasterAccount();
+                String newMasterPasswordHash 
+                        = oldMasterAccount.hashString(plainNewMasterPassword);
+                ArrayList<WebAccount> oldWebAccounts 
+                        = UserInfoSingleton.getInstance().getProfiles();
                 int userID = UserInfoSingleton.getInstance().getUserID();
                 ArrayList<WebAccount> newWebAccounts = new ArrayList<>();
                 // Updates the master account hash
                 DBConnect.updateMasterPassword(userID, newMasterPasswordHash);
                 // Updates all the associated web accounts
                 oldWebAccounts.stream().forEach(account -> {
-                    newWebAccounts.add(account.updatePassword(plainNewMasterPassword));
+                    newWebAccounts.add(account
+                            .updatePassword(plainNewMasterPassword));
                 });
                 newWebAccounts.stream().forEach(account -> {
                     DBConnect.updateWebAccount(userID,
@@ -203,7 +211,8 @@ public class SettingsMenu extends BorderPane {
                             account.getEncodedPassword());
                 });
                 // Update the singleton
-                UserInfoSingleton.getInstance().setPassword(plainNewMasterPassword);
+                UserInfoSingleton.getInstance()
+                        .setPassword(plainNewMasterPassword);
                 UserInfoSingleton.getInstance().addProfiles(newWebAccounts);
                 old.clear();
                 newPass.clear();
@@ -217,43 +226,81 @@ public class SettingsMenu extends BorderPane {
             }
 
         });
-
+        
+        //Section to print the stored passwords. Recommend moving
+        //this to a new class so the UI thread is not processing all of this
         report.setOnAction(e -> {
             BufferedWriter wrtr = null;
             File file = new File("MellonUserReport.txt");
-            ArrayList<WebAccount> WebAccounts = UserInfoSingleton.getInstance().getProfiles();
+            ArrayList<WebAccount> WebAccounts 
+                    = UserInfoSingleton.getInstance().getProfiles();
             try {
                 wrtr = new BufferedWriter(new FileWriter(file, true));
                 wrtr.write("Here's a list of your stored account details ");
                 wrtr.newLine();
                 for (WebAccount acct : WebAccounts) {
-                    wrtr.write("Account name: " + acct.getAccountName() + " , Account username: " + acct.getUsername() + " , Account password: " + acct.getPassword()
-                            + " , Password Expiration Date: " + acct.getExpDate());
+                    wrtr.write("Account nickname: " + acct.getAccountName() +
+                            "\r\nUsername: " + acct.getUsername() 
+                            + "\r\nPassword: " + acct.getPassword());
                     wrtr.newLine();
-                };
-                wrtr.write("Thank you for using Mellon Password Storage");
-
-                if (wrtr != null) {
-                    wrtr.close();
                 }
-
             } catch (IOException io) {
                 System.out.println("File IO Exception" + io.getMessage());
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Failed");
-                alert.setHeaderText("Your account report generation failed");
-                alert.setContentText("You must have at least one account stored to request the report");
+                alert.setHeaderText("Report Generation Failed");
+                alert.setContentText("Looks like something went wrong while "
+                        + "generating your report.  Please try again or "
+                        + "report this as a bug.");
                 alert.showAndWait();
+            } finally {
+                if (wrtr != null) {
+                    try {
+                        wrtr.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText("Your account report is completed");
-            alert.setContentText("Please retrieve you account report from printer");
-            alert.showAndWait();
+            //show notification
+            showNotification();
+            
             // This is where the file should be sent to the printer
             
-            // file.delete(); This commented out for now since you'll be looking at the file output
+            // file.delete(); Uncomment when file is actually printed
         });
     }//end addItems 
+    
+    /**
+     * Notifies the user that the password report was sent to the printer
+     */
+    private void showNotification(){
+        AnchorPane anch = new AnchorPane();
+        anch.setPickOnBounds(false);
+        
+        HBox notification = new HBox();
+        notification.setAlignment(Pos.CENTER);
+        notification.setPrefSize(140, 30);
+        notification.setPadding(new Insets(5, 15, 5, 15));
+        notification.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
+        
+        Text notificationText = new Text("File Sent to Printer");
+        notificationText.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        notificationText.setStyle("-fx-fill: #FFFFFF;");
+        notification.getChildren().add(notificationText);
+        
+        anch.getChildren().add(notification);
+        AnchorPane.setBottomAnchor(notification, 30.0);
+        AnchorPane.setLeftAnchor(notification, 185.0);
+        
+        CONTAINER.getChildren().add(anch);
+        
+        FadeTransition ft = new FadeTransition(Duration.millis(2500), anch);
+        ft.setFromValue(1.0);
+        ft.setToValue(0);
+        ft.setDelay(Duration.millis(1500));
+        ft.setOnFinished(e -> CONTAINER.getChildren().remove(anch));
+        ft.play();
+    }
 }
