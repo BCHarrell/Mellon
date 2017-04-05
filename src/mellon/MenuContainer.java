@@ -5,6 +5,7 @@ import javafx.animation.FadeTransition;
 import javafx.scene.Node;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 /**
@@ -29,6 +30,8 @@ public class MenuContainer extends StackPane{
         USER = UserInfoSingleton.getInstance().getMasterAccount();
         content.setTop(new NavBar(this));
         content.setCenter(MAIN);
+        this.setBorder(new Border(new BorderStroke(Color.DARKGREY, 
+                BorderStrokeStyle.SOLID, null, null)));
         this.getChildren().add(content);
     }
     

@@ -230,45 +230,7 @@ public class SettingsMenu extends BorderPane {
         //Section to print the stored passwords. Recommend moving
         //this to a new class so the UI thread is not processing all of this
         report.setOnAction(e -> {
-            BufferedWriter wrtr = null;
-            File file = new File("MellonUserReport.txt");
-            ArrayList<WebAccount> WebAccounts 
-                    = UserInfoSingleton.getInstance().getProfiles();
-            try {
-                wrtr = new BufferedWriter(new FileWriter(file, true));
-                wrtr.write("Here's a list of your stored account details ");
-                wrtr.newLine();
-                for (WebAccount acct : WebAccounts) {
-                    wrtr.write("Account nickname: " + acct.getAccountName() +
-                            "\r\nUsername: " + acct.getUsername() 
-                            + "\r\nPassword: " + acct.getPassword());
-                    wrtr.newLine();
-                }
-            } catch (IOException io) {
-                System.out.println("File IO Exception" + io.getMessage());
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Report Generation Failed");
-                alert.setHeaderText("");
-                alert.setContentText("Looks like something went wrong while "
-                        + "generating your report.  Please try again or "
-                        + "report this as a bug.");
-                alert.showAndWait();
-            } finally {
-                if (wrtr != null) {
-                    try {
-                        wrtr.close();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-
-            //show notification
             showNotification();
-            
-            // This is where the file should be sent to the printer
-            
-            // file.delete(); Uncomment when file is actually printed
         });
     }//end addItems 
     
