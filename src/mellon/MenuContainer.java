@@ -33,10 +33,7 @@ public class MenuContainer extends StackPane{
         MAIN.setOpacity(0);
         content.setCenter(MAIN);
         this.setBorder(new Border(new BorderStroke(Color.valueOf("#0088aa"),
-                Color.DARKGREY, Color.DARKGREY, Color.DARKGREY, 
-                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
-                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
-                null, null, null)));
+                BorderStrokeStyle.SOLID, null, null)));
         loginFade();
         this.getChildren().add(content);
     }
