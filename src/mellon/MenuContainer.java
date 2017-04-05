@@ -69,6 +69,9 @@ public class MenuContainer extends StackPane{
         return content;
     }
     
+    /**
+     * Handles the initial fade in for the login
+     */
     private void loginFade(){
         FadeTransition ft = new FadeTransition(Duration.millis(500), MAIN);
         ft.setDelay(Duration.millis(750));
@@ -110,14 +113,45 @@ public class MenuContainer extends StackPane{
     
     /**
      * Handles all menu changes to ensure the settings menu gets closed if it
-     * is open
+     * is open.  Fades the menus out and in.
      * @param newMenu the new menu to change to
      */
     public void requestMenuChange(Node newMenu){
         if (settingsDisplayed) {
             closeSettings(); 
         }
-        content.setCenter(newMenu);
+        //Only change menus if the menu is different than currently displayed
+        if(newMenu.getClass() != content.getCenter().getClass()) {
+            fadeOut(newMenu);
+        }
+    }
+    
+    /**
+     * Fades the current menu out
+     * @param newMenu The new menu to set after the fade completes
+     */
+    private void fadeOut(Node newMenu){
+        FadeTransition ft = new FadeTransition(Duration.millis(250),
+                                content.getCenter());
+        ft.setFromValue(1.0);
+        ft.setToValue(0);
+        ft.setOnFinished(e -> {
+            newMenu.setOpacity(0);
+            content.setCenter(newMenu);
+            fadeIn();
+        });
+        ft.play();
+    }
+    
+    /**
+     * Fades the new menu in
+     */
+    private void fadeIn(){
+        FadeTransition ft = new FadeTransition(Duration.millis(250),
+                                    content.getCenter());
+        ft.setFromValue(0);
+        ft.setToValue(1.0);
+        ft.play();
     }
     
     /**
