@@ -60,10 +60,13 @@ public class WindowControl extends HBox{
                         .filter(response -> response == ButtonType.YES)
                         .ifPresent(response -> {
                             UserInfoSingleton.getInstance().logout();
+                            Stage stage = (Stage) close.getScene().getWindow();
+                            stage.close();
                 });
+            } else {
+                Stage stage = (Stage) close.getScene().getWindow();
+                stage.close();
             }
-            Stage stage = (Stage) close.getScene().getWindow();
-            stage.close();
         });
         
         //Minimize window

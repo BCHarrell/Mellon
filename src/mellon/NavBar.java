@@ -1,6 +1,7 @@
 
 package mellon;
 
+import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -10,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * The navigation bar remains visible once the user is logged in and can be
@@ -34,26 +36,31 @@ public class NavBar extends BorderPane{
             .getResourceAsStream("/resources/mellon_logo_small.png")));
     
     private final MenuContainer CONTAINER;
-    private double xOffset = 0, yOffset = 0;
+    private BorderPane bar;
     
     public NavBar(MenuContainer cont){
         CONTAINER = cont;
-        createBar();
+        this.setTop(new WindowControl(CONTAINER));
+        bar = createBar();
+        bar.setOpacity(0);
+        this.setCenter(bar);
+        fadeIn();
     }
     
     /**
      * Creates the UI elements
      */
-    private void createBar(){
-
-        this.setPadding(new Insets(0, 15.0, 15.0, 15.0));
-        this.setStyle("-fx-background-color: #0088AA");
-        this.setPickOnBounds(true);
+    private BorderPane createBar(){
+        BorderPane bar = new BorderPane();
+        bar.setPadding(new Insets(0, 15.0, 15.0, 15.0));
+        bar.setStyle("-fx-background-color: #0088AA");
+        bar.setPickOnBounds(true);
         
+        //Temporary to come in with fade
         DropShadow ds = new DropShadow();
-        ds.setOffsetY(3.0);
+        ds.setOffsetY(5.0);
         ds.setColor(javafx.scene.paint.Color.GRAY);
-        this.setEffect(ds);
+        bar.setEffect(ds);
         
         //Centers the logo on the left
         VBox logoBox = new VBox();
@@ -103,10 +110,8 @@ public class NavBar extends BorderPane{
         //Close/Minimize bar to get rid of the window
         
         
-        this.setLeft(logoBox);
-        this.setRight(icons);
-        this.setTop(new WindowControl(CONTAINER));
-        
+        bar.setLeft(logoBox);
+        bar.setRight(icons);
         /*****************
          *EVENT LISTENERS*
          *****************/
@@ -134,6 +139,27 @@ public class NavBar extends BorderPane{
                         UserInfoSingleton.getInstance().logout();
             });
         });
+        
+        return bar;
+    }
+    
+    private void addDropShadow(){
+        DropShadow ds = new DropShadow();
+        ds.setOffsetY(5.0);
+        ds.setColor(javafx.scene.paint.Color.GRAY);
+        this.setEffect(ds);
+    }
+    
+    private void fadeIn(){
+        FadeTransition ft = new FadeTransition(Duration.millis(500), bar);
+        ft.setDelay(Duration.millis(250));
+        ft.setFromValue(0);
+        ft.setToValue(1.0);
+        ft.setOnFinished(e -> {
+            addDropShadow();
+            bar.setEffect(null);
+        });
+        ft.play();
     }
     
 }

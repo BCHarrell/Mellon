@@ -24,13 +24,12 @@ public class MellonFramework extends Application {
     public void start(Stage primaryStage) {
         
         scene = new Scene(new ExternalContainer(this), 525, 650);
-        scene.setFill(Color.TRANSPARENT);
         
         stage = primaryStage;
         stage.setScene(scene);
         stage.setResizable(false);
         stage.getIcons().add(ICON);
-        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
     }
     

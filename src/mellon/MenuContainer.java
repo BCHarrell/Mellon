@@ -30,11 +30,14 @@ public class MenuContainer extends StackPane{
         USER = UserInfoSingleton.getInstance().getMasterAccount();
         content.setTop(new NavBar(this));
         content.setCenter(MAIN);
+        MAIN.setOpacity(0);
+        content.setCenter(MAIN);
         this.setBorder(new Border(new BorderStroke(Color.valueOf("#0088aa"),
                 Color.DARKGREY, Color.DARKGREY, Color.DARKGREY, 
                 BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                 BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                 null, null, null)));
+        loginFade();
         this.getChildren().add(content);
     }
     
@@ -66,6 +69,14 @@ public class MenuContainer extends StackPane{
         return content;
     }
     
+    private void loginFade(){
+        FadeTransition ft = new FadeTransition(Duration.millis(500), MAIN);
+        ft.setDelay(Duration.millis(750));
+        ft.setFromValue(0);
+        ft.setToValue(1.0);
+        ft.play();
+    }
+    
     /**
      * Displays the settings menu as an overlay
      */
@@ -73,12 +84,15 @@ public class MenuContainer extends StackPane{
         this.getChildren().add(settings);
         blur();
         FadeTransition ft = new FadeTransition(Duration.millis(250), settings);
-        ft.setFromValue(0);
+        ft.setFromValue(.25);
         ft.setToValue(1.0);
         ft.play();
         settingsDisplayed = true;
     }
     
+    /**
+     * Closes the settings menu
+     */
     public void closeSettings(){
         if (this.getChildren().contains(settings)){
             FadeTransition ft = 
