@@ -20,8 +20,11 @@ public class ExternalContainer extends StackPane {
     
     public ExternalContainer(MellonFramework fw){
         FRAMEWORK = fw;
-        this.setBorder(new Border(new BorderStroke(Color.DARKGREY, 
-                BorderStrokeStyle.SOLID, null, null)));
+        this.setBorder(new Border(new BorderStroke(Color.valueOf("#0088aa"),
+                Color.DARKGREY, Color.DARKGREY, Color.DARKGREY, 
+                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                null, null, null)));
         content.setTop(new WindowControl());
         content.setCenter(new LoginPage(FRAMEWORK, this));
         addDropShadow();

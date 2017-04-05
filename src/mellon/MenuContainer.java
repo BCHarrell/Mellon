@@ -30,8 +30,11 @@ public class MenuContainer extends StackPane{
         USER = UserInfoSingleton.getInstance().getMasterAccount();
         content.setTop(new NavBar(this));
         content.setCenter(MAIN);
-        this.setBorder(new Border(new BorderStroke(Color.DARKGREY, 
-                BorderStrokeStyle.SOLID, null, null)));
+        this.setBorder(new Border(new BorderStroke(Color.valueOf("#0088aa"),
+                Color.DARKGREY, Color.DARKGREY, Color.DARKGREY, 
+                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                null, null, null)));
         this.getChildren().add(content);
     }
     
