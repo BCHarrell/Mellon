@@ -26,7 +26,6 @@ public class CreationPage extends StackPane {
     private boolean edit;
     private String currentNick, currentUser, currentPass;
     private BorderPane bp = new BorderPane();
-    private HBox advHB = new HBox();
 
     public CreationPage(MenuContainer c) {
         CONTAINER = c;
@@ -138,7 +137,7 @@ public class CreationPage extends StackPane {
         VBox expirationBox = new VBox();
         expirationBox.setSpacing(3);
         CheckBox expireCB = new CheckBox();
-        Label expireLabel = new Label("Set password expiration?");
+        Label expireLabel = new Label("Set expiration? ");
         expireLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         expireLabel.setGraphic(expireCB);
         expireLabel.setContentDisplay(ContentDisplay.RIGHT);
