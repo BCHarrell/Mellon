@@ -144,10 +144,10 @@ public class SignUpPage extends VBox {
         notification.setPadding(new Insets(5, 15, 5, 15));
         notification.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
         
-        Text notificationText = new Text("Copied to Clipboard");
-        notificationText.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        notificationText.setStyle("-fx-fill: #FFFFFF;");
-        notification.getChildren().add(notificationText);
+        Text message = new Text("Account Created");
+        message.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        message.setStyle("-fx-fill: #FFFFFF;");
+        notification.getChildren().add(message);
         
         anch.getChildren().add(notification);
         AnchorPane.setBottomAnchor(notification, 30.0);

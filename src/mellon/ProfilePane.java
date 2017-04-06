@@ -121,7 +121,7 @@ public class ProfilePane extends VBox{
          *****************/
         //Edit button
         edit.setOnAction(e -> {
-            CONTAINER.getContent().setCenter(new CreationPage(CONTAINER,
+            CONTAINER.requestMenuChange(new CreationPage(CONTAINER,
                         account.getAccountName(), account.getUsername(),
                         account.getPassword()));
         });

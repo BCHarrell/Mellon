@@ -3,19 +3,20 @@ package mellon;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import javafx.animation.FadeTransition;
-
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.*;
-import javafx.util.Callback;
-import javafx.util.Duration;
+import javafx.util.*;
 
 /**
+ * Menu to create and edit profiles stored on the account.
+ * 
  * @author Brent H.
  */
 public class CreationPage extends StackPane {
@@ -23,9 +24,14 @@ public class CreationPage extends StackPane {
     private final MenuContainer CONTAINER;
     private ArrayList<Character> allowedSymbols;
     private AdvancedMenu adv;
-    private boolean edit;
+    private boolean edit, passwordChanged = false;
     private String currentNick, currentUser, currentPass;
     private BorderPane bp = new BorderPane();
+    
+    //elements used to save
+    private TextField nickField, userField, generatedWebPassword;
+    private DatePicker expiration;
+    private CheckBox expireCB;
 
     public CreationPage(MenuContainer c) {
         CONTAINER = c;
@@ -75,9 +81,9 @@ public class CreationPage extends StackPane {
         mainArea.setPadding(new Insets(0, 30, 0, 30));
         
         //Top Horizontal Box
-        HBox topHB = new HBox();
-        topHB.setAlignment(Pos.CENTER);
-        topHB.setSpacing(200);
+        BorderPane settingsArea = new BorderPane();
+        settingsArea.setStyle("-fx-background-color: #0088AA;");
+        settingsArea.setPadding(new Insets(15, 15, 15, 15));
         
         //Vertical box to profile elements
         VBox settingsVB = new VBox();
@@ -88,8 +94,8 @@ public class CreationPage extends StackPane {
         nickVB.setSpacing(3);
         Text nickLabel = new Text("Nickname");
         nickLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        TextField nickField = new TextField();
-        nickField.setMaxWidth(350);
+        nickField = new TextField();
+        nickField.setMaxWidth(400);
         nickField.setPromptText("Enter account nickname");
         Tooltip nickTip = new Tooltip("This is the name you will use to get "
                 + "the password in the future. For example: \"Gmail\"");
@@ -104,8 +110,8 @@ public class CreationPage extends StackPane {
         userVB.setSpacing(3);
         Text userLabel = new Text("Username");
         userLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        TextField userField = new TextField();
-        userField.setMaxWidth(350);
+        userField = new TextField();
+        userField.setMaxWidth(400);
         userField.setPromptText("Enter username");
         Tooltip userTip = new Tooltip("This is the username for your account. "
                 + "For example, your email address or \"MellonUser\"");
@@ -136,12 +142,12 @@ public class CreationPage extends StackPane {
         //Expiration
         VBox expirationBox = new VBox();
         expirationBox.setSpacing(3);
-        CheckBox expireCB = new CheckBox();
+        expireCB = new CheckBox();
         Label expireLabel = new Label("Set expiration? ");
         expireLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         expireLabel.setGraphic(expireCB);
         expireLabel.setContentDisplay(ContentDisplay.RIGHT);
-        DatePicker expiration = new DatePicker();
+        expiration = new DatePicker();
         expiration.setValue(LocalDate.now());
         Callback<DatePicker, DateCell> cellFactory =
             new Callback<DatePicker, DateCell>() {
@@ -204,14 +210,18 @@ public class CreationPage extends StackPane {
 
         //ADD
         custVB.getChildren().addAll(customize, innerVB);
-        topHB.getChildren().addAll(settingsVB, custVB);
+        settingsArea.setLeft(settingsVB);
+        settingsArea.setRight(custVB);
+        addDropShadow(settingsArea);
 
         //Generate Area
         VBox generateVB = new VBox();
+        generateVB.setStyle("-fx-background-color: #0088AA;");
+        generateVB.setPadding(new Insets(15, 15, 15, 15));
         generateVB.setAlignment(Pos.CENTER);
         generateVB.setSpacing(15);
         Button generate = new Button("Generate Password");
-        TextField generatedWebPassword = new TextField();
+        generatedWebPassword = new TextField();
         generatedWebPassword.setMaxWidth(400);
         generatedWebPassword.setAlignment(Pos.CENTER);
         if (edit) {
@@ -219,15 +229,23 @@ public class CreationPage extends StackPane {
         }
         
         generateVB.getChildren().addAll(generatedWebPassword, generate);
+        addDropShadow(generateVB);
         
         //Save anchored to bottom
         HBox saveHB = new HBox();
+        saveHB.setSpacing(10);
         saveHB.setAlignment(Pos.CENTER);
         saveHB.setPadding(new Insets(0, 0, 15, 0));
-        Button save = new Button("Save Account");
-        saveHB.getChildren().add(save);
         
-        mainArea.getChildren().addAll(topHB, generateVB);
+        Button save = new Button("Save Account");
+        Button delete = new Button("DELETE ACCOUNT");
+        delete.setStyle("-fx-background-color: #D4AA00;");
+        saveHB.getChildren().add(save);
+        if (edit){
+            saveHB.getChildren().add(delete);
+        }
+        
+        mainArea.getChildren().addAll(settingsArea, generateVB);
         bp.setCenter(mainArea);
         bp.setBottom(saveHB);
         this.getChildren().add(bp);
@@ -271,72 +289,38 @@ public class CreationPage extends StackPane {
                     .includeSpecialCharacters(symb.isSelected())
                     .includeAllowedSymbols(allowedSymbols)
                     .build();
+            
+            if (edit) {
+                passwordChanged = true;
+            }
+            
             generatedWebPassword.setText(password.getPasswordString());
         });
         
         //Save account
         //THIS CAN BE MOVED TO ITS OWN METHOD FOR CLARITY
         save.setOnAction(e -> {
-            if (nickField.getText().isEmpty() ||
-                    userField.getText().isEmpty() ||
-                    generatedWebPassword.getText().isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Invalid account details");
-                alert.setContentText("Please ensure the Nickname, Username,"
-                        + " and Password fields are filled in.");
-                alert.showAndWait();
+            if (passwordChanged) {
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, 
+                    "It looks like you're saving a new password for this "
+                    + "profile. Changing your password here does not change "
+                    + "the password in the actual account and you may still "
+                    + "need your old password. If you save now, you will not "
+                    + "be able to get your old password back.\n\nAre you sure "
+                    + "you want to save?",
+                    ButtonType.YES, ButtonType.NO);
+                confirm.setTitle("Just Checking");
+                confirm.setHeaderText("");
+            
+                confirm.showAndWait()
+                    .filter(response -> response == ButtonType.YES)
+                    .ifPresent(response -> {
+                        save();
+                    });
             } else {
-                WebAccount newAccount = null;
-                UserInfoSingleton.getInstance();
-                int userID = UserInfoSingleton.getUserID();
-                String masterKey = UserInfoSingleton.getPassword();
-                String inputNickname = nickField.getText();
-                String inputUsername = userField.getText();
-                String webAccountPassword = generatedWebPassword.getText();
-                LocalDate inputExpiration;
-                if (expireCB.isSelected()) {
-                    inputExpiration = expiration.getValue();
-                } else {
-                    inputExpiration = null;
-                }
-                newAccount = new WebAccount(inputUsername,
-                        webAccountPassword,
-                        inputNickname,
-                        masterKey,
-                        inputExpiration);
-                boolean accountCreated = false;
-                int existingWebAccount = DBConnect.existingWebAccount(userID,
-                                         newAccount.getEncodedAccountName());
-                if (existingWebAccount > 0) {
-                    // Web account already exists, update it
-                    DBConnect.updateWebAccount(userID,
-                            newAccount.getWebID(),
-                            newAccount.getEncodedAccountName(),
-                            newAccount.getEncodedUsername(),
-                            newAccount.getEncodedPassword());
-                    accountCreated = true;
-                } else {
-                    // Web account doesn't exist, create it
-                    accountCreated = DBConnect.CreateWebAccount(userID,
-                            newAccount.getEncodedAccountName(),
-                            newAccount.getEncodedUsername(),
-                            newAccount.getEncodedPassword(),
-                            inputExpiration);
-                }
-                if (accountCreated) {
-                    UserInfoSingleton.getInstance().addSingleProfile(newAccount);
-                } else if (!accountCreated) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Account not created");
-                    alert.setContentText("The profile was not created,"
-                            + " please try again.");
-                    alert.showAndWait();
-                }
-                CONTAINER.getMain().update();
-                CONTAINER.requestMenuChange(CONTAINER.getMain());
-            } 
+                save();
+            }
+        
         });
         
         //Opens advanced symbol menu
@@ -355,6 +339,22 @@ public class CreationPage extends StackPane {
                 expiration.setVisible(false);
             }
         });
+        
+        //Delete button
+        delete.setOnAction(e -> {
+            //Temporary alert
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, 
+                    "Are you sure you want to delete this account?",
+                    ButtonType.YES, ButtonType.NO);
+            confirm.setTitle("Confirm Deletion");
+            confirm.setHeaderText("");
+            
+            confirm.showAndWait()
+                    .filter(response -> response == ButtonType.YES)
+                    .ifPresent(response -> {
+                        //DELETION CODE GOES HERE
+            });
+        });
 
     } //End addItems()
     
@@ -365,7 +365,76 @@ public class CreationPage extends StackPane {
         allowedSymbols = list;
     }
     
-    public void popAdvanced(){
+    private void save() {
+        if (nickField.getText().isEmpty() ||
+                userField.getText().isEmpty() ||
+                generatedWebPassword.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Invalid account details");
+            alert.setContentText("Please ensure the Nickname, Username,"
+                    + " and Password fields are filled in.");
+            alert.showAndWait();
+        } else {
+            WebAccount newAccount = null;
+            UserInfoSingleton.getInstance();
+            int userID = UserInfoSingleton.getUserID();
+            String masterKey = UserInfoSingleton.getPassword();
+            String inputNickname = nickField.getText();
+            String inputUsername = userField.getText();
+            String webAccountPassword = generatedWebPassword.getText();
+            LocalDate inputExpiration;
+            
+            if (expireCB.isSelected()) {
+                inputExpiration = expiration.getValue();
+            } else {
+                inputExpiration = null;
+            }
+            
+            newAccount = new WebAccount(inputUsername,
+                    webAccountPassword,
+                    inputNickname,
+                    masterKey,
+                    inputExpiration);
+            boolean accountCreated = false;
+            int existingWebAccount = DBConnect.existingWebAccount(userID,
+                                     newAccount.getEncodedAccountName());
+            
+            if (existingWebAccount > 0) {
+                // Web account already exists, update it
+                DBConnect.updateWebAccount(userID,
+                        newAccount.getWebID(),
+                        newAccount.getEncodedAccountName(),
+                        newAccount.getEncodedUsername(),
+                        newAccount.getEncodedPassword());
+                accountCreated = true;
+            } else {
+                // Web account doesn't exist, create it
+                accountCreated = DBConnect.CreateWebAccount(userID,
+                        newAccount.getEncodedAccountName(),
+                        newAccount.getEncodedUsername(),
+                        newAccount.getEncodedPassword(),
+                        inputExpiration);
+            }
+            if (accountCreated) {
+                UserInfoSingleton.getInstance().addSingleProfile(newAccount);
+            } else if (!accountCreated) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Account not created");
+                alert.setContentText("The profile was not created,"
+                        + " please try again.");
+                alert.showAndWait();
+            }
+            CONTAINER.getMain().update();
+            CONTAINER.requestMenuChange(CONTAINER.getMain());
+        } 
+    }
+    
+    /**
+     * Removes the advanced menu after animation
+     */
+    public void popAdvanced() {
         //Check just to be sure
         if (this.getChildren().contains(adv)) {
             FadeTransition ft = new FadeTransition(Duration.millis(250), adv);
@@ -379,7 +448,20 @@ public class CreationPage extends StackPane {
         }
     }
     
-    private void blur(){
+    /**
+     * Adds drop shadows to menu boxes
+     */
+    private void addDropShadow(Node n) {
+        DropShadow ds = new DropShadow();
+        ds.setOffsetY(3);
+        ds.setColor(Color.GRAY);
+        n.setEffect(ds);
+    }
+    
+    /**
+     * Blurs the background
+     */
+    private void blur() {
         BoxBlur blur = new BoxBlur();
         blur.setWidth(5);
         blur.setHeight(5);
@@ -387,7 +469,10 @@ public class CreationPage extends StackPane {
         bp.setEffect(blur);
     }
     
-    private void unBlur(){
+    /**
+     * Unblurs the background
+     */
+    private void unBlur() {
         bp.setEffect(null);
     }
 }
