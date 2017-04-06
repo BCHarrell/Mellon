@@ -31,6 +31,9 @@ public class ExternalContainer extends StackPane {
         this.getChildren().add(content);
     }
     
+    /**
+     * Adds the drop shadow to this object
+     */
     private void addDropShadow(){
         DropShadow ds = new DropShadow();
         ds.setOffsetX(3);
@@ -39,10 +42,17 @@ public class ExternalContainer extends StackPane {
         this.setEffect(ds);
     }
     
+    /**
+     * @return returns the content borderpane
+     */
     public BorderPane getContent(){
         return content;
     }
     
+    /**
+     * Changes the menu
+     * @param newMenu the menu to fade in
+     */
     public void requestMenuChange(Node newMenu){
         fadeOut(newMenu);
     }
@@ -74,5 +84,4 @@ public class ExternalContainer extends StackPane {
         ft.setToValue(1.0);
         ft.play();
     }
-    
 }

@@ -369,12 +369,9 @@ public class CreationPage extends StackPane {
         if (nickField.getText().isEmpty() ||
                 userField.getText().isEmpty() ||
                 generatedWebPassword.getText().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Invalid account details");
-            alert.setContentText("Please ensure the Nickname, Username,"
-                    + " and Password fields are filled in.");
-            alert.showAndWait();
+            CONTAINER.showDialog(new ErrorDialog(CONTAINER, "Please ensure "
+                    + "the nickname, username, and password fields are "
+                    + "filled in."));
         } else {
             WebAccount newAccount = null;
             UserInfoSingleton.getInstance();
@@ -419,12 +416,9 @@ public class CreationPage extends StackPane {
             if (accountCreated) {
                 UserInfoSingleton.getInstance().addSingleProfile(newAccount);
             } else if (!accountCreated) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Account not created");
-                alert.setContentText("The profile was not created,"
-                        + " please try again.");
-                alert.showAndWait();
+                CONTAINER.showDialog(new ErrorDialog(CONTAINER, "The profile "
+                        + "was not created.  Please try again.  If the error "
+                        + "persists, please report a bug."));
             }
             CONTAINER.getMain().update();
             CONTAINER.requestMenuChange(CONTAINER.getMain());

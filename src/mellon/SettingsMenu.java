@@ -105,7 +105,7 @@ public class SettingsMenu extends BorderPane {
         TitledPane password = new TitledPane();
         password.setText("Change Master Password");
         password.setExpanded(false);
-        password.setMaxWidth(250);
+        password.setPrefWidth(225);
         VBox box = new VBox();
         box.setAlignment(Pos.CENTER_LEFT);
         box.setSpacing(3);
@@ -147,7 +147,11 @@ public class SettingsMenu extends BorderPane {
          * EVENT LISTENERS **************
          */
         //Closes on save
-        save.setOnAction(e -> CONTAINER.closeSettings());
+        save.setOnAction(e -> {
+            //SAVE LOGIC HERE
+            showNotification("Settings Saved");
+            CONTAINER.closeSettings();
+        });
         
         //Closes on X
         close.setOnAction(e -> CONTAINER.closeSettings());
@@ -181,13 +185,9 @@ public class SettingsMenu extends BorderPane {
             if (plainCurrentMasterPassword.isEmpty()
                     || plainNewMasterPassword.isEmpty()
                     || plainNewRepeatPassword.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Invalid Entry");
-                alert.setHeaderText("");
-                alert.setContentText("Please ensure the current password,"
-                        + " new password, and repeated password fields are"
-                        + " filled in.");
-                alert.showAndWait();
+                CONTAINER.showDialog(new ErrorDialog(CONTAINER, 
+                        "Please ensure the current password, new password, "
+                        + "and repeated password are filled in."));
             } else {
                 MasterAccount oldMasterAccount 
                         = UserInfoSingleton.getInstance().getMasterAccount();
@@ -219,24 +219,21 @@ public class SettingsMenu extends BorderPane {
                 newPass.clear();
                 repeat.clear();
                 password.setExpanded(false);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Success");
-                alert.setContentText("Your master password has been updated.");
-                alert.showAndWait();
+                showNotification("Password Successfully Changed");
             }
 
         });
         
         //Section to print the stored passwords.
         report.setOnAction(e -> {
-            showNotification();
+            showNotification("File Sent to Printer");
         });
     }//end addItems 
     
     /**
      * Notifies the user that the password report was sent to the printer
      */
-    private void showNotification(){
+    private void showNotification(String message){
         AnchorPane anch = new AnchorPane();
         anch.setPickOnBounds(false);
         
@@ -246,7 +243,7 @@ public class SettingsMenu extends BorderPane {
         notification.setPadding(new Insets(5, 15, 5, 15));
         notification.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
         
-        Text notificationText = new Text("File Sent to Printer");
+        Text notificationText = new Text(message);
         notificationText.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         notificationText.setStyle("-fx-fill: #FFFFFF;");
         notification.getChildren().add(notificationText);
@@ -260,7 +257,7 @@ public class SettingsMenu extends BorderPane {
         FadeTransition ft = new FadeTransition(Duration.millis(2500), anch);
         ft.setFromValue(1.0);
         ft.setToValue(0);
-        ft.setDelay(Duration.millis(1500));
+        ft.setDelay(Duration.millis(500));
         ft.setOnFinished(e -> CONTAINER.getChildren().remove(anch));
         ft.play();
     }
