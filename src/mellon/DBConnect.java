@@ -369,4 +369,20 @@ public class DBConnect {
         }
         return passLength;
     }
+    
+    public static void updatePrefrenceSettings(int userIDin, int newTimeoutDuration,int newPasswordLength) {
+        Connection connection = getConnect();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE ACCOUNT_SETTINGS SET SESSION_TIMEOUT = ?, DEFAULT_PASS_LENGTH = ?  WHERE USER_ID = ?");
+            preparedStatement.setInt(1, userIDin);
+            preparedStatement.setInt(2, newTimeoutDuration);
+            preparedStatement.setInt(3, newPasswordLength);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

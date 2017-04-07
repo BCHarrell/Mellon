@@ -149,6 +149,9 @@ public class SettingsMenu extends BorderPane {
         //Closes on save
         save.setOnAction(e -> {
             //SAVE LOGIC HERE
+            DBConnect.updatePrefrenceSettings (UserInfoSingleton.getUserID(),
+                                               Integer.parseInt(timeoutTF.getText()), 
+                                               Integer.parseInt(String.valueOf(cb.getValue())));
             showNotification("Settings Saved");
             CONTAINER.closeSettings();
         });
@@ -230,7 +233,11 @@ public class SettingsMenu extends BorderPane {
         
         //Section to print the stored passwords.
         report.setOnAction(e -> {
-            showNotification("File Sent to Printer");
+            boolean success = Print.executePrint(UserInfoSingleton.getInstance().getProfiles());
+            if(success){
+            showNotification("File Sent to Printer");} else {
+                showNotification("Error printing file, please check your printer's connection");
+            }
         });
     }//end addItems 
     
