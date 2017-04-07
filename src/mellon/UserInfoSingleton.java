@@ -53,7 +53,7 @@ public class UserInfoSingleton {
         userID = 0;
         username = null;
         password = null;
-        timeoutDuration = 999;
+        timeoutDuration = 0;
         copyPassword = false;
         defaultPasswordLength = 16;
         connection = null;
@@ -171,7 +171,7 @@ public class UserInfoSingleton {
     }
 
     public static int getTimeoutDuration() {
-        return timeoutDuration;
+        return DBConnect.getTimeoutDuration(userID);
     }
 
     public static void setTimeoutDuration(int timeoutDuration) {

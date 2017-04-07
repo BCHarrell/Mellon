@@ -23,6 +23,7 @@ public class AdvancedMenu extends BorderPane {
     public AdvancedMenu(CreationPage parent) {
         this.parent = parent;
         addItems();
+        setOnMouseMoved(AutoTimer.MOUSE_MOVED);
     }
     
     /**

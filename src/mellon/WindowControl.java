@@ -24,6 +24,8 @@ public class WindowControl extends HBox{
         CONTAINER = c;
         loggedIn = true;
         addItems();
+        setOnMouseMoved(AutoTimer.MOUSE_MOVED);
+
     }
     
     public WindowControl(){
