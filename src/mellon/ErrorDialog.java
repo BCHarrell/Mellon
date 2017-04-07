@@ -18,6 +18,7 @@ public class ErrorDialog extends BorderPane{
 
     private String message;
     private final MenuContainer CONTAINER;
+    private final ExternalContainer E_CONTAINER;
     private final ImageView ALERT = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/alert_icon.png")));
     
@@ -28,6 +29,19 @@ public class ErrorDialog extends BorderPane{
      */
     public ErrorDialog(MenuContainer c, String message){
         CONTAINER = c;
+        E_CONTAINER = null;
+        this.message = message;
+        createDialog();
+    }
+    
+    /**
+     * Constructor once logged out
+     * @param c the menu container
+     * @param message the message to display
+     */
+    public ErrorDialog(ExternalContainer c, String message){
+        CONTAINER = null;
+        E_CONTAINER = c;
         this.message = message;
         createDialog();
     }
@@ -41,7 +55,7 @@ public class ErrorDialog extends BorderPane{
         this.setStyle("-fx-background-color: white; ");
         this.setBorder(new Border(new BorderStroke(Color.valueOf("#d4aa00"),
                 BorderStrokeStyle.SOLID, null, null)));
-        this.setPadding(new Insets(15,15,15,15));
+        this.setPadding(new Insets(15,15,15,30));
         
         BorderPane messageArea = new BorderPane();
         messageArea.setPrefSize(375, 125);
@@ -68,7 +82,12 @@ public class ErrorDialog extends BorderPane{
         this.setBottom(buttonBox);
         addDropShadow();
         
-        acknowledge.setOnAction(e -> CONTAINER.closeDialog(this));
+        if (CONTAINER != null){
+            acknowledge.setOnAction(e -> CONTAINER.closeDialog(this));
+        } else {
+            acknowledge.setOnAction(e -> E_CONTAINER.closeDialog(this));
+        }
+        
     }
     
     /**

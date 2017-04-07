@@ -18,7 +18,6 @@ public class HelpPage extends Accordion {
     public HelpPage(MenuContainer c) {
         CONTAINER = c;
         addItems();
-        setOnMouseMoved(AutoTimer.MOUSE_MOVED);
     }
     
     private void addItems(){

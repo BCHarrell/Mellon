@@ -84,4 +84,30 @@ public class ExternalContainer extends StackPane {
         ft.setToValue(1.0);
         ft.play();
     }
+    
+    /**
+     * Shows the specified dialog
+     * @param d the dialog to display
+     */
+    public void showDialog(Node d){
+        this.getChildren().add(d);
+        FadeTransition ft = new FadeTransition(Duration.millis(250), d);
+        ft.setFromValue(0);
+        ft.setToValue(1.0);
+        ft.play();
+    }
+    
+    /**
+     * Closes the specified dialog menu
+     * @param d the dialog to close
+     */
+    public void closeDialog(Node d){
+        FadeTransition ft = new FadeTransition(Duration.millis(250), d);
+        ft.setFromValue(1.0);
+        ft.setToValue(0);
+        ft.setOnFinished(e -> {
+            this.getChildren().remove(d);
+        });
+        ft.play();
+    }
 }

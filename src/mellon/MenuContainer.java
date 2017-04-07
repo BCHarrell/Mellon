@@ -19,15 +19,14 @@ public class MenuContainer extends StackPane{
     
     private static MellonFramework FRAMEWORK;
     private final MainMenu MAIN;
-//    private final MasterAccount USER;
     private final BorderPane content = new BorderPane();
     private SettingsMenu settings = new SettingsMenu(this);
     private boolean settingsDisplayed = false;
+    private AutoTimer timer = new AutoTimer(this);
     
     public MenuContainer(MellonFramework fw){
         FRAMEWORK = fw;
         MAIN = new MainMenu(this);
-//        USER = UserInfoSingleton.getInstance().getMasterAccount();
         content.setTop(new NavBar(this));
         content.setCenter(MAIN);
         MAIN.setOpacity(0);
@@ -36,7 +35,15 @@ public class MenuContainer extends StackPane{
                 BorderStrokeStyle.SOLID, null, null)));
         loginFade();
         this.getChildren().add(content);
-        setOnMouseMoved(AutoTimer.MOUSE_MOVED);
+        addListener();
+    }
+    
+    private void addListener(){
+        this.setOnMouseMoved(e -> {
+            if(this.getScene().getWindow().isFocused()){
+                timer.update();
+            }
+        });
     }
     
     /**
@@ -47,17 +54,20 @@ public class MenuContainer extends StackPane{
     }
     
     /**
-     * @return the logged in user
-     */
-//    public MasterAccount getUser(){
-//        return USER;
-//    }
-    
-    /**
      * Returns to the login page
      */
-    public static void logout(){
+    public void logout(){
         FRAMEWORK.getScene().setRoot(new ExternalContainer(FRAMEWORK));
+    }
+    
+    /**
+     * Called when the user is forcibly logged out.
+     */
+    public void timeout(){
+        ExternalContainer external = new ExternalContainer(FRAMEWORK);
+        FRAMEWORK.getScene().setRoot(external);
+        external.showDialog(new ErrorDialog(external, "You have been "
+                + "logged out due to inactivity."));
     }
     
     /**

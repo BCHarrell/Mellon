@@ -30,7 +30,6 @@ public class SettingsMenu extends BorderPane {
     public SettingsMenu(MenuContainer c) {
         CONTAINER = c;
         addItems();
-        setOnMouseMoved(AutoTimer.MOUSE_MOVED);
     }
 
     /**

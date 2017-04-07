@@ -26,7 +26,6 @@ public class MainMenu extends VBox {
         this.setAlignment(Pos.CENTER);
         this.setPadding(new Insets(0, 50, 0, 50));
         update();
-        setOnMouseMoved(AutoTimer.MOUSE_MOVED);
     }
     
     /**

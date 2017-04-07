@@ -46,7 +46,7 @@ public class ConfirmDialog extends BorderPane{
         this.setStyle("-fx-background-color: white; ");
         this.setBorder(new Border(new BorderStroke(Color.valueOf("#0088aa"),
                 BorderStrokeStyle.SOLID, null, null)));
-        this.setPadding(new Insets(15,15,15,15));
+        this.setPadding(new Insets(15,15,15,30));
         
         BorderPane messageArea = new BorderPane();
         messageArea.setPrefSize(375, 125);

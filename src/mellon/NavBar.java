@@ -46,7 +46,6 @@ public class NavBar extends BorderPane{
         bar.setOpacity(0);
         this.setCenter(bar);
         fadeIn();
-        setOnMouseMoved(AutoTimer.MOUSE_MOVED);
     }
     
     /**
