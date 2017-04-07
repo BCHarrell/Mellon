@@ -17,7 +17,6 @@ public class AutoTimer {
     }
     
     public void update(){
-        System.out.println("called");
         if (timeoutMax == null) {
             timeoutMax = new Date(System.currentTimeMillis() +
                     userTimeoutDuration * 60 * 1000);
