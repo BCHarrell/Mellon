@@ -233,10 +233,15 @@ public class SettingsMenu extends BorderPane {
         
         //Section to print the stored passwords.
         report.setOnAction(e -> {
-            boolean success = Print.executePrint(UserInfoSingleton.getInstance().getProfiles());
+            boolean success = Print.executePrint(UserInfoSingleton
+                    .getInstance().getProfiles());
             if(success){
-            showNotification("File Sent to Printer");} else {
-                showNotification("Error printing file, please check your printer's connection");
+            showNotification("File Sent to Printer");
+            } else {
+                CONTAINER.showDialog(new ErrorDialog(CONTAINER, 
+                        "Something went wrong. Please check your printer "
+                                + "connection and try again.  If the problem "
+                                + "persists, please report a bug."));
             }
         });
     }//end addItems 
