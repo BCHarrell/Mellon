@@ -154,10 +154,12 @@ public class LoginPage extends VBox {
             notificationText = "Please fill in all fields";
             throw new Exception();
         } else {
-            if (UserInfoSingleton.getInstance().init(username.getText(), password.getText())) {
+            if (UserInfoSingleton.getInstance().init(username.getText(),
+                    password.getText())) {
                 username.clear();
                 password.clear();
             } else {
+                notificationText = "Invalid username or password.";
                 throw new Exception();
             }
         }

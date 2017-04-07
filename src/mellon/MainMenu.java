@@ -55,12 +55,5 @@ public class MainMenu extends VBox {
         
         scroll.setContent(innerBox);
         this.getChildren().setAll(scroll);
-        
-        //DEBUG
-        for (WebAccount x : accounts){
-            System.out.println(x.getAccountName() + " // " + x.getUsername() +
-                    " // " + x.getPassword());
-        }
-        System.out.println("*****");
     }
 }
