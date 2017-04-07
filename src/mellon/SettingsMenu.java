@@ -189,12 +189,11 @@ public class SettingsMenu extends BorderPane {
                         "Please ensure the current password, new password, "
                         + "and repeated password are filled in."));
             } else {
-                MasterAccount oldMasterAccount 
-                        = UserInfoSingleton.getInstance().getMasterAccount();
-                String newMasterPasswordHash 
-                        = oldMasterAccount.hashString(plainNewMasterPassword);
-                ArrayList<WebAccount> oldWebAccounts 
-                        = UserInfoSingleton.getInstance().getProfiles();
+//                MasterAccount oldMasterAccount = UserInfoSingleton.getInstance().getMasterAccount();
+//                String newMasterPasswordHash = oldMasterAccount.hashString(plainNewMasterPassword);
+                ArrayList<WebAccount> oldWebAccounts = UserInfoSingleton.getInstance().getProfiles();
+                String oldMasterPassword = UserInfoSingleton.getInstance().getPassword();
+                String newMasterPasswordHash = UserInfoSingleton.getInstance().hashString(plainNewMasterPassword);
                 int userID = UserInfoSingleton.getInstance().getUserID();
                 ArrayList<WebAccount> newWebAccounts = new ArrayList<>();
                 // Updates the master account hash

@@ -399,12 +399,13 @@ public class CreationPage extends StackPane {
             
             if (existingWebAccount > 0) {
                 // Web account already exists, update it
+                newAccount.setWebID(existingWebAccount);
                 DBConnect.updateWebAccount(userID,
-                        newAccount.getWebID(),
+                        existingWebAccount,
                         newAccount.getEncodedAccountName(),
                         newAccount.getEncodedUsername(),
                         newAccount.getEncodedPassword());
-                accountCreated = true;
+                UserInfoSingleton.getInstance().addSingleProfile(newAccount);
             } else {
                 // Web account doesn't exist, create it
                 accountCreated = DBConnect.CreateWebAccount(userID,
@@ -412,14 +413,15 @@ public class CreationPage extends StackPane {
                         newAccount.getEncodedUsername(),
                         newAccount.getEncodedPassword(),
                         inputExpiration);
+                if (accountCreated) {
+                    UserInfoSingleton.getInstance().addNewProfile(newAccount);
+                } else if (!accountCreated) {
+                    CONTAINER.showDialog(new ErrorDialog(CONTAINER, "The profile "
+                            + "was not created.  Please try again.  If the error "
+                            + "persists, please report a bug."));
+                }
             }
-            if (accountCreated) {
-                UserInfoSingleton.getInstance().addSingleProfile(newAccount);
-            } else if (!accountCreated) {
-                CONTAINER.showDialog(new ErrorDialog(CONTAINER, "The profile "
-                        + "was not created.  Please try again.  If the error "
-                        + "persists, please report a bug."));
-            }
+
             CONTAINER.getMain().update();
             CONTAINER.requestMenuChange(CONTAINER.getMain());
         } 

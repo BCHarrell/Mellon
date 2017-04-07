@@ -229,9 +229,10 @@ public class SignUpPage extends VBox {
         boolean registered = false;
         try {
             // Check if user with the same username already exist in the database
-            MasterAccount user = new MasterAccount(username, pass);
-            usernameHash = user.getUsernameHash();
-            passwordHash = user.getPasswordHash();
+//            MasterAccount user = new MasterAccount(username, pass);
+            UserInfoSingleton.getInstance().setUpNewUser(username, pass);
+            usernameHash = UserInfoSingleton.getInstance().getUsernameHash();
+            passwordHash = UserInfoSingleton.getInstance().getPasswordHash();
             exists = DBConnect.checkUser(usernameHash);
             // if the user exists, display error message
             if (exists) {

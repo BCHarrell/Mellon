@@ -1,5 +1,9 @@
 package mellon;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
 import java.util.ArrayList;
 
 /**
@@ -11,10 +15,13 @@ public class UserInfoSingleton {
     private static int userID;
     private static String username;
     private static String password;
-    private static MasterAccount masterAccount;
+    private static String usernameHash;
+    private static String passwordHash;
     private static int timeoutDuration;
     private static boolean copyPassword;
+    private static boolean authenticated;
     private static int defaultPasswordLength;
+    private static Connection connection;
     private static ArrayList<WebAccount> profiles = new ArrayList<>();
 
     private UserInfoSingleton() {
@@ -27,25 +34,95 @@ public class UserInfoSingleton {
         return instance;
     }
 
-    public static void logout() {
+    public static void resetNoLogout() {
+        authenticated = false;
         userID = 0;
         username = null;
         password = null;
-        masterAccount = null;
+        usernameHash = null;
+        passwordHash = null;
         timeoutDuration = 999;
         copyPassword = false;
         defaultPasswordLength = 16;
+        connection = null;
+        profiles.clear();
+    }
+
+    public static void logout() {
+        authenticated = false;
+        userID = 0;
+        username = null;
+        password = null;
+        timeoutDuration = 999;
+        copyPassword = false;
+        defaultPasswordLength = 16;
+        connection = null;
         profiles.clear();
         instance = null;
     }
 
-    public static void updateMasterAccount(MasterAccount account) {
-        masterAccount = account;
-        addProfiles(account.getUserAccounts());
+    public static boolean init(String usernameIn, String passwordIn) {
+        resetNoLogout();
+        username = usernameIn;
+        password = passwordIn;
+        usernameHash = hashString(usernameIn);
+        passwordHash = hashString(passwordIn);
+        setConnection();
+        authenticated = DBConnect.authenticateUser(usernameHash, passwordHash);
+        if (authenticated) {
+            profiles = DBConnect.getCredentials(usernameHash, passwordHash, password);
+            System.out.println("init returning true");
+            return true;
+        } else {
+            logout();
+            System.out.println("init returning false");
+            return false;
+        }
     }
 
-    public static MasterAccount getMasterAccount() {
-        return masterAccount;
+    public static void setUpNewUser(String usernameIn, String passwordIn) {
+        resetNoLogout();
+        username = usernameIn;
+        password = passwordIn;
+        usernameHash = hashString(usernameIn);
+        passwordHash = hashString(passwordIn);
+    }
+
+//    public static void updateMasterAccount(MasterAccount account) {
+//        masterAccount = account;
+//        addProfiles(account.getUserAccounts());
+//    }
+
+//    public static MasterAccount getMasterAccount() {
+//        return masterAccount;
+//    }
+
+    public static String hashString(String input) {
+        try {
+
+            // Using MessageDigest to encrypt the inputs
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            // Create a byte array to hold the raw data
+            byte[] bytes = messageDigest.digest(input.getBytes(StandardCharsets.UTF_8));
+            StringBuffer stringBuffer = new StringBuffer();
+
+            // Need to loop over the byte array so that we can get a string out of it
+            for (int i = 0; i < bytes.length; i++) {
+                stringBuffer.append(Integer.toHexString(0xff & bytes[i]));
+            }
+
+            // return the result
+            return stringBuffer.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            // Need to find a way to NOT return null...
+            return null;
+        }
+    }
+
+    private static void setConnection() {
+        UserInfoSingleton.connection = DBConnect.getConnect();
     }
 
     public static int getUserID() {
@@ -53,7 +130,7 @@ public class UserInfoSingleton {
     }
 
     public static void setUserID(int userIDin) {
-        userID = userIDin;
+        UserInfoSingleton.userID = userIDin;
     }
 
     public static String getPassword() {
@@ -72,21 +149,32 @@ public class UserInfoSingleton {
         UserInfoSingleton.username = usernameIn;
     }
 
+    public static String getUsernameHash() {
+        return usernameHash;
+    }
+
+    public static String getPasswordHash() {
+        return passwordHash;
+    }
+
     public static void addProfiles(ArrayList<WebAccount> profilesIn) {
-        if (profiles.size() != 0) {
-            profiles.clear();
-        }
+        profiles = new ArrayList<>();
         UserInfoSingleton.profiles.addAll(profilesIn);
     }
 
     public static void addSingleProfile(WebAccount profileIn) {
+        final int[] index = new int[1];
         profiles.stream().forEach(p -> {
             if (p.getWebID() == profileIn.getWebID()) {
-                int index = profiles.indexOf(p);
-                profiles.set(index, profileIn);
-                return;
+                System.out.println("profile found: " + profiles.indexOf(p));
+                index[0] = profiles.indexOf(p);
             }
         });
+        profiles.remove(index[0]);
+        profiles.add(profileIn);
+    }
+
+    public static void addNewProfile(WebAccount profileIn) {
         profiles.add(profileIn);
     }
 

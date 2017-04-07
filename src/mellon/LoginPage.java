@@ -1,10 +1,13 @@
 package mellon;
 
 import static javafx.geometry.Pos.*;
+
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
+
 import java.security.NoSuchAlgorithmException;
+
 import javafx.animation.FadeTransition;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -19,7 +22,7 @@ import javafx.util.Duration;
  * a username and password combination and verifies the information when
  * submit is selected.  The user can also choose to create a new account via
  * the Sign Up button.
- * 
+ *
  * @author Brent H.
  */
 public class LoginPage extends VBox {
@@ -28,7 +31,7 @@ public class LoginPage extends VBox {
     private final ExternalContainer CONTAINER;
     private final ImageView LOGO = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/mellon_logo_large.png")));
-    
+
     private TextField username = new TextField();
     private PasswordField password = new PasswordField();
     private String notificationText = "";
@@ -38,7 +41,7 @@ public class LoginPage extends VBox {
         CONTAINER = ec;
         addItems();
     }
-    
+
     /**
      * Creates the UI elements
      */
@@ -46,7 +49,7 @@ public class LoginPage extends VBox {
         this.setMaxSize(350, 450);
         this.setAlignment(CENTER);
         this.setSpacing(45);
-        
+
         //Vertical box housing all of the input elements
         VBox vb = new VBox();
         vb.setAlignment(CENTER);
@@ -57,14 +60,14 @@ public class LoginPage extends VBox {
         password = new PasswordField();
         password.setMaxWidth(300);
         password.setPromptText("Password");
-        
+
         //Horizontal box housing the buttons
         HBox hb = new HBox();
         hb.setAlignment(CENTER);
         hb.setSpacing(15);
         Button login = new Button("Log In");
         Button signUp = new Button("Sign Up");
-        
+
         //Horizontal box for progress indicator
         HBox authenticationBox = new HBox();
         authenticationBox.setAlignment(CENTER);
@@ -74,12 +77,12 @@ public class LoginPage extends VBox {
         Text authenticating = new Text("Authenticating...");
         authenticationBox.getChildren().addAll(prog, authenticating);
         authenticationBox.setVisible(false);
-        
+
         //Notification to user for failure
         Text notification = new Text();
         notification.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         notification.setStyle("-fx-fill: red;");
-        
+
         //Add the items to appropriate containers
         hb.getChildren().addAll(login, signUp);
         vb.getChildren().addAll(username, password, hb);
@@ -90,23 +93,23 @@ public class LoginPage extends VBox {
          *****************/
         //Pressing enter in the password field submits
         password.setOnKeyPressed(e -> {
-           if (e.getCode().equals(KeyCode.ENTER)) { 
-               login.fireEvent(new ActionEvent());
-           }
-        });
-        
-        username.setOnKeyPressed (e ->{
-            if (e.getCode().equals(KeyCode.ENTER)) { 
-                   login.fireEvent(new ActionEvent());
+            if (e.getCode().equals(KeyCode.ENTER)) {
+                login.fireEvent(new ActionEvent());
             }
         });
-        
+
+        username.setOnKeyPressed(e -> {
+            if (e.getCode().equals(KeyCode.ENTER)) {
+                login.fireEvent(new ActionEvent());
+            }
+        });
+
         //Login
         login.setOnAction(e -> {
             authenticationBox.getChildren().setAll(prog, authenticating);
             authenticationBox.setVisible(true);
-            
-            Task authenticate = new Task<Void>(){
+
+            Task authenticate = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
                     login();
@@ -116,23 +119,23 @@ public class LoginPage extends VBox {
             authenticate.setOnSucceeded(a -> {
                 transition();
             });
-            
+
             authenticate.setOnFailed(a -> {
                 notification.setText(notificationText);
                 authenticationBox.getChildren().setAll(notification);
             });
-            
+
             new Thread(authenticate).start();
         });
-            
+
 
         // BUTTON - Goes to sign up page
         signUp.setOnAction(e -> CONTAINER
                 .requestMenuChange(new SignUpPage(CONTAINER, this)));
 
     }
-    
-    private void transition(){
+
+    private void transition() {
         FadeTransition ft = new FadeTransition(Duration.millis(500), this);
         ft.setFromValue(1.0);
         ft.setToValue(0);
@@ -141,30 +144,38 @@ public class LoginPage extends VBox {
         });
         ft.play();
     }
-    
+
     /**
      * Performs the login authentication
      */
-    private void login() throws Exception{
+    private void login() throws Exception {
         // If either field is empty
         if (username.getText().isEmpty() || password.getText().isEmpty()) {
             notificationText = "Please fill in all fields";
             throw new Exception();
         } else {
-            try {
-                MasterAccount user = new MasterAccount(username.getText(),
-                                            password.getText());
-
-                if (user.getAuthenticated()) {
-                    UserInfoSingleton.getInstance().updateMasterAccount(user);
-                } else {
-                    // Pop-up a message displaying to the user
-                    notificationText = "Incorrect username or password";
-            throw new Exception();
-                }
-            } catch (NoSuchAlgorithmException e1) {
-                e1.printStackTrace();
+            if (UserInfoSingleton.getInstance().init(username.getText(), password.getText())) {
+                username.clear();
+                password.clear();
+            } else {
+                System.out.println("login unsuccessful");
+                throw new Exception();
             }
+//            try {
+
+//                MasterAccount user = new MasterAccount(username.getText(),
+//                        password.getText());
+//
+//                if (user.getAuthenticated()) {
+//                    UserInfoSingleton.getInstance().updateMasterAccount(user);
+//                } else {
+//                    // Pop-up a message displaying to the user
+//                    notificationText = "Incorrect username or password";
+//                    throw new Exception();
+//                }
+//            } catch (NoSuchAlgorithmException e1) {
+//                e1.printStackTrace();
+//            }
         }
     }
 }

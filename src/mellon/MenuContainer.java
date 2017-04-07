@@ -19,7 +19,7 @@ public class MenuContainer extends StackPane{
     
     private final MellonFramework FRAMEWORK;
     private final MainMenu MAIN;
-    private final MasterAccount USER;
+//    private final MasterAccount USER;
     private final BorderPane content = new BorderPane();
     private SettingsMenu settings = new SettingsMenu(this);
     private boolean settingsDisplayed = false;
@@ -27,7 +27,7 @@ public class MenuContainer extends StackPane{
     public MenuContainer(MellonFramework fw){
         FRAMEWORK = fw;
         MAIN = new MainMenu(this);
-        USER = UserInfoSingleton.getInstance().getMasterAccount();
+//        USER = UserInfoSingleton.getInstance().getMasterAccount();
         content.setTop(new NavBar(this));
         content.setCenter(MAIN);
         MAIN.setOpacity(0);
@@ -48,9 +48,9 @@ public class MenuContainer extends StackPane{
     /**
      * @return the logged in user
      */
-    public MasterAccount getUser(){
-        return USER;
-    }
+//    public MasterAccount getUser(){
+//        return USER;
+//    }
     
     /**
      * Returns to the login page
