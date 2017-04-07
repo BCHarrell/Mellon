@@ -158,24 +158,8 @@ public class LoginPage extends VBox {
                 username.clear();
                 password.clear();
             } else {
-                System.out.println("login unsuccessful");
                 throw new Exception();
             }
-//            try {
-
-//                MasterAccount user = new MasterAccount(username.getText(),
-//                        password.getText());
-//
-//                if (user.getAuthenticated()) {
-//                    UserInfoSingleton.getInstance().updateMasterAccount(user);
-//                } else {
-//                    // Pop-up a message displaying to the user
-//                    notificationText = "Incorrect username or password";
-//                    throw new Exception();
-//                }
-//            } catch (NoSuchAlgorithmException e1) {
-//                e1.printStackTrace();
-//            }
         }
     }
 }

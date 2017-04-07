@@ -174,10 +174,19 @@ public class SettingsMenu extends BorderPane {
             cb.setValue(16);
         });
 
-        /* Thomas, how do you feel about ignoring web accounts here. 
+        /*
+
+        Thomas, how do you feel about ignoring web accounts here.
         We can hash old pass and compare with existing master password.
         If equals then issue an update using updateMasterPassword().
-        if not then display alert*/
+        if not then display alert
+
+        Thomas response: can't ignore web accounts, all profiles are
+        encrypted with the old master password, with a new master password,
+        they will all need to be re-encrypted and written to the database
+        with the new result.
+
+        */
         savePass.setOnAction(e -> {
             String plainCurrentMasterPassword = old.getText();
             String plainNewMasterPassword = newPass.getText();
@@ -189,10 +198,7 @@ public class SettingsMenu extends BorderPane {
                         "Please ensure the current password, new password, "
                         + "and repeated password are filled in."));
             } else {
-//                MasterAccount oldMasterAccount = UserInfoSingleton.getInstance().getMasterAccount();
-//                String newMasterPasswordHash = oldMasterAccount.hashString(plainNewMasterPassword);
                 ArrayList<WebAccount> oldWebAccounts = UserInfoSingleton.getInstance().getProfiles();
-                String oldMasterPassword = UserInfoSingleton.getInstance().getPassword();
                 String newMasterPasswordHash = UserInfoSingleton.getInstance().hashString(plainNewMasterPassword);
                 int userID = UserInfoSingleton.getInstance().getUserID();
                 ArrayList<WebAccount> newWebAccounts = new ArrayList<>();
@@ -211,8 +217,7 @@ public class SettingsMenu extends BorderPane {
                             account.getEncodedPassword());
                 });
                 // Update the singleton
-                UserInfoSingleton.getInstance()
-                        .setPassword(plainNewMasterPassword);
+                UserInfoSingleton.getInstance().setPassword(plainNewMasterPassword);
                 UserInfoSingleton.getInstance().addProfiles(newWebAccounts);
                 old.clear();
                 newPass.clear();

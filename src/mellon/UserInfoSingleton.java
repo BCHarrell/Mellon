@@ -71,11 +71,9 @@ public class UserInfoSingleton {
         authenticated = DBConnect.authenticateUser(usernameHash, passwordHash);
         if (authenticated) {
             profiles = DBConnect.getCredentials(usernameHash, passwordHash, password);
-            System.out.println("init returning true");
             return true;
         } else {
             logout();
-            System.out.println("init returning false");
             return false;
         }
     }
@@ -87,15 +85,6 @@ public class UserInfoSingleton {
         usernameHash = hashString(usernameIn);
         passwordHash = hashString(passwordIn);
     }
-
-//    public static void updateMasterAccount(MasterAccount account) {
-//        masterAccount = account;
-//        addProfiles(account.getUserAccounts());
-//    }
-
-//    public static MasterAccount getMasterAccount() {
-//        return masterAccount;
-//    }
 
     public static String hashString(String input) {
         try {
@@ -166,7 +155,6 @@ public class UserInfoSingleton {
         final int[] index = new int[1];
         profiles.stream().forEach(p -> {
             if (p.getWebID() == profileIn.getWebID()) {
-                System.out.println("profile found: " + profiles.indexOf(p));
                 index[0] = profiles.indexOf(p);
             }
         });
