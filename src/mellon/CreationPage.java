@@ -300,25 +300,8 @@ public class CreationPage extends StackPane {
         });
         
         //Save account
-        //THIS CAN BE MOVED TO ITS OWN METHOD FOR CLARITY
         save.setOnAction(e -> {
             if (passwordChanged) {
-               /* Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, 
-                    "It looks like you're saving a new password for this "
-                    + "profile. Changing your password here does not change "
-                    + "the password in the actual account and you may still "
-                    + "need your old password. If you save now, you will not "
-                    + "be able to get your old password back.\n\nAre you sure "
-                    + "you want to save?",
-                    ButtonType.YES, ButtonType.NO);
-                confirm.setTitle("Just Checking");
-                confirm.setHeaderText("");
-            
-                confirm.showAndWait()
-                    .filter(response -> response == ButtonType.YES)
-                    .ifPresent(response -> {
-                        save();
-                    });*/
                final ConfirmDialog confirm = new ConfirmDialog(CONTAINER,
                "It looks like you're saving a new password for this "
                     + "profile. Changing your password here does not change "
