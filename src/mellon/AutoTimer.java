@@ -13,7 +13,7 @@ public class AutoTimer {
     static Date currentTime;
     static Date timeoutMax;
     protected static Timestamp userTime;
-    static long userTimeoutDuration = 1;
+    static long userTimeoutDuration = UserInfoSingleton.getTimeoutDuration();
 
     static EventHandler<MouseEvent> MOUSE_MOVED = new EventHandler<MouseEvent>() {
         @Override
