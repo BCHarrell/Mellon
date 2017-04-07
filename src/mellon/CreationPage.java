@@ -37,6 +37,7 @@ public class CreationPage extends StackPane {
         CONTAINER = c;
         edit = false;
         createBorderPane();
+        setOnMouseMoved(AutoTimer.MOUSE_MOVED);
     }
     
     /**

@@ -17,7 +17,7 @@ import javafx.util.Duration;
  */
 public class MenuContainer extends StackPane{
     
-    private final MellonFramework FRAMEWORK;
+    private static MellonFramework FRAMEWORK;
     private final MainMenu MAIN;
 //    private final MasterAccount USER;
     private final BorderPane content = new BorderPane();
@@ -36,6 +36,7 @@ public class MenuContainer extends StackPane{
                 BorderStrokeStyle.SOLID, null, null)));
         loginFade();
         this.getChildren().add(content);
+        setOnMouseMoved(AutoTimer.MOUSE_MOVED);
     }
     
     /**
@@ -55,7 +56,7 @@ public class MenuContainer extends StackPane{
     /**
      * Returns to the login page
      */
-    public void logout(){
+    public static void logout(){
         FRAMEWORK.getScene().setRoot(new ExternalContainer(FRAMEWORK));
     }
     
