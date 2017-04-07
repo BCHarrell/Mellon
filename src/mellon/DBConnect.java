@@ -328,8 +328,8 @@ public class DBConnect {
         ResultSet resultSet = null;
         int timeout = 0;
         try {
-            preparedStatement = connection.prepareStatement("SELECT TIMEOUT " +
-                                                    "FROM USER_SETTINGS " +
+            preparedStatement = connection.prepareStatement("SELECT SESSION_TIMEOUT " +
+                                                    "FROM ACCOUNT_SETTINGS " +
                                                     "WHERE USER_ID = ?");
             preparedStatement.setInt(1, userIDin);
             resultSet = preparedStatement.executeQuery();
@@ -344,5 +344,29 @@ public class DBConnect {
             e.printStackTrace();
         }
         return timeout;
+    }
+
+    public static int getDefaultPassLength(int userIDin) {
+        Connection connection = getConnect();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        int passLength = 0;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT DEFAULT_PASS_LENGTH " +
+                                                    "FROM ACCOUNT_SETTINGS " +
+                                                    "WHERE USER_ID = ?");
+            preparedStatement.setInt(1, userIDin);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                passLength = resultSet.getInt(1);
+                UserInfoSingleton.getInstance().setDefaultPasswordLength(passLength);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return passLength;
     }
 }
