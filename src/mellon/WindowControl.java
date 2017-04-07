@@ -1,17 +1,17 @@
 
 package mellon;
 
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 /**
- *
+ * This class creates a custom window control pane so that the stage can be
+ * undecorated.  Allows for dragging, minimizing, and closing of the window.
  * @author Brent H.
  */
 public class WindowControl extends HBox{
@@ -50,19 +50,30 @@ public class WindowControl extends HBox{
         //Close window
         close.setOnAction(e -> {
             if (loggedIn){
-                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                        "Are you sure you want to log out?",
-                        ButtonType.YES, ButtonType.NO);
-                confirm.setTitle("Confirm Logout");
-                confirm.setHeaderText("");
-
-                confirm.showAndWait()
-                        .filter(response -> response == ButtonType.YES)
-                        .ifPresent(response -> {
-                            UserInfoSingleton.getInstance().logout();
-                            Stage stage = (Stage) close.getScene().getWindow();
-                            stage.close();
-                });
+                final ConfirmDialog confirm = new ConfirmDialog(CONTAINER,
+                "Are you sure you want to log out?");
+                CONTAINER.showDialog(confirm);
+               
+                Task <Void> task = new Task(){
+                   @Override
+                   protected Object call() throws Exception {
+                       synchronized(confirm){
+                           while(!confirm.isClosed()){
+                               try{
+                                   confirm.wait();
+                               } catch (InterruptedException ex){}
+                           }
+                       }
+                       return null;
+                   }  
+               };
+               task.setOnSucceeded(a ->{
+                   if(confirm.isConfirmed()){
+                       CONTAINER.logout();
+                       UserInfoSingleton.getInstance().logout();
+                   }
+               });
+               new Thread(task).start();
             } else {
                 Stage stage = (Stage) close.getScene().getWindow();
                 stage.close();

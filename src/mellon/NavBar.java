@@ -2,6 +2,7 @@
 package mellon;
 
 import javafx.animation.FadeTransition;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -127,17 +128,30 @@ public class NavBar extends BorderPane{
         settingsBtn.setOnAction(e -> CONTAINER.displaySettings());
         
         logoutBtn.setOnAction(e -> {
-            Alert confirm = new Alert(AlertType.CONFIRMATION, "Are you sure"
-                    + " you want to log out?", ButtonType.YES, ButtonType.NO);
-            confirm.setTitle("Confirm Logout");
-            confirm.setHeaderText("");
-            
-            confirm.showAndWait()
-                    .filter(response -> response == ButtonType.YES)
-                    .ifPresent(response -> {
-                        CONTAINER.logout();
-                        UserInfoSingleton.getInstance().logout();
-            });
+            final ConfirmDialog confirm = new ConfirmDialog(CONTAINER,
+               "Are you sure you want to log out?");
+               CONTAINER.showDialog(confirm);
+               
+               Task <Void> task = new Task(){
+                   @Override
+                   protected Object call() throws Exception {
+                       synchronized(confirm){
+                           while(!confirm.isClosed()){
+                               try{
+                                   confirm.wait();
+                               } catch (InterruptedException ex){}
+                           }
+                       }
+                       return null;
+                   }  
+               };
+               task.setOnSucceeded(a ->{
+                   if(confirm.isConfirmed()){
+                       CONTAINER.logout();
+                       UserInfoSingleton.getInstance().logout();
+                   }
+               });
+               new Thread(task).start();
         });
         
         return bar;

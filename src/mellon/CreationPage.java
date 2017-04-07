@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javafx.animation.FadeTransition;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.geometry.*;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -301,7 +302,7 @@ public class CreationPage extends StackPane {
         //THIS CAN BE MOVED TO ITS OWN METHOD FOR CLARITY
         save.setOnAction(e -> {
             if (passwordChanged) {
-                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, 
+               /* Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, 
                     "It looks like you're saving a new password for this "
                     + "profile. Changing your password here does not change "
                     + "the password in the actual account and you may still "
@@ -316,7 +317,36 @@ public class CreationPage extends StackPane {
                     .filter(response -> response == ButtonType.YES)
                     .ifPresent(response -> {
                         save();
-                    });
+                    });*/
+               final ConfirmDialog confirm = new ConfirmDialog(CONTAINER,
+               "It looks like you're saving a new password for this "
+                    + "profile. Changing your password here does not change "
+                    + "the password in the actual account and you may still "
+                    + "need your old password. If you save now, you will not "
+                    + "be able to get your old password back.\n\nAre you sure "
+                    + "you want to save?");
+               CONTAINER.showDialog(confirm);
+               
+               Task <Void> task = new Task(){
+                   @Override
+                   protected Object call() throws Exception {
+                       synchronized(confirm){
+                           while(!confirm.isClosed()){
+                               try{
+                                   confirm.wait();
+                               } catch (InterruptedException ex){}
+                           }
+                       }
+                       return null;
+                   }  
+               };
+               task.setOnSucceeded(a ->{
+                   if(confirm.isConfirmed()){
+                       save();
+                   }
+               });
+               new Thread(task).start();
+               
             } else {
                 save();
             }
@@ -342,18 +372,31 @@ public class CreationPage extends StackPane {
         
         //Delete button
         delete.setOnAction(e -> {
-            //Temporary alert
-            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, 
-                    "Are you sure you want to delete this account?",
-                    ButtonType.YES, ButtonType.NO);
-            confirm.setTitle("Confirm Deletion");
-            confirm.setHeaderText("");
-            
-            confirm.showAndWait()
-                    .filter(response -> response == ButtonType.YES)
-                    .ifPresent(response -> {
-                        //DELETION CODE GOES HERE
-            });
+            final ConfirmDialog confirm = new ConfirmDialog(CONTAINER,
+               "Caution: If you delete this profile, you cannot retrieve it "
+                       + "again.\n\n"
+                       + "Are you sure you want to delete it?");
+               CONTAINER.showDialog(confirm);
+               
+               Task <Void> task = new Task(){
+                   @Override
+                   protected Object call() throws Exception {
+                       synchronized(confirm){
+                           while(!confirm.isClosed()){
+                               try{
+                                   confirm.wait();
+                               } catch (InterruptedException ex){}
+                           }
+                       }
+                       return null;
+                   }  
+               };
+               task.setOnSucceeded(a ->{
+                   if(confirm.isConfirmed()){
+                       //DELETE CODE GOES HERE
+                   }
+               });
+               new Thread(task).start();
         });
 
     } //End addItems()
