@@ -57,14 +57,14 @@ public class DBConnect {
         Connection connection = getConnect();
         try {
             preparedStatement = connection.prepareStatement("SELECT WEB_USERNAME, " +
-                                         "KEY, WEB_ID, ACCOUNT_NAME, EXP_DT " +
-                                         "FROM WEB_ACCOUNTS WHERE USER_ID IN (" +
-                                            "SELECT AM.USER_ID " +
-                                            "FROM ACCOUNT_MASTER AM " +
-                                            "INNER JOIN ACCOUNT_INFO AI " +
-                                            "ON AM.USER_ID = AI.USER_ID " +
-                                            "WHERE AM.USERNAME = ? " +
-                                            "AND AI.MASTER_KEY = ?)");
+                                                     "KEY, WEB_ID, ACCOUNT_NAME, EXP_DT " +
+                                                     "FROM WEB_ACCOUNTS WHERE USER_ID IN (" +
+                                                        "SELECT AM.USER_ID " +
+                                                        "FROM ACCOUNT_MASTER AM " +
+                                                        "INNER JOIN ACCOUNT_INFO AI " +
+                                                        "ON AM.USER_ID = AI.USER_ID " +
+                                                        "WHERE AM.USERNAME = ? " +
+                                                        "AND AI.MASTER_KEY = ?)");
             preparedStatement.setString(1, usernameHash);
             preparedStatement.setString(2, passwordHash);
             resultSet = preparedStatement.executeQuery();
@@ -108,8 +108,8 @@ public class DBConnect {
         Connection connection = getConnect();
         try {
             preparedStatement = connection.prepareStatement("SELECT USER_ID " +
-                                         "FROM ACCOUNT_MASTER " +
-                                         "WHERE USERNAME = ?");
+                                                             "FROM ACCOUNT_MASTER " +
+                                                             "WHERE USERNAME = ?");
             preparedStatement.setString(1, username);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -136,11 +136,11 @@ public class DBConnect {
         Connection connection = getConnect();
         try {
             preparedStatement = connection.prepareStatement("SELECT AM.USER_ID " +
-                                         "FROM ACCOUNT_MASTER AM " +
-                                         "INNER JOIN ACCOUNT_INFO AI " +
-                                         "ON AM.USER_ID = AI.USER_ID " +
-                                         "WHERE AM.USERNAME = ? " +
-                                         "AND AI.MASTER_KEY = ?");
+                                                             "FROM ACCOUNT_MASTER AM " +
+                                                             "INNER JOIN ACCOUNT_INFO AI " +
+                                                             "ON AM.USER_ID = AI.USER_ID " +
+                                                             "WHERE AM.USERNAME = ? " +
+                                                             "AND AI.MASTER_KEY = ?");
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
             resultSet = preparedStatement.executeQuery();
@@ -280,8 +280,11 @@ public class DBConnect {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("UPDATE WEB_ACCOUNTS " +
-                    "SET ACCOUNT_NAME = ?, WEB_USERNAME = ?, KEY = ?" +
-                    "WHERE USER_ID = ? AND WEB_ID = ?");
+                                                            "SET ACCOUNT_NAME = ?, " +
+                                                                "WEB_USERNAME = ?, " +
+                                                                "KEY = ?" +
+                                                            "WHERE USER_ID = ? " +
+                                                            "AND WEB_ID = ?");
             preparedStatement.setString(1, accountName);
             preparedStatement.setString(2, username);
             preparedStatement.setString(3, password);
@@ -304,9 +307,9 @@ public class DBConnect {
         ResultSet resultSet = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT WEB_ID " +
-                    "FROM WEB_ACCOUNTS " +
-                    "WHERE USER_ID = ? " +
-                    "AND ACCOUNT_NAME = ?");
+                                                            "FROM WEB_ACCOUNTS " +
+                                                            "WHERE USER_ID = ? " +
+                                                            "AND ACCOUNT_NAME = ?");
             preparedStatement.setInt(1, userIDIn);
             preparedStatement.setString(2, accountNameIn);
             resultSet = preparedStatement.executeQuery();
@@ -329,8 +332,8 @@ public class DBConnect {
         int timeout = 0;
         try {
             preparedStatement = connection.prepareStatement("SELECT SESSION_TIMEOUT " +
-                                                    "FROM ACCOUNT_SETTINGS " +
-                                                    "WHERE USER_ID = ?");
+                                                            "FROM ACCOUNT_SETTINGS " +
+                                                            "WHERE USER_ID = ?");
             preparedStatement.setInt(1, userIDin);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -353,8 +356,8 @@ public class DBConnect {
         int passLength = 0;
         try {
             preparedStatement = connection.prepareStatement("SELECT DEFAULT_PASS_LENGTH " +
-                                                    "FROM ACCOUNT_SETTINGS " +
-                                                    "WHERE USER_ID = ?");
+                                                            "FROM ACCOUNT_SETTINGS " +
+                                                            "WHERE USER_ID = ?");
             preparedStatement.setInt(1, userIDin);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -374,7 +377,10 @@ public class DBConnect {
         Connection connection = getConnect();
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement("UPDATE ACCOUNT_SETTINGS SET SESSION_TIMEOUT = ?, DEFAULT_PASS_LENGTH = ?  WHERE USER_ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE ACCOUNT_SETTINGS " +
+                                                            "SET SESSION_TIMEOUT = ?, " +
+                                                            "DEFAULT_PASS_LENGTH = ?  " +
+                                                            "WHERE USER_ID = ?");
             preparedStatement.setInt(1, userIDin);
             preparedStatement.setInt(2, newTimeoutDuration);
             preparedStatement.setInt(3, newPasswordLength);
