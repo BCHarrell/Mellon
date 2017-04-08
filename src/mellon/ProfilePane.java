@@ -167,16 +167,20 @@ public class ProfilePane extends VBox{
                 blur();
             }
         });
-        
+
         //Copies text to clipboard and alerts the user
         password.setOnMouseClicked(e -> {
-            
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(password.getText());
-            clipboard.setContent(content);
-            createCopyNotification();
+            // Auto-copies password if setting enabled
+            boolean copyPassword = UserInfoSingleton.getInstance().isCopyPassword();
+            if (copyPassword) {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(password.getText());
+                clipboard.setContent(content);
+                createCopyNotification();
+            }
         });
+
     }
     
     /**
