@@ -154,6 +154,7 @@ public class LoginPage extends VBox {
             notificationText = "Please fill in all fields";
             throw new Exception();
         } else {
+            UserInfoSingleton.getInstance().logout();
             if (UserInfoSingleton.getInstance().init(username.getText(),
                     password.getText())) {
                 username.clear();

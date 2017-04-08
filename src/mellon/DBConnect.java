@@ -17,11 +17,11 @@ public class DBConnect {
     private static boolean ACCOUNT_FOUND;
     private static boolean ACCOUNT_CREATED;
     private static int userID;
-    private Connection connection;
+//    private Connection connection;
 
     // This method initiates the connection to Mellon database
     public DBConnect() {
-        this.connection = getConnect();
+//        this.connection = getConnect();
     }
 
     public boolean getAccountFound() { return this.ACCOUNT_FOUND; }
@@ -131,6 +131,7 @@ public class DBConnect {
     }
 
     public static boolean authenticateUser(String username, String password) {
+        ACCOUNT_FOUND = false;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         Connection connection = getConnect();
