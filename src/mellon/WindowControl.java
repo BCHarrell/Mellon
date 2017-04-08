@@ -68,10 +68,11 @@ public class WindowControl extends HBox{
                    }  
                };
                task.setOnSucceeded(a ->{
-                   if(confirm.isConfirmed()){
-                       CONTAINER.logout();
-                       UserInfoSingleton.getInstance().logout();
-                   }
+                    if(confirm.isConfirmed()){
+                        UserInfoSingleton.getInstance().logout();
+                        Stage stage = (Stage) close.getScene().getWindow();
+                        stage.close();
+                    }
                });
                new Thread(task).start();
             } else {

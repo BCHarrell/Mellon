@@ -1,11 +1,8 @@
 package mellon;
 
 
+import java.time.LocalDate;
 import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -101,15 +98,18 @@ public class ProfilePane extends VBox{
         Button visible = new Button();
         visible.setGraphic(EYE_ICON);
         visible.setBackground(Background.EMPTY);
+                
+        hb.getChildren().addAll(password, visible);
         
-        //Copied label (Temporary)
-        Text copied = new Text("Copied!");
-        copied.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        copied.setStyle("-fx-fill: #ffffff");
-        copied.setVisible(false);
+        //Expiration notice
+        Text soonToExpire = new Text("Your password will expire soon.");
+        soonToExpire.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        soonToExpire.setStyle("-fx-fill: #FFFFFF;");
         
+        Text expired = new Text("Your password has expired.");
+        expired.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        expired.setStyle("-fx-fill: #d4aa00;");
         
-        hb.getChildren().addAll(password, visible, copied);
         passVB.getChildren().addAll(passLabel, hb);
         
         contentBox.getChildren().addAll(userVB, passVB);
@@ -131,6 +131,15 @@ public class ProfilePane extends VBox{
             if (this.getChildren().contains(contentBox)){
                 this.getChildren().setAll(titleBox);
             } else {
+                if (account.getExpDate().equals(LocalDate.now())
+                           || account.getExpDate().isBefore(LocalDate.now())){
+                    contentBox.getChildren().add(expired);
+                } else if (account.getExpDate()
+                            .minusDays(3).isBefore(LocalDate.now())
+                            || account.getExpDate().minusDays(3)
+                                .equals(LocalDate.now())){
+                    contentBox.getChildren().add(soonToExpire);
+                }
                 this.getChildren().setAll(titleBox, contentBox);
             }
         });
