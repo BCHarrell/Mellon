@@ -1,9 +1,5 @@
 package mellon;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.*;
@@ -145,9 +141,9 @@ public class SettingsMenu extends BorderPane {
         this.setTop(closeBox);
 
         /**
-         * **************
-         * EVENT LISTENERS **************
-         */
+         *****************
+         *EVENT LISTENERS*
+         *****************/
         
         repeat.setOnKeyReleased(e -> {
             if(!repeat.getText().equals(newPass.getText())){
