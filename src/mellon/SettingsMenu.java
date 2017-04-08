@@ -1,18 +1,16 @@
 package mellon;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 import javafx.animation.FadeTransition;
 import javafx.scene.text.*;
 import javafx.util.Duration;
+import javafx.util.converter.IntegerStringConverter;
 
 
 /**
@@ -76,11 +74,11 @@ public class SettingsMenu extends BorderPane {
         //Default Password Length
         HBox lengthHB = new HBox();
         lengthHB.setSpacing(10);
-        Text lengthLabel = new Text("Default Password Length");
+        Text lengthLabel = new Text("Password Length");
         lengthLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         lengthLabel.setStyle("-fx-fill: #FFFFFF;");
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
-                "8", "16", "24", "32", "48", "Custom"));
+                "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(45);
         cb.setValue("16");
 
@@ -143,9 +141,9 @@ public class SettingsMenu extends BorderPane {
         this.setTop(closeBox);
 
         /**
-         * **************
-         * EVENT LISTENERS **************
-         */
+         *****************
+         *EVENT LISTENERS*
+         *****************/
         
         repeat.setOnKeyReleased(e -> {
             if(!repeat.getText().equals(newPass.getText())){
@@ -173,19 +171,26 @@ public class SettingsMenu extends BorderPane {
         cb.getSelectionModel().selectedIndexProperty().addListener(
                 (ObservableValue<? extends Number> ov, Number old_val,
                         Number new_val) -> {
-                    if (new_val.intValue() == 5) {
+                    if (new_val.intValue() == 6) {
                         lengthHB.getChildren().remove(cb);
                         lengthHB.getChildren().addAll(custLength);
                         length.requestFocus();
                     }
-                });
+        });
 
         //Go back to choice box from custom selection
         goBack.setOnAction(e -> {
             lengthHB.getChildren().remove(custLength);
             lengthHB.getChildren().add(cb);
-            cb.setValue(16);
+            cb.getSelectionModel().select(1);
         });
+        
+        //Ensures text in the custom length box is a number
+        TextFormatter<Integer> format = new TextFormatter<>(
+            new IntegerStringConverter(), 
+            null,  
+            c -> Pattern.matches("\\d*", c.getText()) ? c : null );
+        length.setTextFormatter(format);
 
         /*
 

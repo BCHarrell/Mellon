@@ -2,6 +2,7 @@ package mellon;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 import javafx.animation.FadeTransition;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -14,6 +15,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.util.*;
+import javafx.util.converter.IntegerStringConverter;
 
 /**
  * Menu to create and edit profiles stored on the account.
@@ -255,28 +257,40 @@ public class CreationPage extends StackPane {
         /*****************
          *EVENT LISTENERS*
          *****************/
-        //Choice box switch-out
+        //Choicebox for length selection
         cb.getSelectionModel().selectedIndexProperty().addListener(
                 (ObservableValue<? extends Number> ov, Number old_val,
-                 Number new_val) -> {
-                    if (new_val.intValue() == 5) {
+                        Number new_val) -> {
+                    if (new_val.intValue() == 6) {
                         lengthVB.getChildren().remove(cb);
                         lengthVB.getChildren().addAll(custLength);
                         length.requestFocus();
                     }
         });
-        
-        //Returns to the choice box
+
+        //Go back to choice box from custom selection
         goBack.setOnAction(e -> {
             lengthVB.getChildren().remove(custLength);
             lengthVB.getChildren().add(cb);
+            cb.getSelectionModel().select(1);
         });
+        
+        //Ensures text is a number
+        TextFormatter<Integer> format = new TextFormatter<>(
+            new IntegerStringConverter(), 
+            null,  
+            c -> Pattern.matches("\\d*", c.getText()) ? c : null );
+        length.setTextFormatter(format);
         
         //Password generation
         generate.setOnAction(e -> {
             int pwLength = 0;
             try {
-                pwLength = Integer.parseInt(String.valueOf(cb.getValue()));
+                if(cb.getSelectionModel().getSelectedIndex() == 6){
+                    pwLength = Integer.parseInt(length.getText());
+                } else {
+                    pwLength = Integer.parseInt(String.valueOf(cb.getValue()));
+                }
             } catch (NumberFormatException e1) {
                 // Password length was not a number.
             }
