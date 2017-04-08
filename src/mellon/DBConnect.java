@@ -217,7 +217,6 @@ public class DBConnect {
             date = null;
         }else {
             date = java.sql.Date.valueOf(inputExpiration);
-            System.out.println("Date: " + date);
         }
         PreparedStatement preparedStatement = null;
         Connection connection = getConnect();
@@ -374,7 +373,9 @@ public class DBConnect {
         return passLength;
     }
     
-    public static void updatePrefrenceSettings(int userIDin, int newTimeoutDuration,int newPasswordLength) {
+    public static void updatePrefrenceSettings(int userIDin,
+                                               int newTimeoutDuration,
+                                               int newPasswordLength) {
         Connection connection = getConnect();
         PreparedStatement preparedStatement = null;
         try {
@@ -382,9 +383,9 @@ public class DBConnect {
                                                             "SET SESSION_TIMEOUT = ?, " +
                                                             "DEFAULT_PASS_LENGTH = ?  " +
                                                             "WHERE USER_ID = ?");
-            preparedStatement.setInt(1, userIDin);
-            preparedStatement.setInt(2, newTimeoutDuration);
-            preparedStatement.setInt(3, newPasswordLength);
+            preparedStatement.setInt(1, newTimeoutDuration);
+            preparedStatement.setInt(2, newPasswordLength);
+            preparedStatement.setInt(3, userIDin);
             preparedStatement.executeUpdate();
             preparedStatement.close();
             connection.close();

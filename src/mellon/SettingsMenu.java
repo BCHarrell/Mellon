@@ -7,6 +7,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
+
 import javafx.animation.FadeTransition;
 import javafx.scene.text.*;
 import javafx.util.Duration;
@@ -24,6 +26,8 @@ public class SettingsMenu extends BorderPane {
 
     private final MenuContainer CONTAINER;
     private VBox contentBox = new VBox();
+    private int timeout = UserInfoSingleton.getInstance().getTimeoutDuration();
+    private String passLength = String.valueOf(UserInfoSingleton.getInstance().getDefaultPasswordLength());
     
     public SettingsMenu(MenuContainer c) {
         CONTAINER = c;
@@ -57,7 +61,7 @@ public class SettingsMenu extends BorderPane {
         timeoutLabel.setStyle("-fx-fill: #FFFFFF;");
         TextField timeoutTF = new TextField();
         /////////THIS WILL NEED UPDATING TO PULL USER SETTINGS/////////
-        timeoutTF.setText("10");
+        timeoutTF.setText(String.valueOf(timeout));
         timeoutTF.setPromptText("ex. 10");
         timeoutTF.setMaxWidth(45);
         timeoutHB.getChildren().addAll(timeoutLabel, timeoutTF);
@@ -80,7 +84,7 @@ public class SettingsMenu extends BorderPane {
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
                 "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(45);
-        cb.setValue("16");
+        cb.setValue(passLength);
 
         HBox custLength = new HBox();
         custLength.setSpacing(5);
@@ -157,9 +161,21 @@ public class SettingsMenu extends BorderPane {
         //Closes on save
         save.setOnAction(e -> {
             //SAVE LOGIC HERE
-            DBConnect.updatePrefrenceSettings (UserInfoSingleton.getUserID(),
-                                               Integer.parseInt(timeoutTF.getText()), 
-                                               Integer.parseInt(String.valueOf(cb.getValue())));
+            int timeout = 10;
+            try {
+                timeout = Integer.parseInt(timeoutTF.getText());
+            } catch (NumberFormatException e1) {
+                // Need to display notification to enter a number
+            }
+            int passwordLength = 16;
+            try {
+                passwordLength = Integer.parseInt(String.valueOf(cb.getValue()));
+            } catch (NumberFormatException e1) {
+                // Display message that password length not a number
+            }
+            DBConnect.updatePrefrenceSettings(UserInfoSingleton.getInstance().getUserID(),
+                                              timeout,
+                                              passwordLength);
             showNotification("Settings Saved");
             CONTAINER.closeSettings();
         });

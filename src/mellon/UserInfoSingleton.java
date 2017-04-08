@@ -42,7 +42,7 @@ public class UserInfoSingleton {
         password = null;
         usernameHash = null;
         passwordHash = null;
-        timeoutDuration = 999;
+        timeoutDuration = 10;
         copyPassword = false;
         defaultPasswordLength = 16;
         connection = null;
@@ -54,7 +54,7 @@ public class UserInfoSingleton {
         userID = 0;
         username = null;
         password = null;
-        timeoutDuration = 0;
+        timeoutDuration = 10;
         copyPassword = false;
         defaultPasswordLength = 16;
         connection = null;
@@ -69,9 +69,13 @@ public class UserInfoSingleton {
         usernameHash = hashString(usernameIn);
         passwordHash = hashString(passwordIn);
         setConnection();
+        // User ID is set in the authenticateUser method
         authenticated = DBConnect.authenticateUser(usernameHash, passwordHash);
         if (authenticated) {
+            // Once authenticated, grab the profiles and settings
             profiles = DBConnect.getCredentials(usernameHash, passwordHash, password);
+            defaultPasswordLength = DBConnect.getDefaultPassLength(userID);
+            timeoutDuration = DBConnect.getTimeoutDuration(userID);
             return true;
         } else {
             logout();
