@@ -114,6 +114,20 @@ public class ProfilePane extends VBox{
         
         contentBox.getChildren().addAll(userVB, passVB);
         
+        //Check Expiration Date
+        if(account.getExpDate() != null){
+            if (account.getExpDate().equals(LocalDate.now())
+                       || account.getExpDate()
+                               .isBefore(LocalDate.now())){
+                contentBox.getChildren().add(expired);
+            } else if (account.getExpDate()
+                        .minusDays(3).isBefore(LocalDate.now())
+                        || account.getExpDate().minusDays(3)
+                            .equals(LocalDate.now())){
+                contentBox.getChildren().add(soonToExpire);
+            }
+        }
+        
         this.getChildren().addAll(titleBox);
         
         /*****************
@@ -131,15 +145,6 @@ public class ProfilePane extends VBox{
             if (this.getChildren().contains(contentBox)){
                 this.getChildren().setAll(titleBox);
             } else {
-                if (account.getExpDate().equals(LocalDate.now())
-                           || account.getExpDate().isBefore(LocalDate.now())){
-                    contentBox.getChildren().add(expired);
-                } else if (account.getExpDate()
-                            .minusDays(3).isBefore(LocalDate.now())
-                            || account.getExpDate().minusDays(3)
-                                .equals(LocalDate.now())){
-                    contentBox.getChildren().add(soonToExpire);
-                }
                 this.getChildren().setAll(titleBox, contentBox);
             }
         });
