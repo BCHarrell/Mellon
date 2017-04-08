@@ -100,6 +100,15 @@ public class SignUpPage extends VBox {
          *EVENT LISTENERS*
          *****************/
         
+        //Highlights the verify box if it does not match the password box
+        verify.setOnKeyReleased(e -> {
+            if(!verify.getText().equals(password.getText())){
+                verify.setStyle("-fx-background-color: rgba(255,0,0,.5);");
+            } else {
+                verify.setStyle(null);
+            }
+        });
+        
         back.setOnAction(e -> {
             CONTAINER.requestMenuChange(LOGIN);
         });

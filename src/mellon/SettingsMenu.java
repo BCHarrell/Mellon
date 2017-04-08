@@ -110,13 +110,13 @@ public class SettingsMenu extends BorderPane {
         box.setAlignment(Pos.CENTER_LEFT);
         box.setSpacing(3);
         box.setPadding(new Insets(5, 5, 5, 5));
-        TextField old = new TextField();
+        PasswordField old = new PasswordField();
         old.setPromptText("Enter current password");
         old.setMaxWidth(225);
-        TextField newPass = new TextField();
+        PasswordField newPass = new PasswordField();
         newPass.setPromptText("Enter new password");
         newPass.setMaxWidth(225);
-        TextField repeat = new TextField();
+        PasswordField repeat = new PasswordField();
         repeat.setPromptText("Enter new password again");
         repeat.setMaxWidth(225);
         Button savePass = new Button("Save Password");
@@ -146,6 +146,16 @@ public class SettingsMenu extends BorderPane {
          * **************
          * EVENT LISTENERS **************
          */
+        
+        repeat.setOnKeyReleased(e -> {
+            if(!repeat.getText().equals(newPass.getText())){
+                repeat.setStyle("-fx-background-color: rgba(255,0,0,.5);");
+            } else {
+                repeat.setStyle(null);
+            }
+        });
+        
+        
         //Closes on save
         save.setOnAction(e -> {
             //SAVE LOGIC HERE
