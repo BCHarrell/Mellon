@@ -26,8 +26,9 @@ public class SettingsMenu extends BorderPane {
 
     private final MenuContainer CONTAINER;
     private VBox contentBox = new VBox();
-    private int timeout = UserInfoSingleton.getInstance().getTimeoutDuration();
-    private String passLength = String.valueOf(UserInfoSingleton.getInstance().getDefaultPasswordLength());
+    private int existsingTimeout = UserInfoSingleton.getInstance().getTimeoutDuration();
+    private String existingPasswordLength = String.valueOf(UserInfoSingleton.getInstance().getDefaultPasswordLength());
+    private boolean existingCopyPassword = UserInfoSingleton.getInstance().isCopyPassword();
     
     public SettingsMenu(MenuContainer c) {
         CONTAINER = c;
@@ -61,7 +62,7 @@ public class SettingsMenu extends BorderPane {
         timeoutLabel.setStyle("-fx-fill: #FFFFFF;");
         TextField timeoutTF = new TextField();
         /////////THIS WILL NEED UPDATING TO PULL USER SETTINGS/////////
-        timeoutTF.setText(String.valueOf(timeout));
+        timeoutTF.setText(String.valueOf(existsingTimeout));
         timeoutTF.setPromptText("ex. 10");
         timeoutTF.setMaxWidth(45);
         timeoutHB.getChildren().addAll(timeoutLabel, timeoutTF);
@@ -73,6 +74,7 @@ public class SettingsMenu extends BorderPane {
         copy.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         copy.setStyle("-fx-fill: #FFFFFF;");
         CheckBox copyCB = new CheckBox();
+        copyCB.setSelected(existingCopyPassword);
         copyHB.getChildren().addAll(copy, copyCB);
 
         //Default Password Length
@@ -84,7 +86,7 @@ public class SettingsMenu extends BorderPane {
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
                 "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(45);
-        cb.setValue(passLength);
+        cb.setValue(existingPasswordLength);
 
         HBox custLength = new HBox();
         custLength.setSpacing(5);
@@ -161,21 +163,28 @@ public class SettingsMenu extends BorderPane {
         //Closes on save
         save.setOnAction(e -> {
             //SAVE LOGIC HERE
+            // Initialize values with defaults as a fall-back
             int timeout = 10;
+            String passwordLength = "16";
+            int passwordLengthNum = 16;
             try {
                 timeout = Integer.parseInt(timeoutTF.getText());
             } catch (NumberFormatException e1) {
                 // Need to display notification to enter a number
             }
-            int passwordLength = 16;
             try {
-                passwordLength = Integer.parseInt(String.valueOf(cb.getValue()));
+                passwordLength = String.valueOf(cb.getValue());
+                passwordLengthNum = Integer.parseInt(passwordLength);
             } catch (NumberFormatException e1) {
                 // Display message that password length not a number
             }
-            DBConnect.updatePrefrenceSettings(UserInfoSingleton.getInstance().getUserID(),
-                                              timeout,
-                                              passwordLength);
+            // Detects if changes are necessary to the database
+            if (existsingTimeout != timeout || !existingPasswordLength.equals(passwordLength)) {
+                DBConnect.updatePrefrenceSettings(UserInfoSingleton.getInstance().getUserID(),
+                                                    timeout,
+                                                    passwordLengthNum);
+            }
+            UserInfoSingleton.getInstance().setCopyPassword(copyCB.isSelected());
             showNotification("Settings Saved");
             CONTAINER.closeSettings();
         });

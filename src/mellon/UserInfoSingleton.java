@@ -43,7 +43,7 @@ public class UserInfoSingleton {
         usernameHash = null;
         passwordHash = null;
         timeoutDuration = 10;
-        copyPassword = false;
+        copyPassword = true;
         defaultPasswordLength = 16;
         connection = null;
         profiles.clear();
@@ -55,7 +55,7 @@ public class UserInfoSingleton {
         username = null;
         password = null;
         timeoutDuration = 10;
-        copyPassword = false;
+        copyPassword = true;
         defaultPasswordLength = 16;
         connection = null;
         profiles.clear();
