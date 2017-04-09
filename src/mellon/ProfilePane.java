@@ -146,6 +146,11 @@ public class ProfilePane extends VBox{
                 this.getChildren().setAll(titleBox);
             } else {
                 this.getChildren().setAll(titleBox, contentBox);
+                // Auto-copies password if setting enabled
+                boolean copyPassword = UserInfoSingleton.getInstance().isCopyPassword();
+                if (copyPassword) {
+                    copyPassword();
+                }
             }
         });
         
@@ -169,17 +174,7 @@ public class ProfilePane extends VBox{
         });
 
         //Copies text to clipboard and alerts the user
-        password.setOnMouseClicked(e -> {
-            // Auto-copies password if setting enabled
-            boolean copyPassword = UserInfoSingleton.getInstance().isCopyPassword();
-            if (copyPassword) {
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                ClipboardContent content = new ClipboardContent();
-                content.putString(password.getText());
-                clipboard.setContent(content);
-                createCopyNotification();
-            }
-        });
+        password.setOnMouseClicked(e -> copyPassword());
 
     }
     
@@ -234,5 +229,13 @@ public class ProfilePane extends VBox{
     private void unBlur(){
         password.setEffect(null);
         isBlurred = false;
+    }
+
+    private void copyPassword() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(password.getText());
+        clipboard.setContent(content);
+        createCopyNotification();
     }
 }
