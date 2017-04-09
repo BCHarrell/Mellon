@@ -9,7 +9,7 @@ public class AutoTimer {
     static Date currentTime;
     static Date timeoutMax;
     protected static Timestamp userTime;
-    static long userTimeoutDuration = UserInfoSingleton.getTimeoutDuration();
+    static long userTimeoutDuration = UserInfoSingleton.getInstance().getTimeoutDuration();
     private final MenuContainer CONTAINER;
     
     public AutoTimer(MenuContainer c){
@@ -23,7 +23,7 @@ public class AutoTimer {
         } else {
             currentTime = new Date(System.currentTimeMillis());
             if (currentTime.after(timeoutMax)) {
-                UserInfoSingleton.logout();
+                UserInfoSingleton.getInstance().logout();
                 CONTAINER.timeout();
                 currentTime = null;
                 timeoutMax = null;
