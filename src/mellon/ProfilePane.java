@@ -53,7 +53,18 @@ public class ProfilePane extends VBox{
         nickname.setStyle("-fx-fill: #ffffff");
         Button edit = new Button("Edit Profile");
         titleBox.setLeft(nickname);
-        titleBox.setRight(edit);
+        
+        Button expand = new Button("Open Profile");
+        //Expand button if auto-copy password
+        if(UserInfoSingleton.getInstance().isCopyPassword()){
+            HBox buttonsBox = new HBox();
+            buttonsBox.setSpacing(10);
+            buttonsBox.setAlignment(Pos.CENTER_RIGHT);
+            buttonsBox.getChildren().addAll(expand, edit);
+            titleBox.setRight(buttonsBox);
+        } else {
+            titleBox.setRight(edit);
+        }
         
         //CONTENT BOX
         VBox contentBox = new VBox();
@@ -115,7 +126,6 @@ public class ProfilePane extends VBox{
         contentBox.getChildren().addAll(userVB, passVB);
         
         //Check Expiration Date
-//        System.out.println(account.getExpDate());
         if(account.getExpDate() != null){
             if (account.getExpDate().equals(LocalDate.now())
              || account.getExpDate().isBefore(LocalDate.now())){
@@ -140,15 +150,23 @@ public class ProfilePane extends VBox{
         
         //Expands and hides the profile box
         titleBox.setOnMouseClicked(e -> {
-            if (this.getChildren().contains(contentBox)){
+            if (UserInfoSingleton.getInstance().isCopyPassword()) {
+                    copyPassword();
+            } else if (this.getChildren().contains(contentBox)){
                 this.getChildren().setAll(titleBox);
             } else {
                 this.getChildren().setAll(titleBox, contentBox);
-                // Auto-copies password if setting enabled
-                boolean copyPassword = UserInfoSingleton.getInstance().isCopyPassword();
-                if (copyPassword) {
-                    copyPassword();
-                }
+            }
+        });
+        
+        //Expand button used when the user has auto copy enabled
+        expand.setOnAction(e ->{
+            if(this.getChildren().contains(contentBox)){
+                expand.setText("Open Profile");
+                this.getChildren().setAll(titleBox);
+            } else {
+                expand.setText("Close Profile");
+                this.getChildren().setAll(titleBox, contentBox);
             }
         });
         
