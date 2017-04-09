@@ -24,8 +24,10 @@ public class ProfilePane extends VBox{
     private final MenuContainer CONTAINER;
     private final ImageView EYE_ICON = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/eye_icon.png")));
-    private TextField password;
+    private TextField password, username;
     private boolean isBlurred = true;
+    
+    private enum Data {PASSWORD, USERNAME};
     
     public ProfilePane(MenuContainer c, WebAccount a){
         account = a;
@@ -53,18 +55,7 @@ public class ProfilePane extends VBox{
         nickname.setStyle("-fx-fill: #ffffff");
         Button edit = new Button("Edit Profile");
         titleBox.setLeft(nickname);
-        
-        Button expand = new Button("Open Profile");
-        //Expand button if auto-copy password
-        if(UserInfoSingleton.getInstance().isCopyPassword()){
-            HBox buttonsBox = new HBox();
-            buttonsBox.setSpacing(10);
-            buttonsBox.setAlignment(Pos.CENTER_RIGHT);
-            buttonsBox.getChildren().addAll(expand, edit);
-            titleBox.setRight(buttonsBox);
-        } else {
-            titleBox.setRight(edit);
-        }
+        titleBox.setRight(edit);
         
         //CONTENT BOX
         VBox contentBox = new VBox();
@@ -77,7 +68,7 @@ public class ProfilePane extends VBox{
         Text userLabel = new Text("Username");
         userLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         userLabel.setStyle("-fx-fill: #ffffff");
-        TextField username = new TextField();
+        username = new TextField();
         username.setEditable(false);
         username.setMaxWidth(175);
         username.setText(account.getUsername());
@@ -148,25 +139,22 @@ public class ProfilePane extends VBox{
                         account.getPassword()));
         });
         
-        //Expands and hides the profile box
-        titleBox.setOnMouseClicked(e -> {
-            if (UserInfoSingleton.getInstance().isCopyPassword()) {
-                    copyPassword();
-            } else if (this.getChildren().contains(contentBox)){
-                this.getChildren().setAll(titleBox);
-            } else {
-                this.getChildren().setAll(titleBox, contentBox);
-            }
-        });
-        
-        //Expand button used when the user has auto copy enabled
-        expand.setOnAction(e ->{
-            if(this.getChildren().contains(contentBox)){
-                expand.setText("Open Profile");
-                this.getChildren().setAll(titleBox);
-            } else {
-                expand.setText("Close Profile");
-                this.getChildren().setAll(titleBox, contentBox);
+        /*
+            Single left-click = copy password
+            Double left-click = open profile
+            Single right-click = copy username
+        */
+        titleBox.setOnMouseClicked(e ->{
+            if (e.getClickCount() == 2){
+                if(this.getChildren().contains(contentBox)){
+                    this.getChildren().setAll(titleBox);
+                } else {
+                    this.getChildren().setAll(titleBox, contentBox);
+                }
+            } else if (e.getButton() == MouseButton.PRIMARY){
+                copyToClipboard(Data.PASSWORD);
+            } else if (e.getButton() == MouseButton.SECONDARY){
+                copyToClipboard(Data.USERNAME);
             }
         });
         
@@ -190,7 +178,7 @@ public class ProfilePane extends VBox{
         });
 
         //Copies text to clipboard and alerts the user
-        password.setOnMouseClicked(e -> copyPassword());
+        password.setOnMouseClicked(e -> copyToClipboard(Data.PASSWORD));
 
     }
     
@@ -198,7 +186,7 @@ public class ProfilePane extends VBox{
      * Creates and displays a notification to the user that the password
      * was copied to the clipboard, fades after a set time.
      */
-    private void createCopyNotification(){
+    private void createCopyNotification(Data type){
         AnchorPane anch = new AnchorPane();
         anch.setPickOnBounds(false);
         
@@ -208,10 +196,19 @@ public class ProfilePane extends VBox{
         notification.setPadding(new Insets(5, 15, 5, 15));
         notification.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
         
-        Text notificationText = new Text("Copied to Clipboard");
+        Text notificationText = new Text();
         notificationText.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         notificationText.setStyle("-fx-fill: #FFFFFF;");
         notification.getChildren().add(notificationText);
+        
+        switch (type){
+            case PASSWORD:
+                notificationText.setText("Copied Password");
+                break;
+            case USERNAME:
+                notificationText.setText("Copied Username");
+                break;
+        }
         
         anch.getChildren().add(notification);
         AnchorPane.setBottomAnchor(notification, 30.0);
@@ -247,11 +244,56 @@ public class ProfilePane extends VBox{
         isBlurred = false;
     }
 
-    private void copyPassword() {
+    private void copyToClipboard(Data type) {
         Clipboard clipboard = Clipboard.getSystemClipboard();
         ClipboardContent content = new ClipboardContent();
-        content.putString(password.getText());
+        
+        switch(type){
+            case PASSWORD:
+                content.putString(password.getText());
+                break;
+            case USERNAME:
+                content.putString(username.getText());
+                break;
+        }
+        
         clipboard.setContent(content);
-        createCopyNotification();
+        createCopyNotification(type);
     }
 }
+
+/* OLD CODE USING AUTO COPY SETTING
+        Button expand = new Button("Open Profile");
+        //Expand button if auto-copy password
+        if(UserInfoSingleton.getInstance().isCopyPassword()){
+            HBox buttonsBox = new HBox();
+            buttonsBox.setSpacing(10);
+            buttonsBox.setAlignment(Pos.CENTER_RIGHT);
+            buttonsBox.getChildren().addAll(expand, edit);
+            titleBox.setRight(buttonsBox);
+        } else {
+            titleBox.setRight(edit);
+        }
+            //LISTENERS
+        //Expands and hides the profile box
+        titleBox.setOnMouseClicked(e -> {
+            if (UserInfoSingleton.getInstance().isCopyPassword()) {
+                    copyPassword();
+            } else if (this.getChildren().contains(contentBox)){
+                this.getChildren().setAll(titleBox);
+            } else {
+                this.getChildren().setAll(titleBox, contentBox);
+            }
+        });
+        
+        //Expand button used when the user has auto copy enabled
+        expand.setOnAction(e ->{
+            if(this.getChildren().contains(contentBox)){
+                expand.setText("Open Profile");
+                this.getChildren().setAll(titleBox);
+            } else {
+                expand.setText("Close Profile");
+                this.getChildren().setAll(titleBox, contentBox);
+            }
+        });
+    */
