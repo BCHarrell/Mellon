@@ -75,7 +75,7 @@ public class DBConnect {
                 String encodedAccountName = resultSet.getString(4);
                 LocalDate ouputExpiration;
                 if (resultSet.getDate(5) == null) {
-                    ouputExpiration = LocalDate.now();
+                    ouputExpiration = null;
                 } else {
                     ouputExpiration = resultSet.getDate(5).toLocalDate();
                 }

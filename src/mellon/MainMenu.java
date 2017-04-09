@@ -3,6 +3,8 @@ package mellon;
 
 
 import java.util.ArrayList;
+import java.util.Comparator;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -34,7 +36,7 @@ public class MainMenu extends VBox {
     public void update() {
         
         accounts = UserInfoSingleton.getInstance().getProfiles();
-        
+
         ScrollPane scroll = new ScrollPane();
         scroll.setStyle("-fx-background-color: transparent;");
         scroll.setFitToWidth(true);
@@ -46,12 +48,9 @@ public class MainMenu extends VBox {
         innerBox.setSpacing(15);
         
         //Sorts by name
-        accounts.sort((o1, o2) -> 
-                o1.getAccountName().compareTo(o2.getAccountName()));
-        
-        for (WebAccount a : accounts) {
-            innerBox.getChildren().add(new ProfilePane(CONTAINER, a));
-        }
+        accounts.sort(Comparator.comparing(WebAccount::getAccountName));
+        //Adds profiles to ProfilePane
+        accounts.stream().forEach(a -> innerBox.getChildren().add(new ProfilePane(CONTAINER, a)));
         
         scroll.setContent(innerBox);
         this.getChildren().setAll(scroll);
