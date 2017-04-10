@@ -21,6 +21,7 @@ import javafx.util.Duration;
  */
 public class NavBar extends BorderPane{
     
+                            //ICONS//
     private final ImageView ADD = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/add_icon.png")));
     private final ImageView HELP = new ImageView(new Image(getClass()
@@ -37,6 +38,10 @@ public class NavBar extends BorderPane{
     private final MenuContainer CONTAINER;
     private BorderPane bar;
     
+    /**
+     * Fades the nav bar in after construction by the MenuContainer
+     * @param cont the menu container holding the nav bar
+     */
     public NavBar(MenuContainer cont){
         CONTAINER = cont;
         this.setTop(new WindowControl(CONTAINER));
@@ -101,15 +106,15 @@ public class NavBar extends BorderPane{
         logoutBtn.getStyleClass().add("icon");
         logoutBtn.setTooltip(new Tooltip("Logout"));
         
-        
+        //Add all items to the icon bar
         icons.getChildren().addAll(homeBtn, addBtn, settingsBtn,
                                         helpBtn, logoutBtn);
         
-        //Close/Minimize bar to get rid of the window
-        
-        
+        //Add the items to the overall borderpane
         bar.setLeft(logoBox);
         bar.setRight(icons);
+        
+        
         /*****************
          *EVENT LISTENERS*
          *****************/
@@ -154,6 +159,9 @@ public class NavBar extends BorderPane{
         return bar;
     }
     
+    /**
+     * Adds a drop shadow to the nav bar
+     */
     private void addDropShadow(){
         DropShadow ds = new DropShadow();
         ds.setOffsetY(5.0);
@@ -161,6 +169,9 @@ public class NavBar extends BorderPane{
         this.setEffect(ds);
     }
     
+    /**
+     * Fades the nav bar in after creation
+     */
     private void fadeIn(){
         FadeTransition ft = new FadeTransition(Duration.millis(500), bar);
         ft.setDelay(Duration.millis(250));
@@ -172,5 +183,4 @@ public class NavBar extends BorderPane{
         });
         ft.play();
     }
-    
 }

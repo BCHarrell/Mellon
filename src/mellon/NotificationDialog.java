@@ -10,7 +10,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 
 /**
- * Custom dialog to alert user to errors.
+ * Custom dialog to notify users of errors or other items (e.g. logout due to
+ * timing out).
  * @author Brent H.
  */
 public class NotificationDialog extends BorderPane{
@@ -55,10 +56,12 @@ public class NotificationDialog extends BorderPane{
         BorderPane messageArea = new BorderPane();
         messageArea.setPrefSize(375, 125);
         
+        //Holds the notification icon
         VBox iconBox = new VBox();
         iconBox.setAlignment(Pos.CENTER);
         iconBox.getChildren().add(ALERT);
         
+        //Holds the dialog message
         VBox textBox = new VBox();
         textBox.setAlignment(Pos.CENTER);
         Text messageText = new Text(message);
@@ -68,6 +71,7 @@ public class NotificationDialog extends BorderPane{
         messageArea.setLeft(iconBox);
         messageArea.setRight(textBox);
         
+        //Holds the acknowledgement button
         HBox buttonBox = new HBox();
         buttonBox.setAlignment(Pos.CENTER);
         Button acknowledge = new Button("Got it");
@@ -77,6 +81,10 @@ public class NotificationDialog extends BorderPane{
         this.setCenter(messageArea);
         this.setBottom(buttonBox);
         addDropShadow();
+        
+        /*****************
+         *EVENT LISTENERS*
+         *****************/
         
         if (CONTAINER != null){
             acknowledge.setOnAction(e -> CONTAINER.closeDialog(this));

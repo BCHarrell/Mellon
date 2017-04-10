@@ -31,13 +31,12 @@ public class AdvancedMenu extends BorderPane {
     private void addItems() {
         this.setMaxSize(350, 200);
         this.getStyleClass().add("grey-container");
-//        this.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
         
         contentBox.setAlignment(Pos.CENTER);
         contentBox.setSpacing(15);
         contentBox.setPadding(new Insets(10, 25, 25, 25));
         
-        //Options
+        //Checkboxes for symbol options
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -45,6 +44,7 @@ public class AdvancedMenu extends BorderPane {
         
         int rowCount = 0, colCount = 0;
         
+        //Add the checkboxes
         for (int i = 1; i < 21; i++){
             CheckBox cb = boxes[i-1] = new CheckBox(OPTIONS[i-1]);
             cb.setSelected(true);
@@ -57,18 +57,18 @@ public class AdvancedMenu extends BorderPane {
             }
         }
         
+        //Save button
         Button save = new Button("Save Selections");
         save.getStyleClass().add("white-button-small");
         
         contentBox.getChildren().addAll(grid, save);
         this.setCenter(contentBox);
         
+        //Menu control - allows for closing the menu without saving
         HBox closeBox = new HBox();
         closeBox.setAlignment(Pos.CENTER_RIGHT);
         Button close = new Button("X");
         close.getStyleClass().add("menu-control");
-//        close.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
-//        close.setBackground(Background.EMPTY);
         closeBox.getChildren().add(close);
         this.setTop(closeBox);
         

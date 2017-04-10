@@ -20,18 +20,28 @@ public class WindowControl extends HBox{
     private boolean loggedIn;
     private double xOffset = 0, yOffset = 0;
     
+    /**
+     * Used when logged in
+     * @param c the menu container to house the window controls
+     */
     public WindowControl(MenuContainer c){
         CONTAINER = c;
         loggedIn = true;
         addItems();
     }
     
+    /**
+     * Used when logged out
+     */
     public WindowControl(){
         loggedIn = false;
         CONTAINER = null;
         addItems();
     }
     
+    /**
+     * Adds the window control elements to the box
+     */
     private void addItems(){
         this.setAlignment(Pos.CENTER_RIGHT);
         this.setSpacing(3);
@@ -39,6 +49,7 @@ public class WindowControl extends HBox{
         this.setPadding(new Insets(0,0,5,0));
         this.getStyleClass().add("blue-container");
         
+        //Close and minimize buttons
         Button close = new Button("X");
         close.getStyleClass().add("window-control");
         close.setBackground(Background.EMPTY);
@@ -93,6 +104,7 @@ public class WindowControl extends HBox{
             yOffset = e.getSceneY();
         });
         
+        //Allows for dragging the window in absence of the normal frame
         this.setOnMouseDragged(e -> {
             Stage stage = (Stage) this.getScene().getWindow();
             stage.setX(e.getScreenX() - xOffset);

@@ -1,7 +1,6 @@
 
 package mellon;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -47,10 +46,12 @@ public class ConfirmDialog extends BorderPane{
         BorderPane messageArea = new BorderPane();
         messageArea.setPrefSize(375, 125);
         
+        //Holds the notification icon
         VBox iconBox = new VBox();
         iconBox.setAlignment(Pos.CENTER);
         iconBox.getChildren().add(ICON);
         
+        //Holds the dialog message
         VBox textBox = new VBox();
         textBox.setAlignment(Pos.CENTER);
         Text messageText = new Text(message);
@@ -60,6 +61,7 @@ public class ConfirmDialog extends BorderPane{
         messageArea.setLeft(iconBox);
         messageArea.setRight(textBox);
         
+        //Holds the yes/no buttons
         HBox buttonBox = new HBox();
         buttonBox.setSpacing(10);
         buttonBox.setAlignment(Pos.CENTER);
@@ -72,6 +74,10 @@ public class ConfirmDialog extends BorderPane{
         this.setCenter(messageArea);
         this.setBottom(buttonBox);
         addDropShadow();
+        
+        /*****************
+         *EVENT LISTENERS*
+         *****************/
         
         yes.setOnAction(e -> {
             confirmed = true;

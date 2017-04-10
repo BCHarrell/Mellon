@@ -15,7 +15,9 @@ import javafx.util.converter.IntegerStringConverter;
 
 /**
  * Settings menu appears as an overlay on any menu, called from the nav
- * bar.
+ * bar.  Contains settings to adjust the timeout duration before forced
+ * logout, default password length, and allows the user to change the 
+ * master password on the account.
  * 
  * @author Brent H.
  *
@@ -26,11 +28,8 @@ public class SettingsMenu extends BorderPane {
     private VBox contentBox = new VBox();
     private int existingTimeout 
             = UserInfoSingleton.getInstance().getTimeoutDuration();
-    private String existingPasswordLength 
-            = String.valueOf(UserInfoSingleton.getInstance()
-              .getDefaultPasswordLength());
-//    private boolean existingCopyPassword 
-//            = UserInfoSingleton.getInstance().isCopyPassword();
+    private int existingPasswordLength 
+            = UserInfoSingleton.getInstance().getDefaultPasswordLength();
     
     public SettingsMenu(MenuContainer c) {
         CONTAINER = c;
@@ -62,7 +61,6 @@ public class SettingsMenu extends BorderPane {
         Text timeoutLabel = new Text("Timeout duration (min):");
         timeoutLabel.getStyleClass().add("white-label");
         TextField timeoutTF = new TextField();
-        /////////THIS WILL NEED UPDATING TO PULL USER SETTINGS/////////
         timeoutTF.setText(String.valueOf(existingTimeout));
         timeoutTF.setPromptText("ex. 10");
         timeoutTF.setMaxWidth(50);
@@ -77,7 +75,9 @@ public class SettingsMenu extends BorderPane {
                 "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(45);
         cb.setValue(existingPasswordLength);
-
+        
+        //Textfield and return button if the user selects "Custom" from the
+        //choice box
         HBox custLength = new HBox();
         custLength.setSpacing(5);
         TextField length = new TextField();
@@ -86,7 +86,7 @@ public class SettingsMenu extends BorderPane {
         custLength.getChildren().addAll(length, goBack);
         lengthHB.getChildren().addAll(lengthLabel, cb);
         
-        //View report
+        //Allows the user to print all stored passwords
         Button report = new Button("Print Passwords");
         report.getStyleClass().add("white-button-small");
 
@@ -97,6 +97,7 @@ public class SettingsMenu extends BorderPane {
         VBox passwordVB = new VBox();
         passwordVB.setMinHeight(150);
         
+        //Password change titled pane, auto closes after completion
         TitledPane password = new TitledPane();
         password.setText("Change Master Password");
         password.setExpanded(false);
@@ -155,32 +156,13 @@ public class SettingsMenu extends BorderPane {
         
         //Closes on save MOVE TO OWN METHOD
         save.setOnAction(e -> {
-            //SAVE LOGIC HERE
-            // Initialize values with defaults as a fall-back
-            int timeout = 10;
-            String passwordLength = "16";
-            int passwordLengthNum = 16;
-            try {
-                timeout = Integer.parseInt(timeoutTF.getText());
-            } catch (NumberFormatException e1) {
-                //only numbers accepted, no catch needed
+            String lengthText = "";
+            if(lengthHB.getChildren().contains(cb)){
+                lengthText = String.valueOf(cb.getValue());
+            } else {
+                lengthText = length.getText();
             }
-            
-            try {
-                passwordLength = String.valueOf(cb.getValue());
-                passwordLengthNum = Integer.parseInt(passwordLength);
-            } catch (NumberFormatException e1) {
-                // only numbers accepted, no catch needed
-            }
-            // Detects if changes are necessary to the database
-            if (existingTimeout != timeout || 
-                    !existingPasswordLength.equals(passwordLength)) {
-                DBConnect.updatePrefrenceSettings(UserInfoSingleton
-                        .getInstance().getUserID(), timeout, passwordLengthNum);
-            }
-//            UserInfoSingleton.getInstance().setCopyPassword(copyCB.isSelected());
-            showNotification("Settings Saved");
-            CONTAINER.closeSettings();
+            saveSettings(timeoutTF.getText(), lengthText);
         });
         
         //Closes on X
@@ -217,7 +199,8 @@ public class SettingsMenu extends BorderPane {
             null,  
             c -> Pattern.matches("\\d*", c.getText()) ? c : null );
         timeoutTF.setTextFormatter(format2);
-
+        
+        //Saves the new master password
         savePass.setOnAction(e -> {
             savePassword(old.getText(), newPass.getText(), repeat.getText());
             old.clear();
@@ -242,7 +225,7 @@ public class SettingsMenu extends BorderPane {
     }//end addItems 
     
     /**
-     * Notifies the user that the password report was sent to the printer
+     * Notifies the user on successful action (save, print)
      */
     private void showNotification(String message){
         AnchorPane anch = new AnchorPane();
@@ -314,5 +297,36 @@ public class SettingsMenu extends BorderPane {
             UserInfoSingleton.getInstance().addProfiles(newWebAccounts);
             showNotification("Password Successfully Changed");
         }
+    }
+    
+    /**
+     * Saves the settings if there were changes
+     * @param timeoutText the string value of the timeout textfield
+     * @param lengthText  the string value of either the choice box or
+     *                    custom password length textfield
+     */
+    private void saveSettings(String timeoutText, String lengthText){
+        // Initialize values with defaults as a fall-back
+            int timeout = 10;
+            int passwordLength = existingPasswordLength;
+            try {
+                timeout = Integer.parseInt(timeoutText);
+            } catch (NumberFormatException e1) {
+                //only numbers accepted, no catch needed
+            }
+            
+            try {
+                passwordLength = Integer.parseInt(lengthText);
+            } catch (NumberFormatException e1) {
+                // only numbers accepted, no catch needed
+            }
+            // Detects if changes are necessary to the database
+            if (existingTimeout != timeout || 
+                    existingPasswordLength != passwordLength) {
+                DBConnect.updatePrefrenceSettings(UserInfoSingleton
+                        .getInstance().getUserID(), timeout, passwordLength);
+            }
+            showNotification("Settings Saved");
+            CONTAINER.closeSettings();
     }
 }

@@ -78,12 +78,13 @@ public class CreationPage extends StackPane {
     private void createBorderPane() {
         adv = new AdvancedMenu(this);
         
+        //Houses the settings and generation area, separate from the save button
         VBox mainArea = new VBox();
         mainArea.setAlignment(Pos.CENTER);
         mainArea.setSpacing(75);
         mainArea.setPadding(new Insets(0, 30, 0, 30));
         
-        //Top Horizontal Box
+        //Top Horizontal Box holding the settings and customize box
         BorderPane settingsArea = new BorderPane();
         settingsArea.getStyleClass().add("blue-container");
         settingsArea.setPadding(new Insets(15, 15, 15, 15));
@@ -124,7 +125,7 @@ public class CreationPage extends StackPane {
         }
         userVB.getChildren().addAll(userLabel, userField);
 
-        //Length selection
+        //Password length selection
         VBox lengthVB = new VBox();
         lengthVB.setSpacing(3);
         Text lengthLabel = new Text("Password Length");
@@ -133,7 +134,8 @@ public class CreationPage extends StackPane {
                 "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(350);
         cb.setValue("16");
-
+        
+        //Textfield and return button for custom entry
         HBox custLength = new HBox();
         custLength.setSpacing(5);
         TextField length = new TextField();
@@ -143,10 +145,11 @@ public class CreationPage extends StackPane {
         custLength.getChildren().addAll(length, goBack);
         lengthVB.getChildren().addAll(lengthLabel, cb);
         
-        //Expiration
+        //Password Expiration
         VBox expirationBox = new VBox();
         expirationBox.setSpacing(3);
         
+        //HBox to hold the expiration text and check box
         HBox expirationHB = new HBox();
         expirationHB.setSpacing(5);
         expireCB = new CheckBox();
@@ -154,6 +157,7 @@ public class CreationPage extends StackPane {
         expireLabel.getStyleClass().add("white-label");
         expirationHB.getChildren().addAll(expireLabel, expireCB);
         
+        //Date picker if the expireCB is checked
         expiration = new DatePicker();
         expiration.setValue(LocalDate.now());
         Callback<DatePicker, DateCell> cellFactory =
@@ -176,10 +180,11 @@ public class CreationPage extends StackPane {
         expiration.setDayCellFactory(cellFactory);
         expiration.setVisible(false);
         expirationBox.getChildren().addAll(expirationHB, expiration);
-
+        
+        //Add items to the settings vertical box
         settingsVB.getChildren().addAll(nickVB, userVB, lengthVB, expirationBox);
 
-        //CUSTOMIZATION box
+        //CUSTOMIZATION box, holds label, cutomize box, and advanced button
         VBox custVB = new VBox();
         custVB.setAlignment(Pos.CENTER_RIGHT);
         custVB.setSpacing(5);
@@ -190,10 +195,12 @@ public class CreationPage extends StackPane {
         customize.getStyleClass().add("white-title");
         customize.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         
+        //Holds the check boxes for the quick customization
         VBox innerVB = new VBox();
         innerVB.setPadding(new Insets(10, 10, 10, 10));
         innerVB.setSpacing(10);
         
+        //Checkboxes
         VBox optionVB = new VBox();
         optionVB.setAlignment(Pos.CENTER_LEFT);
         optionVB.setSpacing(8);
@@ -201,7 +208,6 @@ public class CreationPage extends StackPane {
         upper.setSelected(true);
         CheckBox lower = new CheckBox("Lowercase");
         lower.setSelected(true);
-
         CheckBox symb = new CheckBox("Symbols");
         symb.setSelected(true);
         CheckBox numbers = new CheckBox("Numbers");
@@ -217,13 +223,13 @@ public class CreationPage extends StackPane {
         
         innerVB.getChildren().addAll(optionVB, centeringHB);
 
-        //ADD
+        //ADD to main area borderpane
         custVB.getChildren().addAll(customize, innerVB);
         settingsArea.setLeft(settingsVB);
         settingsArea.setRight(custVB);
         addDropShadow(settingsArea);
 
-        //Generate Area
+        //Password generation area
         VBox generateVB = new VBox();
         generateVB.getStyleClass().add("blue-container");
         generateVB.setPadding(new Insets(15, 15, 15, 15));
@@ -241,14 +247,15 @@ public class CreationPage extends StackPane {
         generateVB.getChildren().addAll(generatedWebPassword, generate);
         addDropShadow(generateVB);
         
-        //Save anchored to bottom
+        //Save button anchored to bottom
         HBox saveHB = new HBox();
         saveHB.setSpacing(10);
         saveHB.setAlignment(Pos.CENTER);
         saveHB.setPadding(new Insets(0, 0, 15, 0));
-        
         Button save = new Button("Save Account");
         save.getStyleClass().add("blue-button-large");
+        
+        //Delete button if in edit mode
         Button delete = new Button("DELETE ACCOUNT");
         //One off need, therefore in-line style
         delete.setStyle("-fx-background-color: #D4AA00;"
@@ -418,6 +425,9 @@ public class CreationPage extends StackPane {
         allowedSymbols = list;
     }
     
+    /**
+     * Saves the profile or updated settings to the profile
+     */
     private void save() {
         if (nickField.getText().isEmpty() ||
                 userField.getText().isEmpty() ||

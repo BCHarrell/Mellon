@@ -109,10 +109,12 @@ public class SignUpPage extends VBox {
             }
         });
         
+        //Returns to login screen
         back.setOnAction(e -> {
             CONTAINER.requestMenuChange(LOGIN);
         });
         
+        //Tries to submit the information
         submit.setOnAction(e -> {
             authenticationBox.getChildren().setAll(prog, authenticating);
             authenticationBox.setVisible(true);
@@ -230,7 +232,16 @@ public class SignUpPage extends VBox {
         }
         return result;
     }
-
+    
+    
+    /**
+     * Gets the user input, checks if the username is already taken
+     * @param username the entered username
+     * @param pass the entered password
+     * @throws Exception thrown if account creation fails or the username is
+     *                   taken, triggers the failed code to display the right
+     *                   notification.
+     */
     private void getUserInput(String username, String pass) throws Exception {
         String usernameHash;
         String passwordHash;
@@ -238,7 +249,6 @@ public class SignUpPage extends VBox {
         boolean registered = false;
         try {
             // Check if user with the same username already exist in the database
-//            MasterAccount user = new MasterAccount(username, pass);
             UserInfoSingleton.getInstance().setUpNewUser(username, pass);
             usernameHash = UserInfoSingleton.getInstance().getUsernameHash();
             passwordHash = UserInfoSingleton.getInstance().getPasswordHash();

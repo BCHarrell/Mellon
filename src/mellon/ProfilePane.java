@@ -67,7 +67,7 @@ public class ProfilePane extends VBox{
         Text nickname = new Text(account.getAccountName());
         nickname.getStyleClass().add("white-title");
         
-        //Buttons
+        //Expand and Edit buttons
         HBox buttonsBox = new HBox();
         buttonsBox.setAlignment(Pos.CENTER_RIGHT);
         Button edit = new Button();
@@ -78,10 +78,10 @@ public class ProfilePane extends VBox{
         expansion.getStyleClass().add("icon");
         expansion.setTooltip(new Tooltip("Opens and closes the profile"
                                             + " information"));
-
         expansion.setGraphic(EXPAND_ICON);
         buttonsBox.getChildren().addAll(expansion, edit);
         
+        //Add to the title pane
         titleBox.setLeft(nickname);
         titleBox.setRight(buttonsBox);
         
@@ -127,7 +127,8 @@ public class ProfilePane extends VBox{
         visible.setGraphic(EYE_ICON);
         visible.getStyleClass().add("icon");
         visible.setTooltip(new Tooltip("Unblurs the password field"));
-                
+        
+        //Add items to the password/visibility button box
         hb.getChildren().addAll(password, visible);
         
         //Expiration notice
@@ -136,8 +137,10 @@ public class ProfilePane extends VBox{
         Text expired = new Text("Your password has expired.");
         expired.getStyleClass().add("expired-notification");
         
+        //Add items to the password vertical box
         passVB.getChildren().addAll(passLabel, hb);
         
+        //Add items to the overall content box
         contentBox.getChildren().addAll(userVB, passVB);
         
         //Check Expiration Date
@@ -151,6 +154,7 @@ public class ProfilePane extends VBox{
             }
         }
         
+        //Add just the title box for now
         this.getChildren().addAll(titleBox);
         
         /*****************
@@ -277,7 +281,11 @@ public class ProfilePane extends VBox{
         password.setEffect(null);
         isBlurred = false;
     }
-
+    
+    /**
+     * Copies the specified information to the clipboard
+     * @param type The type of data to copy
+     */
     private void copyToClipboard(Data type) {
         Clipboard clipboard = Clipboard.getSystemClipboard();
         ClipboardContent content = new ClipboardContent();
@@ -295,39 +303,3 @@ public class ProfilePane extends VBox{
         createCopyNotification(type);
     }
 }
-
-/* OLD CODE USING AUTO COPY SETTING
-        Button expand = new Button("Open Profile");
-        //Expand button if auto-copy password
-        if(UserInfoSingleton.getInstance().isCopyPassword()){
-            HBox buttonsBox = new HBox();
-            buttonsBox.setSpacing(10);
-            buttonsBox.setAlignment(Pos.CENTER_RIGHT);
-            buttonsBox.getChildren().addAll(expand, edit);
-            titleBox.setRight(buttonsBox);
-        } else {
-            titleBox.setRight(edit);
-        }
-            //LISTENERS
-        //Expands and hides the profile box
-        titleBox.setOnMouseClicked(e -> {
-            if (UserInfoSingleton.getInstance().isCopyPassword()) {
-                    copyPassword();
-            } else if (this.getChildren().contains(contentBox)){
-                this.getChildren().setAll(titleBox);
-            } else {
-                this.getChildren().setAll(titleBox, contentBox);
-            }
-        });
-        
-        //Expand button used when the user has auto copy enabled
-        expand.setOnAction(e ->{
-            if(this.getChildren().contains(contentBox)){
-                expand.setText("Open Profile");
-                this.getChildren().setAll(titleBox);
-            } else {
-                expand.setText("Close Profile");
-                this.getChildren().setAll(titleBox, contentBox);
-            }
-        });
-    */
