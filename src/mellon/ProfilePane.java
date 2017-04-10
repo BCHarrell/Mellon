@@ -15,8 +15,16 @@ import javafx.scene.text.*;
 import javafx.util.Duration;
 
 /**
- * This class will create individual profile information panes to be displayed
- * on the main menu.
+ * This class will create individual profile information panes to be displayed.
+ * Initially, only the title pane containing the profile nickname and two
+ * buttons is displayed. Clicking this pane (left click) copies the password
+ * to the clipboard, right clicking the pane copies the username. Clicking the
+ * pencil takes the user to the edit menu to adjust the profile's details,
+ * and clicking the plus sign expands the profile to display the information.
+ * The plus sign is replaced with a minus sign once expanded, which reverses
+ * the process.
+ * 
+ * @author Brent H.
  */
 public class ProfilePane extends VBox{
     
@@ -24,6 +32,13 @@ public class ProfilePane extends VBox{
     private final MenuContainer CONTAINER;
     private final ImageView EYE_ICON = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/eye_icon.png")));
+    private final ImageView EDIT_ICON = new ImageView(new Image(getClass()
+            .getResourceAsStream("/resources/edit_icon.png")));
+    private final ImageView EXPAND_ICON = new ImageView(new Image(getClass()
+            .getResourceAsStream("/resources/expand_icon.png")));
+    private final ImageView MINI_ICON = new ImageView(new Image(getClass()
+            .getResourceAsStream("/resources/mini_icon.png")));
+    
     private TextField password, username;
     private boolean isBlurred = true;
     
@@ -53,9 +68,20 @@ public class ProfilePane extends VBox{
         Text nickname = new Text(account.getAccountName());
         nickname.setFont(Font.font("Arial", FontWeight.BOLD, 18));
         nickname.setStyle("-fx-fill: #ffffff");
-        Button edit = new Button("Edit Profile");
+        
+        //Buttons
+        HBox buttonsBox = new HBox();
+        buttonsBox.setAlignment(Pos.CENTER_RIGHT);
+        Button edit = new Button();
+        edit.setBackground(Background.EMPTY);
+        edit.setGraphic(EDIT_ICON);
+        Button expansion = new Button();
+        expansion.setBackground(Background.EMPTY);
+        expansion.setGraphic(EXPAND_ICON);
+        buttonsBox.getChildren().addAll(expansion, edit);
+        
         titleBox.setLeft(nickname);
-        titleBox.setRight(edit);
+        titleBox.setRight(buttonsBox);
         
         //CONTENT BOX
         VBox contentBox = new VBox();
@@ -141,20 +167,24 @@ public class ProfilePane extends VBox{
         
         /*
             Single left-click = copy password
-            Double left-click = open profile
             Single right-click = copy username
         */
         titleBox.setOnMouseClicked(e ->{
-            if (e.getClickCount() == 2){
-                if(this.getChildren().contains(contentBox)){
-                    this.getChildren().setAll(titleBox);
-                } else {
-                    this.getChildren().setAll(titleBox, contentBox);
-                }
-            } else if (e.getButton() == MouseButton.PRIMARY){
+            if (e.getButton() == MouseButton.PRIMARY){
                 copyToClipboard(Data.PASSWORD);
             } else if (e.getButton() == MouseButton.SECONDARY){
                 copyToClipboard(Data.USERNAME);
+            }
+        });
+        
+        //Expand button used when the user has auto copy enabled
+        expansion.setOnAction(e ->{
+            if(this.getChildren().contains(contentBox)){
+                expansion.setGraphic(EXPAND_ICON);
+                this.getChildren().setAll(titleBox);
+            } else {
+                expansion.setGraphic(MINI_ICON);
+                this.getChildren().setAll(titleBox, contentBox);
             }
         });
         
