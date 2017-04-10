@@ -287,7 +287,7 @@
     -fx-background-color: #0088AA;
 }
 
-/**************** SCROLLPANE *****************/
+/*************** SCROLLPANE ***************/
 
 .scroll-pane {
     -fx-background-color: transparent;
@@ -295,4 +295,21 @@
 
 .scroll-pane > .viewport{
     -fx-background-color: transparent;
+}
+
+/*************** TOOLTIP ***************/
+.tooltip{
+    -fx-background-color: rgba(75, 75, 75, 0.8);
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-padding: 3 3 3 3;
+}
+
+.custom-tooltip{
+    -fx-background-color: rgba(75, 75, 75, 0.8);
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-padding: 3 3 3 3;
 }

@@ -1,7 +1,6 @@
 
 package mellon;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -50,12 +49,8 @@ public class NotificationDialog extends BorderPane{
      * Creates the dialog
      */
     private void createDialog(){
-        //Replace with CSS
         this.setMaxSize(375, 175);
-        this.setStyle("-fx-background-color: white; ");
-        this.setBorder(new Border(new BorderStroke(Color.valueOf("#d4aa00"),
-                BorderStrokeStyle.SOLID, null, null)));
-        this.setPadding(new Insets(15,15,15,30));
+        this.getStyleClass().add("notification-dialog-box");
         
         BorderPane messageArea = new BorderPane();
         messageArea.setPrefSize(375, 125);
@@ -67,8 +62,8 @@ public class NotificationDialog extends BorderPane{
         VBox textBox = new VBox();
         textBox.setAlignment(Pos.CENTER);
         Text messageText = new Text(message);
+        messageText.getStyleClass().add("dialog-text");
         messageText.setWrappingWidth(250);
-        messageText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         textBox.getChildren().add(messageText);
         messageArea.setLeft(iconBox);
         messageArea.setRight(textBox);
@@ -76,6 +71,7 @@ public class NotificationDialog extends BorderPane{
         HBox buttonBox = new HBox();
         buttonBox.setAlignment(Pos.CENTER);
         Button acknowledge = new Button("Got it");
+        acknowledge.getStyleClass().add("blue-button-small");
         buttonBox.getChildren().add(acknowledge);
         
         this.setCenter(messageArea);

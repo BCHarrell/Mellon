@@ -73,8 +73,11 @@ public class ProfilePane extends VBox{
         Button edit = new Button();
         edit.getStyleClass().add("icon");
         edit.setGraphic(EDIT_ICON);
+        edit.setTooltip(new Tooltip("Edit this profile"));
         Button expansion = new Button();
         expansion.getStyleClass().add("icon");
+        expansion.setTooltip(new Tooltip("Opens and closes the profile"
+                                            + " information"));
 
         expansion.setGraphic(EXPAND_ICON);
         buttonsBox.getChildren().addAll(expansion, edit);
@@ -123,6 +126,7 @@ public class ProfilePane extends VBox{
         Button visible = new Button();
         visible.setGraphic(EYE_ICON);
         visible.getStyleClass().add("icon");
+        visible.setTooltip(new Tooltip("Unblurs the password field"));
                 
         hb.getChildren().addAll(password, visible);
         

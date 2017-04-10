@@ -1,7 +1,6 @@
 
 package mellon;
 
-import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -43,10 +42,7 @@ public class ConfirmDialog extends BorderPane{
     private void createDialog(){
         //Replace with CSS
         this.setMaxSize(375, 175);
-        this.setStyle("-fx-background-color: white; ");
-        this.setBorder(new Border(new BorderStroke(Color.valueOf("#0088aa"),
-                BorderStrokeStyle.SOLID, null, null)));
-        this.setPadding(new Insets(15,15,15,30));
+        this.getStyleClass().add("confirmation-dialog-box");
         
         BorderPane messageArea = new BorderPane();
         messageArea.setPrefSize(375, 125);
@@ -58,8 +54,8 @@ public class ConfirmDialog extends BorderPane{
         VBox textBox = new VBox();
         textBox.setAlignment(Pos.CENTER);
         Text messageText = new Text(message);
+        messageText.getStyleClass().add("dialog-text");
         messageText.setWrappingWidth(250);
-        messageText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         textBox.getChildren().add(messageText);
         messageArea.setLeft(iconBox);
         messageArea.setRight(textBox);
@@ -68,7 +64,9 @@ public class ConfirmDialog extends BorderPane{
         buttonBox.setSpacing(10);
         buttonBox.setAlignment(Pos.CENTER);
         Button yes = new Button("Yes");
+        yes.getStyleClass().add("blue-button-small");
         Button no = new Button("No");
+        no.getStyleClass().add("blue-button-small");
         buttonBox.getChildren().addAll(yes, no);
         
         this.setCenter(messageArea);
@@ -93,10 +91,16 @@ public class ConfirmDialog extends BorderPane{
         });
     }
     
+    /**
+     * @return true if the dialog has been closed (used for monitoring task)
+     */
     public boolean isClosed(){
         return closed;
     }
     
+    /**
+     * @return true if the yes button was selected
+     */
     public boolean isConfirmed(){
         return confirmed;
     }

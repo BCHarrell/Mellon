@@ -29,8 +29,8 @@ public class SettingsMenu extends BorderPane {
     private String existingPasswordLength 
             = String.valueOf(UserInfoSingleton.getInstance()
               .getDefaultPasswordLength());
-    private boolean existingCopyPassword 
-            = UserInfoSingleton.getInstance().isCopyPassword();
+//    private boolean existingCopyPassword 
+//            = UserInfoSingleton.getInstance().isCopyPassword();
     
     public SettingsMenu(MenuContainer c) {
         CONTAINER = c;
@@ -44,7 +44,6 @@ public class SettingsMenu extends BorderPane {
         this.setMaxSize(500, 260);
         this.getStyleClass().add("grey-container");
         this.setPadding(new Insets(0,0,10,0));
-//        this.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
         
         contentBox.setAlignment(Pos.CENTER);
         contentBox.setSpacing(25);
@@ -55,7 +54,6 @@ public class SettingsMenu extends BorderPane {
         
         //Left side settings
         VBox settingsVB = new VBox();
-        settingsVB.setAlignment(Pos.CENTER_LEFT);
         settingsVB.setSpacing(20);
         
         //Timeout
@@ -63,33 +61,18 @@ public class SettingsMenu extends BorderPane {
         timeoutHB.setSpacing(10);
         Text timeoutLabel = new Text("Timeout duration (min):");
         timeoutLabel.getStyleClass().add("white-label");
-//        timeoutLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-//        timeoutLabel.setStyle("-fx-fill: #FFFFFF;");
         TextField timeoutTF = new TextField();
         /////////THIS WILL NEED UPDATING TO PULL USER SETTINGS/////////
         timeoutTF.setText(String.valueOf(existingTimeout));
         timeoutTF.setPromptText("ex. 10");
-        timeoutTF.setMaxWidth(45);
+        timeoutTF.setMaxWidth(50);
         timeoutHB.getChildren().addAll(timeoutLabel, timeoutTF);
-
-        //Copy password instead of displaying
-        HBox copyHB = new HBox();
-        copyHB.setSpacing(5);
-        Text copy = new Text("Auto copy password?");
-        copy.getStyleClass().add("white-label");
-//        copy.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-//        copy.setStyle("-fx-fill: #FFFFFF;");
-        CheckBox copyCB = new CheckBox();
-        copyCB.setSelected(existingCopyPassword);
-        copyHB.getChildren().addAll(copy, copyCB);
 
         //Default Password Length
         HBox lengthHB = new HBox();
         lengthHB.setSpacing(10);
         Text lengthLabel = new Text("Password Length");
         lengthLabel.getStyleClass().add("white-label");
-//        lengthLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-//        lengthLabel.setStyle("-fx-fill: #FFFFFF;");
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
                 "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(45);
@@ -107,7 +90,7 @@ public class SettingsMenu extends BorderPane {
         Button report = new Button("Print Passwords");
         report.getStyleClass().add("white-button-small");
 
-        settingsVB.getChildren().addAll(timeoutHB, copyHB, lengthHB, report);
+        settingsVB.getChildren().addAll(timeoutHB, lengthHB, report);
 
         //Change Password
         //VBox to store height
@@ -152,8 +135,6 @@ public class SettingsMenu extends BorderPane {
         closeBox.setAlignment(Pos.CENTER_RIGHT);
         Button close = new Button("X");
         close.getStyleClass().add("menu-control");
-//        close.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
-//        close.setBackground(Background.EMPTY);
         closeBox.getChildren().add(close);
         this.setTop(closeBox);
 
@@ -162,6 +143,7 @@ public class SettingsMenu extends BorderPane {
          *EVENT LISTENERS*
          *****************/
         
+        //Highlights the verification text field if entry does not match
         repeat.setOnKeyReleased(e -> {
             if(!repeat.getText().equals(newPass.getText())){
                 repeat.setStyle("-fx-background-color: rgba(255,0,0,.5);");
@@ -171,7 +153,7 @@ public class SettingsMenu extends BorderPane {
         });
         
         
-        //Closes on save
+        //Closes on save MOVE TO OWN METHOD
         save.setOnAction(e -> {
             //SAVE LOGIC HERE
             // Initialize values with defaults as a fall-back
@@ -181,13 +163,14 @@ public class SettingsMenu extends BorderPane {
             try {
                 timeout = Integer.parseInt(timeoutTF.getText());
             } catch (NumberFormatException e1) {
-                // Need to display notification to enter a number
+                //only numbers accepted, no catch needed
             }
+            
             try {
                 passwordLength = String.valueOf(cb.getValue());
                 passwordLengthNum = Integer.parseInt(passwordLength);
             } catch (NumberFormatException e1) {
-                // Display message that password length not a number
+                // only numbers accepted, no catch needed
             }
             // Detects if changes are necessary to the database
             if (existingTimeout != timeout || 
@@ -195,7 +178,7 @@ public class SettingsMenu extends BorderPane {
                 DBConnect.updatePrefrenceSettings(UserInfoSingleton
                         .getInstance().getUserID(), timeout, passwordLengthNum);
             }
-            UserInfoSingleton.getInstance().setCopyPassword(copyCB.isSelected());
+//            UserInfoSingleton.getInstance().setCopyPassword(copyCB.isSelected());
             showNotification("Settings Saved");
             CONTAINER.closeSettings();
         });
@@ -227,59 +210,20 @@ public class SettingsMenu extends BorderPane {
             null,  
             c -> Pattern.matches("\\d*", c.getText()) ? c : null );
         length.setTextFormatter(format);
+        
+        //Ensures text in timeout box is a number
+        TextFormatter<Integer> format2 = new TextFormatter<>(
+            new IntegerStringConverter(), 
+            null,  
+            c -> Pattern.matches("\\d*", c.getText()) ? c : null );
+        timeoutTF.setTextFormatter(format2);
 
-        /*
-
-        Thomas, how do you feel about ignoring web accounts here.
-        We can hash old pass and compare with existing master password.
-        If equals then issue an update using updateMasterPassword().
-        if not then display alert
-
-        Thomas response: can't ignore web accounts, all profiles are
-        encrypted with the old master password, with a new master password,
-        they will all need to be re-encrypted and written to the database
-        with the new result.
-
-        */
         savePass.setOnAction(e -> {
-            String plainCurrentMasterPassword = old.getText();
-            String plainNewMasterPassword = newPass.getText();
-            String plainNewRepeatPassword = repeat.getText();
-            if (plainCurrentMasterPassword.isEmpty()
-                    || plainNewMasterPassword.isEmpty()
-                    || plainNewRepeatPassword.isEmpty()) {
-                CONTAINER.showDialog(new NotificationDialog(CONTAINER, 
-                        "Please ensure the current password, new password, "
-                        + "and repeated password are filled in."));
-            } else {
-                ArrayList<WebAccount> oldWebAccounts = UserInfoSingleton.getInstance().getProfiles();
-                String newMasterPasswordHash = UserInfoSingleton.getInstance().hashString(plainNewMasterPassword);
-                int userID = UserInfoSingleton.getInstance().getUserID();
-                ArrayList<WebAccount> newWebAccounts = new ArrayList<>();
-                // Updates the master account hash
-                DBConnect.updateMasterPassword(userID, newMasterPasswordHash);
-                // Updates all the associated web accounts
-                oldWebAccounts.stream().forEach(account -> {
-                    newWebAccounts.add(account
-                            .updatePassword(plainNewMasterPassword));
-                });
-                newWebAccounts.stream().forEach(account -> {
-                    DBConnect.updateWebAccount(userID,
-                            account.getWebID(),
-                            account.getEncodedAccountName(),
-                            account.getEncodedUsername(),
-                            account.getEncodedPassword());
-                });
-                // Update the singleton
-                UserInfoSingleton.getInstance().setPassword(plainNewMasterPassword);
-                UserInfoSingleton.getInstance().addProfiles(newWebAccounts);
-                old.clear();
-                newPass.clear();
-                repeat.clear();
-                password.setExpanded(false);
-                showNotification("Password Successfully Changed");
-            }
-
+            savePassword(old.getText(), newPass.getText(), repeat.getText());
+            old.clear();
+            newPass.clear();
+            repeat.clear();
+            password.setExpanded(false);
         });
         
         //Section to print the stored passwords.
@@ -327,5 +271,48 @@ public class SettingsMenu extends BorderPane {
         ft.setDelay(Duration.millis(500));
         ft.setOnFinished(e -> CONTAINER.getChildren().remove(anch));
         ft.play();
+    }
+    
+    /**
+     * Saves the new master password as specified by the user
+     * @param currentMaster the current master password
+     * @param newMaster the new master password to save
+     * @param repeatNewMaster the new master password to verify correct entry
+     */
+    private void savePassword(String currentMaster, String newMaster, 
+                                String repeatNewMaster){
+        if (currentMaster.isEmpty() || newMaster.isEmpty()
+                    || repeatNewMaster.isEmpty()) {
+            CONTAINER.showDialog(new NotificationDialog(CONTAINER, 
+                    "Please ensure the current password, new password, "
+                    + "and repeated password are filled in."));
+        } else {
+            ArrayList<WebAccount> oldWebAccounts 
+                    = UserInfoSingleton.getInstance().getProfiles();
+            String newMasterPasswordHash 
+                    = UserInfoSingleton.getInstance()
+                        .hashString(newMaster);
+            int userID = UserInfoSingleton.getInstance().getUserID();
+            ArrayList<WebAccount> newWebAccounts = new ArrayList<>();
+            // Updates the master account hash
+            DBConnect.updateMasterPassword(userID, newMasterPasswordHash);
+            // Updates all the associated web accounts
+            oldWebAccounts.stream().forEach(account -> {
+                newWebAccounts.add(account
+                        .updatePassword(newMaster));
+            });
+            newWebAccounts.stream().forEach(account -> {
+                DBConnect.updateWebAccount(userID,
+                        account.getWebID(),
+                        account.getEncodedAccountName(),
+                        account.getEncodedUsername(),
+                        account.getEncodedPassword());
+            });
+            // Update the singleton
+            UserInfoSingleton.getInstance()
+                    .setPassword(newMaster);
+            UserInfoSingleton.getInstance().addProfiles(newWebAccounts);
+            showNotification("Password Successfully Changed");
+        }
     }
 }
