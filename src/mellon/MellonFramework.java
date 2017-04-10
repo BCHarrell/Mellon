@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.stage.StageStyle;
 
 /**
@@ -24,6 +23,8 @@ public class MellonFramework extends Application {
     public void start(Stage primaryStage) {
         
         scene = new Scene(new ExternalContainer(this), 525, 650);
+        scene.getStylesheets().add(MellonFramework.class
+                .getResource("mellon_stylesheet.css").toExternalForm());
         
         stage = primaryStage;
         stage.setScene(scene);

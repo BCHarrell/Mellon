@@ -5,16 +5,11 @@ import static javafx.geometry.Pos.*;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
-
-import java.security.NoSuchAlgorithmException;
-
 import javafx.animation.FadeTransition;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.scene.input.KeyCode;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.text.*;
 import javafx.util.Duration;
 
 /**
@@ -66,8 +61,10 @@ public class LoginPage extends VBox {
         hb.setAlignment(CENTER);
         hb.setSpacing(15);
         Button login = new Button("Log In");
+        login.getStyleClass().add("blue-button-large");
         Button signUp = new Button("Sign Up");
-
+        signUp.getStyleClass().add("blue-button-large");
+        
         //Horizontal box for progress indicator
         HBox authenticationBox = new HBox();
         authenticationBox.setAlignment(CENTER);
@@ -80,8 +77,7 @@ public class LoginPage extends VBox {
 
         //Notification to user for failure
         Text notification = new Text();
-        notification.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        notification.setStyle("-fx-fill: red;");
+        notification.getStyleClass().add("error-notification");
 
         //Add the items to appropriate containers
         hb.getChildren().addAll(login, signUp);
@@ -134,7 +130,10 @@ public class LoginPage extends VBox {
                 .requestMenuChange(new SignUpPage(CONTAINER, this)));
 
     }
-
+    
+    /**
+     * Transitions to the login screen by fading out
+     */
     private void transition() {
         FadeTransition ft = new FadeTransition(Duration.millis(500), this);
         ft.setFromValue(1.0);

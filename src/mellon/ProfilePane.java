@@ -52,8 +52,7 @@ public class ProfilePane extends VBox{
     
     private void addItems(){
         this.setSpacing(5);
-        //Move to CSS file
-        this.setStyle("-fx-background-color: #0088AA;");
+        this.getStyleClass().add("profile-pane");
         this.setMinHeight(50);
         
         DropShadow ds = new DropShadow();
@@ -66,17 +65,17 @@ public class ProfilePane extends VBox{
         titleBox.setPadding(new Insets(10, 10, 0, 10));
         titleBox.setPrefHeight(35);
         Text nickname = new Text(account.getAccountName());
-        nickname.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-        nickname.setStyle("-fx-fill: #ffffff");
+        nickname.getStyleClass().add("white-title");
         
         //Buttons
         HBox buttonsBox = new HBox();
         buttonsBox.setAlignment(Pos.CENTER_RIGHT);
         Button edit = new Button();
-        edit.setBackground(Background.EMPTY);
+        edit.getStyleClass().add("icon");
         edit.setGraphic(EDIT_ICON);
         Button expansion = new Button();
-        expansion.setBackground(Background.EMPTY);
+        expansion.getStyleClass().add("icon");
+
         expansion.setGraphic(EXPAND_ICON);
         buttonsBox.getChildren().addAll(expansion, edit);
         
@@ -92,8 +91,7 @@ public class ProfilePane extends VBox{
         VBox userVB = new VBox();
         userVB.setSpacing(5);
         Text userLabel = new Text("Username");
-        userLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        userLabel.setStyle("-fx-fill: #ffffff");
+        userLabel.getStyleClass().add("white-label");
         username = new TextField();
         username.setEditable(false);
         username.setMaxWidth(175);
@@ -105,8 +103,7 @@ public class ProfilePane extends VBox{
         VBox passVB = new VBox();
         passVB.setSpacing(5);
         Text passLabel = new Text("Password");
-        passLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        passLabel.setStyle("-fx-fill: #ffffff");
+        passLabel.getStyleClass().add("white-label");
 
         //Holds the password field and the visibility button
         HBox hb = new HBox();
@@ -125,18 +122,15 @@ public class ProfilePane extends VBox{
         //Visibility button
         Button visible = new Button();
         visible.setGraphic(EYE_ICON);
-        visible.setBackground(Background.EMPTY);
+        visible.getStyleClass().add("icon");
                 
         hb.getChildren().addAll(password, visible);
         
         //Expiration notice
         Text soonToExpire = new Text("Your password will expire soon.");
-        soonToExpire.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        soonToExpire.setStyle("-fx-fill: #FFFFFF;");
-        
+        soonToExpire.getStyleClass().add("expiring-soon-notification");
         Text expired = new Text("Your password has expired.");
-        expired.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        expired.setStyle("-fx-fill: #d4aa00;");
+        expired.getStyleClass().add("expired-notification");
         
         passVB.getChildren().addAll(passLabel, hb);
         
@@ -168,10 +162,26 @@ public class ProfilePane extends VBox{
         /*
             Single left-click = copy password
             Single right-click = copy username
+            Also displays a pop-up if the password is expired/soon to expire
         */
         titleBox.setOnMouseClicked(e ->{
             if (e.getButton() == MouseButton.PRIMARY){
                 copyToClipboard(Data.PASSWORD);
+                if(account.getExpDate() != null){
+                    if (account.getExpDate().equals(LocalDate.now())
+                        || account.getExpDate().isBefore(LocalDate.now())){
+                        CONTAINER.showDialog(new NotificationDialog(CONTAINER,
+                                "According to the expiration date you "
+                                + "provided, your password has expired"));
+                    } else if (account.getExpDate().minusDays(3)
+                                .isBefore(LocalDate.now())
+                            || account.getExpDate().minusDays(3)
+                                .equals(LocalDate.now())){
+                        CONTAINER.showDialog(new NotificationDialog(CONTAINER,
+                                "According to the expiration date you "
+                                + "provided, your password will expire soon."));
+                    }
+                }
             } else if (e.getButton() == MouseButton.SECONDARY){
                 copyToClipboard(Data.USERNAME);
             }
@@ -186,16 +196,6 @@ public class ProfilePane extends VBox{
                 expansion.setGraphic(MINI_ICON);
                 this.getChildren().setAll(titleBox, contentBox);
             }
-        });
-        
-        //Lightens box on highlight
-        this.setOnMouseEntered(e -> {
-            this.setStyle("-fx-background-color: #00A9D4;");
-        });
-        
-        //Returns to normal color after mouse leaves
-        this.setOnMouseExited(e -> {
-            this.setStyle("-fx-background-color: #0088AA;");
         });
         
         //Blurs and unblurs the text

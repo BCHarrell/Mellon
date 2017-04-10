@@ -30,7 +30,8 @@ public class AdvancedMenu extends BorderPane {
      */
     private void addItems() {
         this.setMaxSize(350, 200);
-        this.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
+        this.getStyleClass().add("grey-container");
+//        this.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
         
         contentBox.setAlignment(Pos.CENTER);
         contentBox.setSpacing(15);
@@ -57,6 +58,7 @@ public class AdvancedMenu extends BorderPane {
         }
         
         Button save = new Button("Save Selections");
+        save.getStyleClass().add("white-button-small");
         
         contentBox.getChildren().addAll(grid, save);
         this.setCenter(contentBox);
@@ -64,8 +66,9 @@ public class AdvancedMenu extends BorderPane {
         HBox closeBox = new HBox();
         closeBox.setAlignment(Pos.CENTER_RIGHT);
         Button close = new Button("X");
-        close.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
-        close.setBackground(Background.EMPTY);
+        close.getStyleClass().add("menu-control");
+//        close.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+//        close.setBackground(Background.EMPTY);
         closeBox.getChildren().add(close);
         this.setTop(closeBox);
         

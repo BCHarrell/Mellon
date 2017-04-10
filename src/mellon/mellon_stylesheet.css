@@ -1,0 +1,298 @@
+/* 
+    CSS styling for Mellon UI.
+
+    Author : Brent H.
+*/
+
+/******************************************************
+    Custom class quick name look-up:
+    ///CONTAINERS///
+        blue-container, grey-container, profile-pane
+        pop-up-notification, confirmation-dialog-box, 
+        notification-dialog-box, menu-container
+    
+    ///BUTTONS///
+        blue-button-large, blue-button-small
+        white-button-large, white-button-small
+        icon, window-control
+    
+    ///TEXT///
+        white-label, error-notification, profile-title
+        dialog-text
+******************************************************/
+
+/*General Changes to .root*/
+.root{
+    -fx-background: #ffffff;
+    -fx-focus-color: transparent;
+    -fx-shadow-highlight-color: transparent;
+    -fx-font-family: "Arial";
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+/*************** CONTAINERS ***************/
+.blue-container {
+    -fx-background-color: #0088AA;
+    -fx-background-radius: 0;
+}
+
+.grey-container {
+    -fx-background-color: rgba(75, 75, 75, 0.9);
+    -fx-background-radius: 0;
+}
+
+.profile-pane {
+    -fx-background-color: #0088AA;
+    -fx-background-radius: 0;
+}
+
+.profile-pane:hover {
+    -fx-background-color: #00A9D4;
+}
+
+.pop-up-notification {
+    -fx-background-color: rgba(75, 75, 75, 0.9);
+    -fx-padding: 5 15 5 15;
+}
+
+.notification-dialog-box {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 0, -1, 0;
+    -fx-border-color: #D4AA00;
+    -fx-padding: 15 15 15 30;
+}
+
+.confirmation-dialog-box {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 0, -1, 0;
+    -fx-border-color: #0088AA;
+    -fx-padding: 15 15 15 30;
+}
+
+.menu-container {
+    -fx-border-color: #0088AA;
+    -fx-border-width: 1;
+}
+
+
+/*************** BUTTONS ***************/
+.button {
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-color: #0088AA;
+    -fx-background-insets: 0, 0, -1, 0;
+}
+
+.blue-button-large {
+    -fx-background-color: #0088AA;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 15 20 15 20;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+}
+
+.blue-button-large:armed {
+    -fx-background-color: #00A9D4;
+}
+
+.blue-button-small {
+    -fx-background-color: #0088AA;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 5 10 5 10;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+}
+
+.blue-button-small:armed{
+    -fx-background-color: #00A9D4;
+}
+
+.white-button-large{
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #0088AA;
+    -fx-padding: 15 20 15 20;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+}
+
+.white-button-large:armed {
+    -fx-background-color: #CCCCCC;
+}
+
+.white-button-small{
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #0088AA;
+    -fx-padding: 5 10 5 10;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+}
+
+.white-button-small:armed {
+    -fx-background-color: #CCCCCC;
+}
+
+.icon {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.window-control {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #D4AA00;
+    -fx-font-weight: bold;
+}
+
+.menu-control {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+}
+
+
+/*************** CHECKBOX ***************/
+.check-box {
+    -fx-font-size: 12;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.check-box>.box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+}
+
+/*************** TEXT FIELD ***************/
+.text-field {
+    -fx-border-color: #0088AA;
+    -fx-background-color: #ffffff;
+}
+
+/*************** TEXT ***************/
+.white-label {
+    -fx-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+}
+
+.error-notification {
+    -fx-fill: #FF0000;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+}
+
+.white-title {
+    -fx-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 18;
+}
+
+.dialog-text {
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+}
+
+.expired-notification {
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+    -fx-fill: #D4AA00;
+}
+
+.expiring-soon-notification {
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+    -fx-fill: #FFFFFF;
+}
+
+/*************** CHOICE BOX ***************/
+.choice-box {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-color: #0088AA;
+    -fx-background-insets: 0, 0, -1, 0;
+}
+
+/*************** DATE PICKER ***************/
+.date-picker {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-background-insets: 0, 0, -1, 0;
+}
+
+.date-picker > .arrow-button {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-border-color: #0088AA;
+    -fx-border-radius: 0;
+}
+
+.date-picker > .arrow-button > .arrow {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-color: #0088AA;
+    -fx-border-radius: 0;
+}
+
+.date-picker-popup > .month-year-pane {
+    -fx-background-color: #ffffff;
+}
+
+.date-picker-popup > .calendar-grid {
+    -fx-background-color: #ffffff;
+}
+
+/*************** ACCORDION / TITLED PANE ***************/
+.accordion {
+    -fx-background-color: #0088AA;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 0, -1, 0;
+    -fx-border-radius: 0;
+    -fx-border-color: transparent;
+    -fx-padding: 5;
+}
+
+.titled-pane {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 0, -1, 0;
+    -fx-border-color: #0088AA;
+    -fx-text-fill: #0088AA;
+}
+
+.titled-pane > .title {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 0, -1, 0;
+    -fx-border-color: #0088AA;
+    -fx-border-width: 1 1 0 1;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+}
+
+.titled-pane > *.content {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-border-color: #0088AA;
+    -fx-border-width: 0 1 0 1;
+}
+
+.titled-pane > .title > .arrow-button > .arrow {
+    -fx-background-color: #0088AA;
+}
+
+/**************** SCROLLPANE *****************/
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport{
+    -fx-background-color: transparent;
+}

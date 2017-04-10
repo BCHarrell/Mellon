@@ -4,7 +4,6 @@ package mellon;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -38,19 +37,17 @@ public class MainMenu extends VBox {
         accounts = UserInfoSingleton.getInstance().getProfiles();
 
         ScrollPane scroll = new ScrollPane();
-        scroll.setStyle("-fx-background-color: transparent;");
         scroll.setFitToWidth(true);
         scroll.setPrefSize(425, 500);
         scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        //ADD TO CSS TO SPEED UP, .scroll-pane > .viewport{}
-        
         VBox innerBox = new VBox();
         innerBox.setSpacing(15);
         
         //Sorts by name
         accounts.sort(Comparator.comparing(WebAccount::getAccountName));
         //Adds profiles to ProfilePane
-        accounts.stream().forEach(a -> innerBox.getChildren().add(new ProfilePane(CONTAINER, a)));
+        accounts.stream().forEach(a -> innerBox.getChildren()
+                                    .add(new ProfilePane(CONTAINER, a)));
         
         scroll.setContent(innerBox);
         this.getChildren().setAll(scroll);

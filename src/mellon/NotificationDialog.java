@@ -14,7 +14,7 @@ import javafx.scene.text.*;
  * Custom dialog to alert user to errors.
  * @author Brent H.
  */
-public class ErrorDialog extends BorderPane{
+public class NotificationDialog extends BorderPane{
 
     private String message;
     private final MenuContainer CONTAINER;
@@ -27,7 +27,7 @@ public class ErrorDialog extends BorderPane{
      * @param c the menu container
      * @param message the message to display
      */
-    public ErrorDialog(MenuContainer c, String message){
+    public NotificationDialog (MenuContainer c, String message){
         CONTAINER = c;
         E_CONTAINER = null;
         this.message = message;
@@ -39,7 +39,7 @@ public class ErrorDialog extends BorderPane{
      * @param c the menu container
      * @param message the message to display
      */
-    public ErrorDialog(ExternalContainer c, String message){
+    public NotificationDialog (ExternalContainer c, String message){
         CONTAINER = null;
         E_CONTAINER = c;
         this.message = message;

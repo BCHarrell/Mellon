@@ -3,15 +3,12 @@ package mellon;
 import java.security.NoSuchAlgorithmException;
 import javafx.animation.FadeTransition;
 import javafx.concurrent.Task;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
 import static javafx.geometry.Pos.CENTER;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.text.*;
 import javafx.util.Duration;
 
 /**
@@ -72,7 +69,9 @@ public class SignUpPage extends VBox {
         hb.setAlignment(CENTER);
         hb.setSpacing(15);
         Button back = new Button("Back to Login");
+        back.getStyleClass().add("blue-button-small");
         Button submit = new Button("Create Account");
+        submit.getStyleClass().add("blue-button-small");
         hb.getChildren().addAll(back, submit);
         
         //progress indicator
@@ -80,6 +79,8 @@ public class SignUpPage extends VBox {
         authenticationBox.setAlignment(CENTER);
         authenticationBox.setPrefHeight(25);
         authenticationBox.setSpacing(10);
+        
+        //Indeterminate indicator
         ProgressIndicator prog = new ProgressIndicator(-1.0f);
         Text authenticating = new Text("Authenticating...");
         authenticationBox.getChildren().addAll(prog, authenticating);
@@ -87,8 +88,7 @@ public class SignUpPage extends VBox {
         
         //Notification text for failures
         Text notification = new Text();
-        notification.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        notification.setStyle("-fx-fill: red;");
+        notification.getStyleClass().add("error-notification");
         
         vb.getChildren().addAll(username, password, verify, hb,
                                     authenticationBox);

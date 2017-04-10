@@ -6,12 +6,10 @@ import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
@@ -54,7 +52,7 @@ public class NavBar extends BorderPane{
     private BorderPane createBar(){
         BorderPane bar = new BorderPane();
         bar.setPadding(new Insets(0, 15.0, 15.0, 15.0));
-        bar.setStyle("-fx-background-color: #0088AA");
+        bar.getStyleClass().add("blue-container");
         bar.setPickOnBounds(true);
         
         //Temporary to come in with fade
@@ -71,37 +69,36 @@ public class NavBar extends BorderPane{
         //Horizontal box for the icon elements
         HBox icons = new HBox();
         icons.setSpacing(10);
-        icons.setStyle("-fx-background-color: #0088AA");
         icons.setAlignment(Pos.CENTER_RIGHT);
         
         //Home
         Button homeBtn = new Button();
         homeBtn.setGraphic(HOME);
-        homeBtn.setBackground(Background.EMPTY);
+        homeBtn.getStyleClass().add("icon");
         homeBtn.setTooltip(new Tooltip("Main Menu"));
         
         //Add
         Button addBtn = new Button();
         addBtn.setGraphic(ADD);
-        addBtn.setBackground(Background.EMPTY);
+        addBtn.getStyleClass().add("icon");
         addBtn.setTooltip(new Tooltip("Create a Profile"));
         
         //Settings
         Button settingsBtn = new Button();
         settingsBtn.setGraphic(SETTINGS);
-        settingsBtn.setBackground(Background.EMPTY);
+        settingsBtn.getStyleClass().add("icon");
         settingsBtn.setTooltip(new Tooltip("Account Settings"));
         
         //Help
         Button helpBtn = new Button();
         helpBtn.setGraphic(HELP);
-        helpBtn.setBackground(Background.EMPTY);
+        helpBtn.getStyleClass().add("icon");
         helpBtn.setTooltip(new Tooltip("How to use Mellon"));
         
         //Logout
         Button logoutBtn = new Button();
         logoutBtn.setGraphic(LOGOUT);
-        logoutBtn.setBackground(Background.EMPTY);
+        logoutBtn.getStyleClass().add("icon");
         logoutBtn.setTooltip(new Tooltip("Logout"));
         
         

@@ -85,7 +85,7 @@ public class CreationPage extends StackPane {
         
         //Top Horizontal Box
         BorderPane settingsArea = new BorderPane();
-        settingsArea.setStyle("-fx-background-color: #0088AA;");
+        settingsArea.getStyleClass().add("blue-container");
         settingsArea.setPadding(new Insets(15, 15, 15, 15));
         
         //Vertical box to profile elements
@@ -96,7 +96,7 @@ public class CreationPage extends StackPane {
         VBox nickVB = new VBox();
         nickVB.setSpacing(3);
         Text nickLabel = new Text("Nickname");
-        nickLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        nickLabel.getStyleClass().add("white-label");
         nickField = new TextField();
         nickField.setMaxWidth(400);
         nickField.setPromptText("Enter account nickname");
@@ -112,7 +112,7 @@ public class CreationPage extends StackPane {
         VBox userVB = new VBox();
         userVB.setSpacing(3);
         Text userLabel = new Text("Username");
-        userLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        userLabel.getStyleClass().add("white-label");
         userField = new TextField();
         userField.setMaxWidth(400);
         userField.setPromptText("Enter username");
@@ -128,7 +128,7 @@ public class CreationPage extends StackPane {
         VBox lengthVB = new VBox();
         lengthVB.setSpacing(3);
         Text lengthLabel = new Text("Password Length");
-        lengthLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        lengthLabel.getStyleClass().add("white-label");
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
                 "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(350);
@@ -139,17 +139,21 @@ public class CreationPage extends StackPane {
         TextField length = new TextField();
         length.setMaxWidth(40);
         Button goBack = new Button("Back to Selection");
+        goBack.getStyleClass().add("white-button-small");
         custLength.getChildren().addAll(length, goBack);
         lengthVB.getChildren().addAll(lengthLabel, cb);
         
         //Expiration
         VBox expirationBox = new VBox();
         expirationBox.setSpacing(3);
+        
+        HBox expirationHB = new HBox();
+        expirationHB.setSpacing(5);
         expireCB = new CheckBox();
-        Label expireLabel = new Label("Set expiration? ");
-        expireLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        expireLabel.setGraphic(expireCB);
-        expireLabel.setContentDisplay(ContentDisplay.RIGHT);
+        Text expireLabel = new Text("Set expiration?");
+        expireLabel.getStyleClass().add("white-label");
+        expirationHB.getChildren().addAll(expireLabel, expireCB);
+        
         expiration = new DatePicker();
         expiration.setValue(LocalDate.now());
         Callback<DatePicker, DateCell> cellFactory =
@@ -171,7 +175,7 @@ public class CreationPage extends StackPane {
             };
         expiration.setDayCellFactory(cellFactory);
         expiration.setVisible(false);
-        expirationBox.getChildren().addAll(expireLabel, expiration);
+        expirationBox.getChildren().addAll(expirationHB, expiration);
 
         settingsVB.getChildren().addAll(nickVB, userVB, lengthVB, expirationBox);
 
@@ -183,6 +187,7 @@ public class CreationPage extends StackPane {
 
         //Quick customize box
         Text customize = new Text("Quick Customize");
+        customize.getStyleClass().add("white-title");
         customize.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         
         VBox innerVB = new VBox();
@@ -207,6 +212,7 @@ public class CreationPage extends StackPane {
         HBox centeringHB = new HBox();
         centeringHB.setAlignment(Pos.CENTER);
         Button advanced = new Button("Advanced");
+        advanced.getStyleClass().add("white-button-small");
         centeringHB.getChildren().add(advanced);
         
         innerVB.getChildren().addAll(optionVB, centeringHB);
@@ -219,11 +225,12 @@ public class CreationPage extends StackPane {
 
         //Generate Area
         VBox generateVB = new VBox();
-        generateVB.setStyle("-fx-background-color: #0088AA;");
+        generateVB.getStyleClass().add("blue-container");
         generateVB.setPadding(new Insets(15, 15, 15, 15));
         generateVB.setAlignment(Pos.CENTER);
         generateVB.setSpacing(15);
         Button generate = new Button("Generate Password");
+        generate.getStyleClass().add("white-button-large");
         generatedWebPassword = new TextField();
         generatedWebPassword.setMaxWidth(400);
         generatedWebPassword.setAlignment(Pos.CENTER);
@@ -241,8 +248,14 @@ public class CreationPage extends StackPane {
         saveHB.setPadding(new Insets(0, 0, 15, 0));
         
         Button save = new Button("Save Account");
+        save.getStyleClass().add("blue-button-large");
         Button delete = new Button("DELETE ACCOUNT");
-        delete.setStyle("-fx-background-color: #D4AA00;");
+        //One off need, therefore in-line style
+        delete.setStyle("-fx-background-color: #D4AA00;"
+                        + "-fx-padding: 15 20 15 20;"
+                        + "-fx-font-size: 14;"
+                        + "-fx-font-weight: bold;"
+                        + "-fx-border-color: transparent;");
         saveHB.getChildren().add(save);
         if (edit){
             saveHB.getChildren().add(delete);
@@ -409,9 +422,9 @@ public class CreationPage extends StackPane {
         if (nickField.getText().isEmpty() ||
                 userField.getText().isEmpty() ||
                 generatedWebPassword.getText().isEmpty()) {
-            CONTAINER.showDialog(new ErrorDialog(CONTAINER, "Please ensure "
-                    + "the nickname, username, and password fields are "
-                    + "filled in."));
+            CONTAINER.showDialog(new NotificationDialog(CONTAINER,
+                    "Please ensure the nickname, username, and password"
+                            + " fields are filled in."));
         } else {
             WebAccount newAccount = null;
             UserInfoSingleton.getInstance();
@@ -456,9 +469,10 @@ public class CreationPage extends StackPane {
                 if (accountCreated) {
                     UserInfoSingleton.getInstance().addNewProfile(newAccount);
                 } else if (!accountCreated) {
-                    CONTAINER.showDialog(new ErrorDialog(CONTAINER, "The profile "
-                            + "was not created.  Please try again.  If the error "
-                            + "persists, please report a bug."));
+                    CONTAINER.showDialog(new NotificationDialog(CONTAINER,
+                            "The profile was not created.  Please try again."
+                                    + " If the error persists, please report"
+                                    + " a bug."));
                 }
             }
 

@@ -37,13 +37,13 @@ public class WindowControl extends HBox{
         this.setSpacing(3);
         this.setMaxHeight(10);
         this.setPadding(new Insets(0,0,5,0));
-        this.setStyle("-fx-background-color: #0088aa;");
+        this.getStyleClass().add("blue-container");
         
         Button close = new Button("X");
-        close.setStyle("-fx-text-fill: #D4AA00; -fx-font-weight: bold;");
+        close.getStyleClass().add("window-control");
         close.setBackground(Background.EMPTY);
         Button minimize = new Button("\u2014");
-        minimize.setStyle("-fx-text-fill: #D4AA00; -fx-font-weight: bold;");
+        minimize.getStyleClass().add("window-control");
         minimize.setBackground(Background.EMPTY);
         this.getChildren().addAll(minimize, close);
         

@@ -7,8 +7,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
-
 import javafx.animation.FadeTransition;
 import javafx.scene.text.*;
 import javafx.util.Duration;
@@ -26,9 +24,13 @@ public class SettingsMenu extends BorderPane {
 
     private final MenuContainer CONTAINER;
     private VBox contentBox = new VBox();
-    private int existsingTimeout = UserInfoSingleton.getInstance().getTimeoutDuration();
-    private String existingPasswordLength = String.valueOf(UserInfoSingleton.getInstance().getDefaultPasswordLength());
-    private boolean existingCopyPassword = UserInfoSingleton.getInstance().isCopyPassword();
+    private int existingTimeout 
+            = UserInfoSingleton.getInstance().getTimeoutDuration();
+    private String existingPasswordLength 
+            = String.valueOf(UserInfoSingleton.getInstance()
+              .getDefaultPasswordLength());
+    private boolean existingCopyPassword 
+            = UserInfoSingleton.getInstance().isCopyPassword();
     
     public SettingsMenu(MenuContainer c) {
         CONTAINER = c;
@@ -40,7 +42,9 @@ public class SettingsMenu extends BorderPane {
      */
     private void addItems() {
         this.setMaxSize(500, 260);
-        this.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
+        this.getStyleClass().add("grey-container");
+        this.setPadding(new Insets(0,0,10,0));
+//        this.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
         
         contentBox.setAlignment(Pos.CENTER);
         contentBox.setSpacing(25);
@@ -58,11 +62,12 @@ public class SettingsMenu extends BorderPane {
         HBox timeoutHB = new HBox();
         timeoutHB.setSpacing(10);
         Text timeoutLabel = new Text("Timeout duration (min):");
-        timeoutLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        timeoutLabel.setStyle("-fx-fill: #FFFFFF;");
+        timeoutLabel.getStyleClass().add("white-label");
+//        timeoutLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+//        timeoutLabel.setStyle("-fx-fill: #FFFFFF;");
         TextField timeoutTF = new TextField();
         /////////THIS WILL NEED UPDATING TO PULL USER SETTINGS/////////
-        timeoutTF.setText(String.valueOf(existsingTimeout));
+        timeoutTF.setText(String.valueOf(existingTimeout));
         timeoutTF.setPromptText("ex. 10");
         timeoutTF.setMaxWidth(45);
         timeoutHB.getChildren().addAll(timeoutLabel, timeoutTF);
@@ -71,8 +76,9 @@ public class SettingsMenu extends BorderPane {
         HBox copyHB = new HBox();
         copyHB.setSpacing(5);
         Text copy = new Text("Auto copy password?");
-        copy.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        copy.setStyle("-fx-fill: #FFFFFF;");
+        copy.getStyleClass().add("white-label");
+//        copy.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+//        copy.setStyle("-fx-fill: #FFFFFF;");
         CheckBox copyCB = new CheckBox();
         copyCB.setSelected(existingCopyPassword);
         copyHB.getChildren().addAll(copy, copyCB);
@@ -81,8 +87,9 @@ public class SettingsMenu extends BorderPane {
         HBox lengthHB = new HBox();
         lengthHB.setSpacing(10);
         Text lengthLabel = new Text("Password Length");
-        lengthLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        lengthLabel.setStyle("-fx-fill: #FFFFFF;");
+        lengthLabel.getStyleClass().add("white-label");
+//        lengthLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+//        lengthLabel.setStyle("-fx-fill: #FFFFFF;");
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
                 "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(45);
@@ -98,6 +105,7 @@ public class SettingsMenu extends BorderPane {
         
         //View report
         Button report = new Button("Print Passwords");
+        report.getStyleClass().add("white-button-small");
 
         settingsVB.getChildren().addAll(timeoutHB, copyHB, lengthHB, report);
 
@@ -124,6 +132,7 @@ public class SettingsMenu extends BorderPane {
         repeat.setPromptText("Enter new password again");
         repeat.setMaxWidth(225);
         Button savePass = new Button("Save Password");
+        savePass.getStyleClass().add("blue-button-small");
         box.getChildren().addAll(old, newPass, repeat, savePass);
         password.setContent(box);
         
@@ -133,6 +142,7 @@ public class SettingsMenu extends BorderPane {
 
         //Save changes
         Button save = new Button("Save Changes");
+        save.getStyleClass().add("blue-button-large");
 
         contentBox.getChildren().addAll(splitter, save);
         this.setCenter(contentBox);
@@ -141,8 +151,9 @@ public class SettingsMenu extends BorderPane {
         HBox closeBox = new HBox();
         closeBox.setAlignment(Pos.CENTER_RIGHT);
         Button close = new Button("X");
-        close.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
-        close.setBackground(Background.EMPTY);
+        close.getStyleClass().add("menu-control");
+//        close.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+//        close.setBackground(Background.EMPTY);
         closeBox.getChildren().add(close);
         this.setTop(closeBox);
 
@@ -179,10 +190,10 @@ public class SettingsMenu extends BorderPane {
                 // Display message that password length not a number
             }
             // Detects if changes are necessary to the database
-            if (existsingTimeout != timeout || !existingPasswordLength.equals(passwordLength)) {
-                DBConnect.updatePrefrenceSettings(UserInfoSingleton.getInstance().getUserID(),
-                                                    timeout,
-                                                    passwordLengthNum);
+            if (existingTimeout != timeout || 
+                    !existingPasswordLength.equals(passwordLength)) {
+                DBConnect.updatePrefrenceSettings(UserInfoSingleton
+                        .getInstance().getUserID(), timeout, passwordLengthNum);
             }
             UserInfoSingleton.getInstance().setCopyPassword(copyCB.isSelected());
             showNotification("Settings Saved");
@@ -237,7 +248,7 @@ public class SettingsMenu extends BorderPane {
             if (plainCurrentMasterPassword.isEmpty()
                     || plainNewMasterPassword.isEmpty()
                     || plainNewRepeatPassword.isEmpty()) {
-                CONTAINER.showDialog(new ErrorDialog(CONTAINER, 
+                CONTAINER.showDialog(new NotificationDialog(CONTAINER, 
                         "Please ensure the current password, new password, "
                         + "and repeated password are filled in."));
             } else {
@@ -278,7 +289,7 @@ public class SettingsMenu extends BorderPane {
             if(success){
             showNotification("File Sent to Printer");
             } else {
-                CONTAINER.showDialog(new ErrorDialog(CONTAINER, 
+                CONTAINER.showDialog(new NotificationDialog(CONTAINER, 
                         "Something went wrong. Please check your printer "
                                 + "connection and try again.  If the problem "
                                 + "persists, please report a bug."));

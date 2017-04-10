@@ -5,7 +5,6 @@ import javafx.animation.FadeTransition;
 import javafx.scene.Node;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 /**
@@ -31,13 +30,15 @@ public class MenuContainer extends StackPane{
         content.setCenter(MAIN);
         MAIN.setOpacity(0);
         content.setCenter(MAIN);
-        this.setBorder(new Border(new BorderStroke(Color.valueOf("#0088aa"),
-                BorderStrokeStyle.SOLID, null, null)));
+        this.getStyleClass().add("menu-container");
         loginFade();
         this.getChildren().add(content);
         addListener();
     }
     
+    /**
+     * Logout timer reset on mouse movement, provided the window has focus
+     */
     private void addListener(){
         this.setOnMouseMoved(e -> {
             if(this.getScene().getWindow().isFocused()){
@@ -66,7 +67,7 @@ public class MenuContainer extends StackPane{
     public void timeout(){
         ExternalContainer external = new ExternalContainer(FRAMEWORK);
         FRAMEWORK.getScene().setRoot(external);
-        external.showDialog(new ErrorDialog(external, "You have been "
+        external.showDialog(new NotificationDialog(external, "You have been "
                 + "logged out due to inactivity."));
     }
     

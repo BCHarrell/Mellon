@@ -2,7 +2,6 @@
 package mellon;
 
 import javafx.animation.FadeTransition;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
@@ -23,8 +22,7 @@ public class ExternalContainer extends StackPane {
     
     public ExternalContainer(MellonFramework fw){
         FRAMEWORK = fw;
-        this.setBorder(new Border(new BorderStroke(Color.valueOf("#0088aa"),
-                BorderStrokeStyle.SOLID, null, null)));
+        this.getStyleClass().add("menu-container");
         content.setTop(new WindowControl());
         content.setCenter(new LoginPage(FRAMEWORK, this));
         addDropShadow();
