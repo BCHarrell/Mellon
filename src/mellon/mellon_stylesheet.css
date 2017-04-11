@@ -209,6 +209,11 @@
     -fx-fill: #FFFFFF;
 }
 
+.help-text {
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+}
+
 /*************** CHOICE BOX ***************/
 .choice-box {
     -fx-background-color: #ffffff;
