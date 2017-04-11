@@ -1,0 +1,12 @@
+Mellon contains a few user settings to make things easier on you.  Click on the cog icon to open the settings menu.  From there, you can set:
+
+- Timeout duration: This is how long the program will sit idle before logging you out for security purposes.  The default is 10 minutes.
+
+- Password length: This is the default password length for Mellon's password generator.  The default is 16 characters, but you can change it to whatever you like.  You will always have the option to choose the password length in the creation menu if a particular account has a short password length requirement.
+
+From the settings menu you can also:
+
+- Change your master password. Be sure to pick a strong password and write it down if you need a reminder.
+
+- Print a physical copy of your stored passwords.  If you want a back up to take on the road or are skeptical of technology, you can print a copy of your passwords from the settings menu. Do not make a digital copy of your passwords, store the physical copy in a secure location.
+

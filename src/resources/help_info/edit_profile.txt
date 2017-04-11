@@ -1,0 +1,5 @@
+Sometimes you need to make a change. In Mellon, changing your profile is easy. Simply select the pencil icon next to the profile you want to change. This will take you to the same menu you used to create the password, but this time will pre-populate the fields with information from your profile.
+
+Make changes as desired using the same methods you used to make the profile, and click save. You can also delete your profile from this menu.
+
+IMPORTANT: Changing your password permenantly erases the old password from the profile. Since Mellon never sees the password, we cannot retrieve the old one after it is overwritten. Changing your password in Mellon does not change the password in the actual account. Be sure to change your password in the actual account before saving the changes in Mellon.

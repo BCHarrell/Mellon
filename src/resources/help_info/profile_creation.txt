@@ -1,0 +1,17 @@
+To create a profile, select the '+' icon from the navigation bar.  This will display the creation menu.  Ensure all of the fields are filled out, choose your password options, hit generate, and save.  It's that easy.
+
+Description of elements:
+
+Nickname: This is the name you will use to find your account once it is created.  Use something like "Gmail" or "Facebook".
+
+Username: This is the username of the account you are adding.  For example, your email address.
+
+Password length: This is the length of the password to generate (if you generate your own).  You can select from a pre-set selection, or choose "Custom" to enter your own length as needed.
+
+Set Expiration: You can choose to set a reminder to change your password.  You will be reminded three days from the expiration date, and prompted to change your password after it expires.  Note: the expiration date is simply a reminder, the password does not actually expire in Mellon.
+
+Quick Customize: Choose whether to allow symbols, numbers, upper, or lowercase characters in the generated password. If your account has restrictions on allowable characters (e.g. it only allows letters, numbers, and '!'), you can click the "Advanced" button to open a menu of all special characters.  Simply check the ones you want to allow, and save the settings.
+
+Generate Password: You can enter a password on your own, or use Mellon's random generator to create a password meeting the above settings.  The choice is yours.
+
+Save Account: Saves the profile to the database and returns you to the main menu.

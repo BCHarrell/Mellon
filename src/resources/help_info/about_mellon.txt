@@ -1,0 +1,7 @@
+Mellon is a password generation and storage tool which creates strong, complex passwords and securely stores usernames and passwords to all of your accounts.
+
+Mellon stores your information in a hashed file in a secure database. We never see any of your passwords or your master password, and even if the database is hacked, the intruders would only obtain the encrypted file.  Encryption and decryption is done on your computer, so your passwords and usernames are never transmitted in a readable format.
+
+A lot of data gets transmitted on the internet. Protect yourself and your data with as strong a password as possible.  Mellon makes this easy, so use strongest password the website or account will allow. We also recommend two-factor authentication (e.g. using a cell phone or email in addition to the password) if the site allows for it.
+
+Use a strong password for Mellon. Do not store a digital copy of this password - if you need a reminder, write it down and store it in a secure place. If you lose your master password, you will need to start over.
