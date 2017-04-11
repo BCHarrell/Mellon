@@ -1,9 +1,5 @@
 package mellon;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -208,7 +204,7 @@ public class HelpPage extends ScrollPane {
             +"Username: This is the username of the account you are adding. "
             +"For example, your email address.\n\n"
             +"Password length: This is the length of the password to generate "
-            +"(if you generate your own).  You can select from a pre-set "
+            +"(if you generate one with Mellon).  You can select from a pre-set "
             +"selection, or choose \"Custom\" to enter your own length as "
             +"needed.\n\nSet Expiration: You can choose to set a reminder to "
             +"change your password. You will be reminded three days from the "
