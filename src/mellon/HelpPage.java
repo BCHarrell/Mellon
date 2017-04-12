@@ -69,8 +69,7 @@ public class HelpPage extends ScrollPane {
         //Bug report
         TitledPane bugs = new TitledPane();
         bugs.setText("Have an Issue?");
-        bugs.setContent(new Text("Found an issue? Please report bugs via "
-                + "our GitHub:\n\nhttps://github.com/brenther/Mellon/issues"));
+        bugs.setContent(getBugReportForm());
         
         accordion.getPanes().addAll(about, creation, retrieve, edit,
                                     settings, bugs);
@@ -232,5 +231,73 @@ public class HelpPage extends ScrollPane {
         } catch (IOException ex) {
             settingsText = "Settings file not found";
         }
+    }
+    
+    /**
+     * Creates a bug report form
+     * @return a VBox containing the required fields
+     */
+    private VBox getBugReportForm(){
+        VBox content = new VBox();
+        content.setSpacing(45);
+        content.setAlignment(Pos.CENTER);
+        
+        VBox fieldBox = new VBox();
+        fieldBox.setSpacing(15);
+        
+        HBox emailBox = new HBox();
+        emailBox.setAlignment(Pos.CENTER_LEFT);
+        emailBox.setSpacing(5);
+        TextField email = new TextField();
+        email.setPromptText("Enter your email address");
+        Text optional = new Text("(optional)");
+        optional.getStyleClass().add("dialog-text");
+        emailBox.getChildren().addAll(email, optional);
+        
+        VBox reportBox = new VBox();
+        reportBox.setSpacing(3);
+        TextArea report = new TextArea();
+        report.setWrapText(true);
+        report.setPrefSize(400, 250);
+        report.setPromptText("Please enter detailed information about the "
+                + "problem you are experiencing. Without sufficient details "
+                + "we may not be able to recreate (and therefore solve) the "
+                + "problem.  Enter a minimum of 200 characters.\n\nEntering a "
+                + "valid email address will help us follow up on your problem "
+                + "or to notify you of fixes.");
+        Text charCount = new Text("Character count: 0");
+        charCount.getStyleClass().add("dialog-text");
+        reportBox.getChildren().addAll(report, charCount);
+        
+        fieldBox.getChildren().addAll(emailBox, reportBox);
+        
+        Button submit = new Button("Submit Bug Report");
+        submit.getStyleClass().add("blue-button-large");
+        
+        content.getChildren().addAll(fieldBox, submit);
+        
+        /****************
+         *EVENT LISTENER*
+         ****************/
+        
+        report.setOnKeyReleased(e -> {
+            int count = report.getText().length();
+            if(count > 200){
+                submit.setDisable(false);
+            } else {
+                submit.setDisable(true);
+            }
+            charCount.setText("Character count: " + count);
+        });
+        
+        submit.setOnAction(e -> {
+            if(report.getText().isEmpty()){
+                report.setStyle("-fx-background-color: rgba(255,0,0,.5");
+            } else {
+                //CODE GOES HERE TO SUBMIT
+            }
+        });
+        
+        return content;
     }
 }

@@ -214,6 +214,18 @@
     -fx-font-size: 14;
 }
 
+.unmet-requirement {
+    -fx-fill: #D4AA00;
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+}
+
+.met-requirement {
+    -fx-fill: #0088AA;
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+}
+
 /*************** CHOICE BOX ***************/
 .choice-box {
     -fx-background-color: #ffffff;

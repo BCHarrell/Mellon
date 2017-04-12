@@ -1,8 +1,12 @@
 package mellon;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.regex.Pattern;
 import javafx.animation.FadeTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.geometry.*;
 import static javafx.geometry.Pos.CENTER;
 import javafx.scene.control.*;
@@ -25,10 +29,22 @@ public class SignUpPage extends VBox {
     private final ImageView LOGO = new ImageView(new Image(getClass()
             .getResourceAsStream("/resources/mellon_logo_large.png")));
     
+    //Declared here so they are reachable across methods
     private TextField username = new TextField();
     private PasswordField password = new PasswordField();
     private PasswordField verify = new PasswordField();
+    private Button submit;
     private String notificationText = "";
+    private boolean meetsRequirements = false;
+    
+    //Text objects for notification window
+    Text symbText, numText, lowerText, upperText, lengthText;
+    
+    //Regex patterns to verify password
+    private final Pattern SYMBOL = Pattern.compile("[^a-zA-Z\\d\\s]");
+    private final Pattern NUMBER = Pattern.compile("\\d");
+    private final Pattern LOWER = Pattern.compile("[a-z]");
+    private final Pattern UPPER = Pattern.compile("[A-Z]");
 
     //Accepts the primary class to get the scene, login page to return
     //in case the user clicked sign up by accident, keeps all text entered
@@ -70,8 +86,9 @@ public class SignUpPage extends VBox {
         hb.setSpacing(15);
         Button back = new Button("Back to Login");
         back.getStyleClass().add("blue-button-small");
-        Button submit = new Button("Create Account");
+        submit = new Button("Create Account");
         submit.getStyleClass().add("blue-button-small");
+        submit.setDisable(true);
         hb.getChildren().addAll(back, submit);
         
         //progress indicator
@@ -95,24 +112,12 @@ public class SignUpPage extends VBox {
 
         this.getChildren().addAll(LOGO, vb);
         
+        //Password requirements pane
+        AnchorPane requirements = getRequirementPane();
         
         /*****************
          *EVENT LISTENERS*
          *****************/
-        
-        //Highlights the verify box if it does not match the password box
-        verify.setOnKeyReleased(e -> {
-            if(!verify.getText().equals(password.getText())){
-                verify.setStyle("-fx-background-color: rgba(255,0,0,.5);");
-            } else {
-                verify.setStyle(null);
-            }
-        });
-        
-        //Returns to login screen
-        back.setOnAction(e -> {
-            CONTAINER.requestMenuChange(LOGIN);
-        });
         
         //Tries to submit the information
         submit.setOnAction(e -> {
@@ -139,6 +144,185 @@ public class SignUpPage extends VBox {
             
             new Thread(authenticate).start(); 
         });
+        
+        //Returns to login screen
+        back.setOnAction(e -> {
+            CONTAINER.requestMenuChange(LOGIN);
+        });
+        
+        //Highlights the verify box if it does not match the password box
+        verify.setOnKeyReleased(e -> {
+            verify();
+        });
+        
+        //Show the password requirements on focus
+        password.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean>
+                    observable, Boolean oldValue, Boolean newValue) {
+                if(newValue){
+                    if(!meetsRequirements) {
+                        if(!CONTAINER.getChildren().contains(requirements)){
+                            CONTAINER.getChildren().add(requirements);
+                        }
+                        password.setStyle("-fx-background-color: "
+                                        + "rgba(212, 170, 0, .5)");
+                    }
+                }
+            }
+        });
+        
+        //Verify password meets requirement in real time
+        password.setOnKeyReleased(e -> {
+            
+            //Check if all the requirements are met
+            meetsRequirements = updateRequirements();
+            
+            //If the verify field is not empty and the password field changes
+            //Remove verification status
+            if (!verify.getText().isEmpty()) {
+                verify();
+            }
+            
+            //If yes, remove the requirements window and change the color
+            if(meetsRequirements){
+                password.setStyle("-fx-background-color: "
+                                    + "rgba(0, 136, 170, .5);");
+                CONTAINER.getChildren().remove(requirements);
+            } else {
+                //redisplay requirements if the user changes the password
+                //after meeting the requirements
+                if(!CONTAINER.getChildren().contains(requirements)){
+                    CONTAINER.getChildren().add(requirements);
+                }
+                submit.setDisable(true);
+                password.setStyle("-fx-background-color: rgba(212, 170, 0, .5);");
+            }
+        });
+    }
+    
+    /**
+     * Verifies the password entries match
+     */
+    private void verify(){
+        if(!verify.getText().equals(password.getText())){
+            verify.setStyle("-fx-background-color: rgba(212, 170, 0, .5);");
+            submit.setDisable(true);
+        } else {
+            verify.setStyle("-fx-background-color: rgba(0, 136, 170, .5);");
+            if(meetsRequirements && !username.getText().isEmpty()){
+                submit.setDisable(false);
+            }
+        }
+    }
+    
+    /**
+     * Dynamically updates the requirements pane as the user inputs the
+     * password.  Once all requirements are met, returns true. Otherwise, returns
+     * false
+     * @return true if requirements are met, false if not 
+     */
+    private boolean updateRequirements(){
+        boolean symbol = false, number = false, lower = false,
+                    upper = false, length = false;
+        
+        //Check for symbol
+        if(SYMBOL.matcher(password.getText()).find()) {
+            symbol = true;
+            symbText.getStyleClass().add("met-requirement");
+        } else {
+            symbText.getStyleClass().removeAll("met-requirement");
+            symbText.getStyleClass().add("unmet-requirement");
+        }
+        
+        //Check for number
+        if(NUMBER.matcher(password.getText()).find()) {
+            number = true;
+            numText.getStyleClass().add("met-requirement");
+        } else {
+            numText.getStyleClass().removeAll("met-requirement");
+            numText.getStyleClass().add("unmet-requirement");
+        }
+        
+        //Check for lower case
+        if(LOWER.matcher(password.getText()).find()) {
+            lower = true;
+            lowerText.getStyleClass().add("met-requirement");
+        } else {
+            lowerText.getStyleClass().removeAll("met-requirement");
+            lowerText.getStyleClass().add("unmet-requirement");
+        }
+        
+        //Check for upper case
+        if(UPPER.matcher(password.getText()).find()) {
+            upper = true;
+            upperText.getStyleClass().add("met-requirement");
+        } else {
+            upperText.getStyleClass().removeAll("met-requirement");
+            upperText.getStyleClass().add("unmet-requirement");
+        }
+        
+        //Check for 12 characters
+        if(password.getText().length() >= 12) {
+            length = true;
+            lengthText.getStyleClass().add("met-requirement");
+        } else {
+            lengthText.getStyleClass().removeAll("met-requirement");
+            lengthText.getStyleClass().add("unmet-requirement");
+        }
+        
+        //If all reqs are met, return true
+        if(symbol && number && lower && upper && length){
+            return true;
+        }
+            
+        return false;
+    }
+    
+    /**
+     * Creates a small window anchored to the bottom which informs the user
+     * of the remaining password requirements
+     * @return 
+     */
+    private AnchorPane getRequirementPane(){
+        AnchorPane anch = new AnchorPane();
+        anch.setPickOnBounds(false);
+        
+        HBox reqsBox = new HBox();
+        reqsBox.setSpacing(10);
+        reqsBox.setAlignment(Pos.CENTER);
+        reqsBox.setPrefSize(140, 30);
+        reqsBox.setPadding(new Insets(5, 15, 5, 15));
+        reqsBox.getStyleClass().add("grey-container");
+        
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        
+        symbText = new Text("Symbol");
+        symbText.getStyleClass().add("unmet-requirement");
+        numText = new Text("Number");
+        numText.getStyleClass().add("unmet-requirement");
+        lowerText = new Text("Lower case");
+        lowerText.getStyleClass().add("unmet-requirement");
+        upperText = new Text("Upper case");
+        upperText.getStyleClass().add("unmet-requirement");
+        
+        grid.add(symbText, 0, 0);
+        grid.add(numText, 1, 0);
+        grid.add(lowerText, 0, 1);
+        grid.add(upperText, 1, 1);
+        
+        lengthText = new Text("12 Characters");
+        lengthText.getStyleClass().add("unmet-requirement");
+        
+        reqsBox.getChildren().addAll(grid, lengthText);
+        
+        anch.getChildren().add(reqsBox);
+        AnchorPane.setBottomAnchor(reqsBox, 15.0);
+        AnchorPane.setLeftAnchor(reqsBox, 131.0);
+        
+        return anch;
     }
     
     /**

@@ -8,6 +8,7 @@ import javafx.scene.layout.*;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import javafx.animation.FadeTransition;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.text.*;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
@@ -30,6 +31,20 @@ public class SettingsMenu extends BorderPane {
             = UserInfoSingleton.getInstance().getTimeoutDuration();
     private int existingPasswordLength 
             = UserInfoSingleton.getInstance().getDefaultPasswordLength();
+    
+    //Declared here so they are accessible in other methods
+    private PasswordField currentPass, newPass, verify;
+    Button savePass;
+    private boolean meetsRequirements = false;
+    
+    //Text objects for notification window
+    Text symbText, numText, lowerText, upperText, lengthText;
+    
+    //Regex patterns to verify password
+    private final Pattern SYMBOL = Pattern.compile("[^a-zA-Z\\d\\s]");
+    private final Pattern NUMBER = Pattern.compile("\\d");
+    private final Pattern LOWER = Pattern.compile("[a-z]");
+    private final Pattern UPPER = Pattern.compile("[A-Z]");
     
     public SettingsMenu(MenuContainer c) {
         CONTAINER = c;
@@ -74,7 +89,7 @@ public class SettingsMenu extends BorderPane {
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
                 "8", "16", "24", "32", "48", new Separator(), "Custom"));
         cb.setMaxWidth(45);
-        cb.setValue(existingPasswordLength);
+        cb.setValue(String.valueOf(existingPasswordLength));
         
         //Textfield and return button if the user selects "Custom" from the
         //choice box
@@ -106,18 +121,19 @@ public class SettingsMenu extends BorderPane {
         box.setAlignment(Pos.CENTER_LEFT);
         box.setSpacing(3);
         box.setPadding(new Insets(5, 5, 5, 5));
-        PasswordField old = new PasswordField();
-        old.setPromptText("Enter current password");
-        old.setMaxWidth(225);
-        PasswordField newPass = new PasswordField();
+        currentPass = new PasswordField();
+        currentPass.setPromptText("Enter current password");
+        currentPass.setMaxWidth(225);
+        newPass = new PasswordField();
         newPass.setPromptText("Enter new password");
         newPass.setMaxWidth(225);
-        PasswordField repeat = new PasswordField();
-        repeat.setPromptText("Enter new password again");
-        repeat.setMaxWidth(225);
-        Button savePass = new Button("Save Password");
+        verify = new PasswordField();
+        verify.setPromptText("Enter new password again");
+        verify.setMaxWidth(225);
+        savePass = new Button("Save Password");
         savePass.getStyleClass().add("blue-button-small");
-        box.getChildren().addAll(old, newPass, repeat, savePass);
+        savePass.setDisable(true);
+        box.getChildren().addAll(currentPass, newPass, verify, savePass);
         password.setContent(box);
         
         passwordVB.getChildren().add(password);
@@ -138,21 +154,27 @@ public class SettingsMenu extends BorderPane {
         close.getStyleClass().add("menu-control");
         closeBox.getChildren().add(close);
         this.setTop(closeBox);
+        
+        //Password requirements pane
+        AnchorPane requirements = getRequirementPane();
 
-        /**
-         *****************
+        /*****************
          *EVENT LISTENERS*
          *****************/
         
-        //Highlights the verification text field if entry does not match
-        repeat.setOnKeyReleased(e -> {
-            if(!repeat.getText().equals(newPass.getText())){
-                repeat.setStyle("-fx-background-color: rgba(255,0,0,.5);");
+        //Section to print the stored passwords.
+        report.setOnAction(e -> {
+            boolean success = Print.executePrint(UserInfoSingleton
+                    .getInstance().getProfiles());
+            if(success){
+            showNotification("File Sent to Printer");
             } else {
-                repeat.setStyle(null);
+                CONTAINER.showDialog(new NotificationDialog(CONTAINER, 
+                        "Something went wrong. Please check your printer "
+                                + "connection and try again.  If the problem "
+                                + "persists, please report a bug."));
             }
         });
-        
         
         //Closes on save MOVE TO OWN METHOD
         save.setOnAction(e -> {
@@ -178,7 +200,7 @@ public class SettingsMenu extends BorderPane {
                         length.requestFocus();
                     }
         });
-
+        
         //Go back to choice box from custom selection
         goBack.setOnAction(e -> {
             lengthHB.getChildren().remove(custLength);
@@ -200,29 +222,190 @@ public class SettingsMenu extends BorderPane {
             c -> Pattern.matches("\\d*", c.getText()) ? c : null );
         timeoutTF.setTextFormatter(format2);
         
+        
+                        //NEW PASSWORD SECTION//
         //Saves the new master password
         savePass.setOnAction(e -> {
-            savePassword(old.getText(), newPass.getText(), repeat.getText());
-            old.clear();
+            savePassword(currentPass.getText(), newPass.getText(),
+                            verify.getText());
+            currentPass.clear();
             newPass.clear();
-            repeat.clear();
+            verify.clear();
             password.setExpanded(false);
         });
         
-        //Section to print the stored passwords.
-        report.setOnAction(e -> {
-            boolean success = Print.executePrint(UserInfoSingleton
-                    .getInstance().getProfiles());
-            if(success){
-            showNotification("File Sent to Printer");
+        //Highlights the verification text field if entry does not match
+        verify.setOnKeyReleased(e -> {
+            verify();
+        });
+        
+        newPass.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean>
+                    observable, Boolean oldValue, Boolean newValue) {
+                if(newValue){
+                    if(!meetsRequirements) {
+                        if(!CONTAINER.getChildren().contains(requirements)){
+                            CONTAINER.getChildren().add(requirements);
+                        }
+                        newPass.setStyle("-fx-background-color: "
+                                        + "rgba(212, 170, 0, .5)");
+                    }
+                }
+            }
+        });
+        
+        newPass.setOnKeyReleased(e -> {
+            
+            //Check if all the requirements are met
+            meetsRequirements = updateRequirements();
+            
+            //If the verify field is not empty and the password field changes
+            //Remove verification status
+            if (!verify.getText().isEmpty()) {
+                verify();
+            }
+            
+            //If yes, remove the requirements window and change the color
+            if(meetsRequirements){
+                newPass.setStyle("-fx-background-color: "
+                                    + "rgba(0, 136, 170, .5);");
+                CONTAINER.getChildren().remove(requirements);
             } else {
-                CONTAINER.showDialog(new NotificationDialog(CONTAINER, 
-                        "Something went wrong. Please check your printer "
-                                + "connection and try again.  If the problem "
-                                + "persists, please report a bug."));
+                //redisplay requirements if the user changes the password
+                //after meeting the requirements
+                if(!CONTAINER.getChildren().contains(requirements)){
+                    CONTAINER.getChildren().add(requirements);
+                }
+                savePass.setDisable(true);
+                newPass.setStyle("-fx-background-color: rgba(212, 170, 0, .5);");
             }
         });
     }//end addItems 
+    
+    /**
+     * Verifies the password entries match
+     */
+    private void verify(){
+        if(!verify.getText().equals(newPass.getText())){
+            verify.setStyle("-fx-background-color: rgba(212, 170, 0, .5);");
+            savePass.setDisable(true);
+        } else {
+            verify.setStyle("-fx-background-color: rgba(0, 136, 170, .5);");
+            if(meetsRequirements && !currentPass.getText().isEmpty()){
+                savePass.setDisable(false);
+            }
+        }
+    }
+    
+    /**
+     * Dynamically updates the requirements pane as the user inputs the
+     * password.  Once all requirements are met, returns true. Otherwise, returns
+     * false
+     * @return true if requirements are met, false if not 
+     */
+    private boolean updateRequirements(){
+        boolean symbol = false, number = false, lower = false,
+                    upper = false, length = false;
+        
+        //Check for symbol
+        if(SYMBOL.matcher(newPass.getText()).find()) {
+            symbol = true;
+            symbText.getStyleClass().add("met-requirement");
+        } else {
+            symbText.getStyleClass().removeAll("met-requirement");
+            symbText.getStyleClass().add("unmet-requirement");
+        }
+        
+        //Check for number
+        if(NUMBER.matcher(newPass.getText()).find()) {
+            number = true;
+            numText.getStyleClass().add("met-requirement");
+        } else {
+            numText.getStyleClass().removeAll("met-requirement");
+            numText.getStyleClass().add("unmet-requirement");
+        }
+        
+        //Check for lower case
+        if(LOWER.matcher(newPass.getText()).find()) {
+            lower = true;
+            lowerText.getStyleClass().add("met-requirement");
+        } else {
+            lowerText.getStyleClass().removeAll("met-requirement");
+            lowerText.getStyleClass().add("unmet-requirement");
+        }
+        
+        //Check for upper case
+        if(UPPER.matcher(newPass.getText()).find()) {
+            upper = true;
+            upperText.getStyleClass().add("met-requirement");
+        } else {
+            upperText.getStyleClass().removeAll("met-requirement");
+            upperText.getStyleClass().add("unmet-requirement");
+        }
+        
+        //Check for 12 characters
+        if(newPass.getText().length() >= 12) {
+            length = true;
+            lengthText.getStyleClass().add("met-requirement");
+        } else {
+            lengthText.getStyleClass().removeAll("met-requirement");
+            lengthText.getStyleClass().add("unmet-requirement");
+        }
+        
+        //If all reqs are met, return true
+        if(symbol && number && lower && upper && length){
+            return true;
+        }
+            
+        return false;
+    }
+    
+    /**
+     * Creates a small window anchored to the bottom which informs the user
+     * of the remaining password requirements
+     * @return 
+     */
+    private AnchorPane getRequirementPane(){
+        AnchorPane anch = new AnchorPane();
+        anch.setPickOnBounds(false);
+        
+        HBox reqsBox = new HBox();
+        reqsBox.setSpacing(10);
+        reqsBox.setAlignment(Pos.CENTER);
+        reqsBox.setPrefSize(140, 30);
+        reqsBox.setPadding(new Insets(5, 15, 5, 15));
+        reqsBox.getStyleClass().add("grey-container");
+        
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        
+        symbText = new Text("Symbol");
+        symbText.getStyleClass().add("unmet-requirement");
+        numText = new Text("Number");
+        numText.getStyleClass().add("unmet-requirement");
+        lowerText = new Text("Lower case");
+        lowerText.getStyleClass().add("unmet-requirement");
+        upperText = new Text("Upper case");
+        upperText.getStyleClass().add("unmet-requirement");
+        
+        grid.add(symbText, 0, 0);
+        grid.add(numText, 1, 0);
+        grid.add(lowerText, 0, 1);
+        grid.add(upperText, 1, 1);
+        
+        lengthText = new Text("12 Characters");
+        lengthText.getStyleClass().add("unmet-requirement");
+        
+        reqsBox.getChildren().addAll(grid, lengthText);
+        
+        anch.getChildren().add(reqsBox);
+        AnchorPane.setBottomAnchor(reqsBox, 15.0);
+        AnchorPane.setLeftAnchor(reqsBox, 131.0);
+        
+        return anch;
+    }
     
     /**
      * Notifies the user on successful action (save, print)
@@ -235,11 +418,13 @@ public class SettingsMenu extends BorderPane {
         notification.setAlignment(Pos.CENTER);
         notification.setPrefSize(140, 30);
         notification.setPadding(new Insets(5, 15, 5, 15));
-        notification.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
+        //notification.setStyle("-fx-background-color: rgba(75, 75, 75, 0.9);");
+        notification.getStyleClass().add("grey-container");
         
         Text notificationText = new Text(message);
-        notificationText.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        notificationText.setStyle("-fx-fill: #FFFFFF;");
+        notificationText.getStyleClass().add("white-label");
+        //notificationText.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        //notificationText.setStyle("-fx-fill: #FFFFFF;");
         notification.getChildren().add(notificationText);
         
         anch.getChildren().add(notification);
