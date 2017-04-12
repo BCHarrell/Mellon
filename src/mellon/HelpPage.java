@@ -272,6 +272,7 @@ public class HelpPage extends ScrollPane {
         fieldBox.getChildren().addAll(emailBox, reportBox);
         
         Button submit = new Button("Submit Bug Report");
+        submit.setDisable(true);
         submit.getStyleClass().add("blue-button-large");
         
         content.getChildren().addAll(fieldBox, submit);
@@ -292,7 +293,7 @@ public class HelpPage extends ScrollPane {
         
         submit.setOnAction(e -> {
             if(report.getText().isEmpty()){
-                report.setStyle("-fx-background-color: rgba(255,0,0,.5");
+                report.setStyle("-fx-background-color: rgba(255,0,0,.5)");
             } else {
                 //CODE GOES HERE TO SUBMIT
             }
