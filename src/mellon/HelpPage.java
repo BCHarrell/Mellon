@@ -295,7 +295,7 @@ public class HelpPage extends ScrollPane {
             if(report.getText().isEmpty()){
                 report.setStyle("-fx-background-color: rgba(255,0,0,.5)");
             } else {
-                //CODE GOES HERE TO SUBMIT
+                EmailService.sendEmail("mellon.bug.report@gmail.com", report.getText());
             }
         });
         
