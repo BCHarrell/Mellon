@@ -295,10 +295,17 @@ public class HelpPage extends ScrollPane {
         });
         
         submit.setOnAction(e -> {
+            String userEmail;
             if(report.getText().isEmpty()){
                 report.setStyle("-fx-background-color: rgba(255,0,0,.5)");
             } else {
-                EmailService.sendEmail("mellon.bug.report@gmail.com", report.getText());
+                if(email.getText().isEmpty()){
+                    userEmail = "NO EMAIL PROVIDED";
+                }else{
+                    userEmail = email.getText();
+                }
+                
+                EmailService.sendEmail("mellon.bug.report@gmail.com",userEmail ,report.getText());
             }
         });
         
