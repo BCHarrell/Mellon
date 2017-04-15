@@ -30,8 +30,11 @@ public class HelpPage extends ScrollPane {
             .getResourceAsStream("/resources/help_info/settings.txt"));
     
     private String aboutText, createText, editText, retrieveText, settingsText;
+
+    private final MenuContainer CONTAINER;
     
-    public HelpPage() {
+    public HelpPage(MenuContainer c) {
+        CONTAINER = c;
         getStrings();
         addItems();
     }

@@ -35,4 +35,12 @@ public class AutoTimer {
             }
         }
     }
+
+    public Date getTimeoutMax() {
+        return this.timeoutMax;
+    }
+
+    public Date getCurrentTime() {
+        return this.currentTime;
+    }
 }
