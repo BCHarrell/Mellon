@@ -125,7 +125,7 @@ public class NavBar extends BorderPane{
                 .requestMenuChange(new CreationPage(CONTAINER)));
         
         helpBtn.setOnAction(e -> CONTAINER
-                .requestMenuChange(new HelpPage()));
+                .requestMenuChange(new HelpPage(CONTAINER)));
         
         settingsBtn.setOnAction(e -> CONTAINER.displaySettings());
         

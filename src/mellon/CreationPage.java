@@ -485,7 +485,6 @@ public class CreationPage extends StackPane {
                                     + " a bug."));
                 }
             }
-
             CONTAINER.getMain().update();
             CONTAINER.requestMenuChange(CONTAINER.getMain());
         } 
