@@ -3,6 +3,7 @@ package mellon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -262,11 +263,14 @@ public class HelpPage extends ScrollPane {
         report.setPromptText("Please enter detailed information about the "
                 + "problem you are experiencing. Without sufficient details "
                 + "we may not be able to recreate (and therefore solve) the "
-                + "problem.  Enter a minimum of 200 characters.\n\nEntering a "
+                + "problem.  Enter a minimum of 200 characters. Entering a "
                 + "valid email address will help us follow up on your problem "
                 + "or to notify you of fixes.");
-        Text charCount = new Text("Character count: 0");
+        Text charCount = new Text("Character count: 0/200");
         charCount.getStyleClass().add("dialog-text");
+        Text success = new Text("Report successfully sent.");
+        success.getStyleClass().add("met-requirement");
+        Text submitting = new Text("Submitting...");
         reportBox.getChildren().addAll(report, charCount);
         
         fieldBox.getChildren().addAll(emailBox, reportBox);
@@ -295,7 +299,27 @@ public class HelpPage extends ScrollPane {
             if(report.getText().isEmpty()){
                 report.setStyle("-fx-background-color: rgba(255,0,0,.5)");
             } else {
-                EmailService.sendEmail("mellon.bug.report@gmail.com", report.getText());
+                if(reportBox.getChildren().contains(success)) {
+                    reportBox.getChildren().remove(success);
+                }
+                reportBox.getChildren().add(submitting);
+                Task emailTask = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        EmailService.sendEmail("mellon.bug.report@gmail.com",
+                                                report.getText());
+                        return null;
+                    }
+                };
+            
+                emailTask.setOnSucceeded(a -> {
+                    reportBox.getChildren().remove(submitting);
+                    report.setStyle(null);
+                    report.clear();
+                    email.clear();
+                    reportBox.getChildren().add(success);
+                });
+                new Thread(emailTask).start();
             }
         });
         
