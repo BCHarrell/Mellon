@@ -299,6 +299,7 @@ public class HelpPage extends ScrollPane {
         });
         
         submit.setOnAction(e -> {
+            String userEmail;
             if(report.getText().isEmpty()){
                 report.setStyle("-fx-background-color: rgba(255,0,0,.5)");
             } else {
@@ -309,8 +310,15 @@ public class HelpPage extends ScrollPane {
                 Task emailTask = new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
+                        String userEmail = "";
+                        if(email.getText().isEmpty()){
+                            userEmail = "NO EMAIL PROVIDED";
+                        }else{
+                            userEmail = email.getText();
+                        }
+                
                         EmailService.sendEmail("mellon.bug.report@gmail.com",
-                                                report.getText());
+                                        userEmail, report.getText());
                         return null;
                     }
                 };
@@ -322,7 +330,8 @@ public class HelpPage extends ScrollPane {
                     email.clear();
                     reportBox.getChildren().add(success);
                 });
-                new Thread(emailTask).start();
+                
+                new Thread(emailTask).start();  
             }
         });
         

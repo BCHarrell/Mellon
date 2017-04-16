@@ -393,4 +393,19 @@ public class DBConnect {
             e.printStackTrace();
         }
     }
+    
+     public static void reportBug(String userEmail,String bugReport) {
+        PreparedStatement preparedStatement = null;
+        Connection connection = getConnect();
+        try {
+            preparedStatement = connection.prepareStatement("INSERT INTO EMAIL_DATA (USER_EMAIL,DESCRIPTION) VALUES (?,TO_CLOB(?))");
+            preparedStatement.setString(1, userEmail);
+            preparedStatement.setString(2, bugReport);
+            preparedStatement.executeQuery();
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
 }

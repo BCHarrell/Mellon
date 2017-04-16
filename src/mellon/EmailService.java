@@ -11,7 +11,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.Transport;
 
 public class EmailService {
-    public static void sendEmail(String email, String bugReport){
+    public static void sendEmail(String email, String userEmail, String bugReport){
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.starttls.enable", "true");
@@ -34,12 +34,14 @@ public class EmailService {
             message.setFrom(new InternetAddress("mellon.bug.report"));
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(email));
-            message.setSubject("Bug Reported: ");
+            message.setSubject("Bug Reported FROM: " + userEmail);
             message.setText(bugReport);
             Transport.send(message);
         } catch (MessagingException e) {
             System.out.println(e.getMessage());
         }
+        DBConnect.reportBug(userEmail,bugReport);
     }
+   
 
 }
