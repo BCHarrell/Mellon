@@ -253,10 +253,12 @@ public class CreationPage extends StackPane {
         saveHB.setAlignment(Pos.CENTER);
         saveHB.setPadding(new Insets(0, 0, 15, 0));
         Button save = new Button("Save Account");
+        addDropShadow(save);
         save.getStyleClass().add("blue-button-large");
         
         //Delete button if in edit mode
         Button delete = new Button("DELETE ACCOUNT");
+        addDropShadow(delete);
         //One off need, therefore in-line style
         delete.setStyle("-fx-background-color: #D4AA00;"
                         + "-fx-padding: 15 20 15 20;"
