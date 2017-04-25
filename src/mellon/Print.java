@@ -32,7 +32,7 @@ public class Print {
                 wrtr.write("Account nickname: " + acct.getAccountName()
                         + "\r\nUsername: " + acct.getUsername()
                         + "\r\nPassword: " + acct.getPassword()
-                         + "\r\n------------------------------------------------" );        
+                        + "\r\n------------------------------------------------");
                 wrtr.newLine();
             }
         } catch (IOException io) {
@@ -54,23 +54,24 @@ public class Print {
             }
         }
 
-            try {
-                PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
-                DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE; 
+        try {
+            PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
+            
+            
+            javax.print.PrintService service = PrintServiceLookup.lookupDefaultPrintService();
+            if (service != null) {
+                DocPrintJob job = service.createPrintJob();
+                FileInputStream fis = new FileInputStream(file);
+                DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
                 javax.print.PrintService printService[] = PrintServiceLookup.lookupPrintServices(flavor, pras);
-                javax.print.PrintService defaultService = PrintServiceLookup.lookupDefaultPrintService();
-                javax.print.PrintService service = PrintServiceLookup.lookupDefaultPrintService();
-                if (service != null) {
-                    DocPrintJob job = service.createPrintJob();
-                    FileInputStream fis = new FileInputStream(file);
-                    DocAttributeSet das = new HashDocAttributeSet();
-                    Doc doc = new SimpleDoc(fis, flavor, das);
-                    job.print(doc, pras);
-                }
-            } catch (Exception a) {
-                System.out.println(a.getMessage()); 
+                DocAttributeSet das = new HashDocAttributeSet();
+                Doc doc = new SimpleDoc(fis, flavor, das);
+                job.print(doc, pras);
             }
-         file.delete();
-      return true;
+        } catch (Exception a) {
+            System.out.println(a.getMessage());
+        }
+        file.delete();
+        return true;
     }
 }
