@@ -248,6 +248,12 @@ public class HelpPage extends ScrollPane {
         
         VBox fieldBox = new VBox();
         fieldBox.setSpacing(15);
+        Text bugCheck = new Text("Note: Prior to submitting a bug report, "
+                + "please check your internet connection.  Services provided "
+                + "by this application rely on a connection to the database.");
+        bugCheck.getStyleClass().add("dialog-text");
+        bugCheck.setWrappingWidth(450);
+        fieldBox.getChildren().add(bugCheck);
         
         HBox emailBox = new HBox();
         emailBox.setAlignment(Pos.CENTER_LEFT);
