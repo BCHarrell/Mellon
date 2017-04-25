@@ -1,5 +1,4 @@
 package mellon;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +15,7 @@ import javax.print.attribute.DocAttributeSet;
 import javax.print.attribute.HashDocAttributeSet;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
+
 
 public class Print {
 
@@ -74,4 +74,5 @@ public class Print {
         file.delete();
         return true;
     }
+
 }
