@@ -1,4 +1,5 @@
 package mellon;
+import java.awt.Desktop;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,11 +22,12 @@ public class Print {
 
     static BufferedWriter wrtr = null;
     static File file = new File("MellonUserReport.txt");
+    private static Desktop desktop = Desktop.getDesktop();
 
     public static boolean executePrint(ArrayList<WebAccount> accounts) {
         try {
             wrtr = new BufferedWriter(new FileWriter(file, true));
-            wrtr.write("Here's a list of your stored account details ");
+            wrtr.write("Stored passwords:");
             wrtr.newLine();
             wrtr.newLine();
             for (WebAccount acct : accounts) {
@@ -55,23 +57,14 @@ public class Print {
         }
 
         try {
-            PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
-            
-            
-            javax.print.PrintService service = PrintServiceLookup.lookupDefaultPrintService();
-            if (service != null) {
-                DocPrintJob job = service.createPrintJob();
-                FileInputStream fis = new FileInputStream(file);
-                DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
-                javax.print.PrintService printService[] = PrintServiceLookup.lookupPrintServices(flavor, pras);
-                DocAttributeSet das = new HashDocAttributeSet();
-                Doc doc = new SimpleDoc(fis, flavor, das);
-                job.print(doc, pras);
-            }
+            desktop.print(file);
         } catch (Exception a) {
             System.out.println(a.getMessage());
+        } finally {
+            //file.delete();
+            //DELETES TOO QUICKLY
         }
-        file.delete();
+        
         return true;
     }
 
