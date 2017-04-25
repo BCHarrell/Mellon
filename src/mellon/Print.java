@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 import javafx.scene.control.Alert;
 import javax.print.Doc;
 import javax.print.DocFlavor;
@@ -61,11 +63,29 @@ public class Print {
         } catch (Exception a) {
             System.out.println(a.getMessage());
         } finally {
-            //file.delete();
-            //DELETES TOO QUICKLY
+            Runnable taskFileDelete = new Runnable() {
+                @Override
+                public void run() {
+                    deleteFile();
+                }
+            };
+            new Thread(taskFileDelete).start();
         }
         
         return true;
+    }
+
+    private static boolean deleteFile() {
+        // Waits 10 seconds then deletes file
+        try {
+            TimeUnit.SECONDS.sleep(10);
+            file.delete();
+            System.out.println("File Deleted");
+            return true;
+        } catch (Exception e) {
+            System.out.println("File not Deleted");
+            return false;
+        }
     }
 
 }
