@@ -2,7 +2,7 @@
 <p align="center">
   <img width="221" height="275" src="https://github.com/BCHarrell/Mellon/blob/master/src/resources/mellon_logo_large.png">
 </p>
-![Mellon Logo](/src/resources/mellon_logo_large.png)
+
 ## Password Manager
 Creates and stores secure passwords so users only need to remember one
 Capstone project for UMGC Computer Science program
