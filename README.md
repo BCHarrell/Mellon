@@ -4,7 +4,8 @@
 </p>
 
 ## Password Manager
-Creates and stores secure passwords so users only need to remember one
+Creates and stores secure passwords so users only need to remember one.
+
 Capstone project for UMGC Computer Science program
 
 ## The server has been shut down. Please use the MellonLocal.jar for a demonstration.
